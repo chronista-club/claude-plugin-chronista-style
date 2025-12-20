@@ -1,0 +1,17 @@
+{
+  "name": "chronista-style",
+  "description": "Chronista development workflow - hearing-first approach, SDG documentation, and container orchestration",
+  "version": "1.0.0",
+  "author": {
+    "name": "Chronista Club",
+    "url": "https://github.com/chronista-club"
+  },
+  "repository": "https://github.com/chronista-club/claude-plugin-chronista-style",
+  "keywords": [
+    "workflow",
+    "documentation",
+    "sdg",
+    "codeflow",
+    "fleetflow"
+  ]
+}
