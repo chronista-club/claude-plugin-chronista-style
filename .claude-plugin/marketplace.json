@@ -3,8 +3,8 @@
   "name": "chronista-style",
   "description": "Chronista development workflow plugins",
   "owner": {
-    "name": "Chronista Club",
-    "email": "chronista.club@gmail.com"
+    "name": "Mako",
+    "email": "mito@chronista.club"
   },
   "plugins": [
     {
@@ -12,8 +12,8 @@
       "description": "Chronista development workflow - hearing-first approach and SDG documentation",
       "version": "1.1.0",
       "author": {
-        "name": "Chronista Club",
-        "email": "chronista.club@gmail.com"
+        "name": "Mako",
+        "email": "mito@chronista.club"
       },
       "source": "./",
       "category": "development",
@@ -24,8 +24,8 @@
       "description": "Container orchestration MCP server - manage Docker containers with KDL configuration",
       "version": "0.4.2",
       "author": {
-        "name": "Chronista Club",
-        "email": "chronista.club@gmail.com"
+        "name": "Mako",
+        "email": "mito@chronista.club"
       },
       "source": {
         "source": "github",
