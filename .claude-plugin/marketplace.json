@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "chronista-style",
+  "description": "Chronista development workflow plugins",
+  "owner": {
+    "name": "Chronista Club",
+    "email": "chronista.club@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "chronista-style",
+      "description": "Chronista development workflow - hearing-first approach, SDG documentation, and container orchestration",
+      "version": "1.0.0",
+      "author": {
+        "name": "Chronista Club",
+        "email": "chronista.club@gmail.com"
+      },
+      "source": "./",
+      "category": "development",
+      "homepage": "https://github.com/chronista-club/claude-plugin-chronista-style"
+    }
+  ]
+}
