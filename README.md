@@ -6,17 +6,24 @@ Claude Code plugin for Chronista development workflow.
 
 - **Codeflow** - Hearing-first development workflow with SDG documentation
 - **Spec-Design-Guide** - Living Documentation for specs and designs
-- **FleetFlow** - KDL-based container orchestration
+
+## Related Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| [fleetflow](https://github.com/chronista-club/claude-plugin-fleetflow) | KDL-based container orchestration (MCP server) |
 
 ## Installation
 
 ```bash
-# From official marketplace (coming soon)
-claude plugin install chronista-style@claude-plugins-official
+# Add marketplace
+claude plugin marketplace add chronista-club/claude-plugin-chronista-style
 
-# Or from GitHub
-/plugin marketplace add chronista-club/claude-plugins
-claude plugin install chronista-style@chronista-plugins
+# Install plugin
+claude plugin install chronista-style@chronista-style
+
+# Optional: Install fleetflow (container orchestration)
+claude plugin install fleetflow@chronista-style
 ```
 
 ## Commands
@@ -33,7 +40,6 @@ The following skills are automatically triggered based on context:
 
 - **codeflow** - Activated during feature development
 - **spec-design-guide** - Activated when creating/modifying documentation
-- **fleetflow** - Activated when working with container configurations
 
 ## License
 

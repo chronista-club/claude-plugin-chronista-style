@@ -1,7 +1,7 @@
 {
   "name": "chronista-style",
-  "description": "Chronista development workflow - hearing-first approach, SDG documentation, and container orchestration",
-  "version": "1.0.0",
+  "description": "Chronista development workflow - hearing-first approach and SDG documentation",
+  "version": "1.1.0",
   "author": {
     "name": "Chronista Club",
     "url": "https://github.com/chronista-club"
@@ -11,7 +11,6 @@
     "workflow",
     "documentation",
     "sdg",
-    "codeflow",
-    "fleetflow"
+    "codeflow"
   ]
 }
