@@ -18,6 +18,21 @@
       "source": "./",
       "category": "development",
       "homepage": "https://github.com/chronista-club/claude-plugin-chronista-style"
+    },
+    {
+      "name": "fleetflow",
+      "description": "Container orchestration MCP server - manage Docker containers with KDL configuration",
+      "version": "0.4.2",
+      "author": {
+        "name": "Chronista Club",
+        "email": "chronista.club@gmail.com"
+      },
+      "source": {
+        "source": "github",
+        "repo": "chronista-club/claude-plugin-fleetflow"
+      },
+      "category": "devops",
+      "homepage": "https://github.com/chronista-club/claude-plugin-fleetflow"
     }
   ]
 }
