@@ -21,11 +21,15 @@ tags:
 
 ```
 chronista-style (このスキル)
-├── creo-memories    【最優先】永続記憶
-├── codeflow         開発フロー
-├── spec-design-guide ドキュメント管理
-├── fleetflow        コンテナオーケストレーション
-└── ツール群          mise, Chrome DevTools, Rust CLI, SurrealDB CLI
+├── creo-memories        【最優先】永続記憶
+├── codeflow             開発フロー
+├── spec-design-guide    ドキュメント管理
+├── tdd                  テスト駆動開発【規律】
+├── systematic-debugging 体系的デバッグ【規律】
+├── verification         完了前検証【規律】
+├── code-review          コードレビュー【規律】
+├── fleetflow            コンテナオーケストレーション
+└── ツール群              mise, Chrome DevTools, Rust CLI, SurrealDB CLI
 ```
 
 ---
@@ -319,7 +323,39 @@ creo/memories> SELECT * FROM labels;
 
 ---
 
-## スキルの起動タイミング
+## スキルの起動ルール
+
+### The Iron Rule
+
+<EXTREMELY-IMPORTANT>
+1%でも該当する可能性があれば、スキルを発動せよ。
+
+スキルが適用されるなら、選択の余地はない。必ず使え。
+これは交渉不可。任意ではない。合理化で逃げることはできない。
+</EXTREMELY-IMPORTANT>
+
+### 合理化の罠
+
+以下の思考が浮かんだら STOP。それは合理化だ:
+
+| 思考 | 現実 |
+|------|------|
+| 「シンプルな質問だから」 | 質問もタスク。スキルを確認しろ。 |
+| 「先にコンテキストが必要」 | スキル確認が先。質問は後。 |
+| 「先にコードベースを調べたい」 | スキルが調べ方を教えてくれる。 |
+| 「このスキルは大げさ」 | シンプルな作業こそ複雑化する。使え。 |
+| 「今回だけ先にやる」 | 何かやる前にスキルを確認。 |
+| 「スキルの内容は覚えている」 | スキルは進化する。最新版を読め。 |
+
+### スキル優先順序
+
+複数スキルが該当する場合:
+
+1. **プロセススキル（先）**: codeflow, systematic-debugging — タスクへの**アプローチ**を決める
+2. **実装スキル（後）**: tdd, spec-design-guide — **実行**をガイドする
+
+「Xを作ろう」→ codeflow が先、次に tdd
+「このバグを直して」→ systematic-debugging が先、次に tdd
 
 ### 常時発動
 
@@ -330,10 +366,20 @@ creo/memories> SELECT * FROM labels;
 | スキル | 発動タイミング |
 |--------|----------------|
 | codeflow | 新機能開発、設計判断が必要な時 |
+| tdd | **機能実装・バグ修正の前**（テストファースト） |
+| systematic-debugging | **バグ・テスト失敗・予期しない挙動に遭遇した時** |
+| verification | **完了宣言・コミット・PR作成の前** |
+| code-review | **主要機能完了後、マージ前、レビュー受信時** |
 | spec-design-guide | コード変更・ドキュメント更新時 |
 | fleetflow | コンテナ環境の構築・管理時 |
 | mise | 開発環境セットアップ時 |
 | Chrome DevTools | WebUI確認、E2Eテスト時 |
+
+### スキルタイプ
+
+**Rigid（厳守）**: tdd, systematic-debugging, verification — 手順を正確に守れ。規律を緩めるな。
+
+**Flexible（柔軟）**: codeflow, spec-design-guide, code-review — 原則をコンテキストに合わせて適用。
 
 ---
 
