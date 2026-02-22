@@ -1,46 +1,77 @@
 # Chronista Style Plugin
 
-Claude Code plugin for Chronista development workflow.
+Chronistaとしての開発ワークフローを支えるClaude Codeプラグイン。ヒアリングファースト開発、Living Documentation、4つの規律スキルを統合。
 
-## Features
+**バージョン:** 3.0.0
 
-- **Codeflow** - Hearing-first development workflow with SDG documentation
-- **Spec-Design-Guide** - Living Documentation for specs and designs
-
-## Related Plugins
-
-| Plugin | Description |
-|--------|-------------|
-| [fleetflow](https://github.com/chronista-club/claude-plugin-fleetflow) | KDL-based container orchestration (MCP server) |
-
-## Installation
+## インストール
 
 ```bash
-# Add marketplace
-claude plugin marketplace add chronista-club/claude-plugin-chronista-style
-
-# Install plugin
-claude plugin install chronista-style@chronista-style
-
-# Optional: Install fleetflow (container orchestration)
-claude plugin install fleetflow@chronista-style
+/install chronista-club/claude-plugin-chronista-style
 ```
 
-## Commands
+## スキル一覧
 
-| Command | Description |
-|---------|-------------|
-| `/chronista:codeflow` | Start a hearing-first development session |
-| `/chronista:sdg` | Create or update spec/design documents |
-| `/chronista:hearing` | Begin a structured hearing session |
+| スキル | 種別 | 説明 |
+|--------|------|------|
+| `chronista-style` | コア | 全スキルを統合するルートスキル。起動ルール、優先順序、基本方針を定義 |
+| `codeflow` | プロセス（柔軟） | ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー |
+| `spec-design-guide` | 実装（柔軟） | 仕様（What & Why）と設計（How）をLiving Documentation原則で管理 |
+| `tdd` | 規律（厳守） | テストファーストで実装するRED-GREEN-REFACTORサイクル |
+| `systematic-debugging` | 規律（厳守） | 根本原因を特定してから修正する4フェーズデバッグ |
+| `verification` | 規律（厳守） | 証拠なき完了宣言を防ぐ。検証コマンド実行→出力確認→主張 |
+| `code-review` | 実装（柔軟） | 技術的正直さを最優先するレビュー規律。YAGNI チェック付き |
 
-## Skills (Auto-triggered)
+### スキルタイプ
 
-The following skills are automatically triggered based on context:
+- **規律（厳守）**: `tdd`, `systematic-debugging`, `verification` -- 手順を正確に守る。省略・合理化は禁止
+- **柔軟**: `codeflow`, `spec-design-guide`, `code-review` -- 原則をコンテキストに合わせて適用
 
-- **codeflow** - Activated during feature development
-- **spec-design-guide** - Activated when creating/modifying documentation
+### 起動タイミング
 
-## License
+| スキル | いつ発動するか |
+|--------|----------------|
+| `codeflow` | 新機能開発、設計判断が必要な時 |
+| `tdd` | 機能実装・バグ修正の前（テストファースト） |
+| `systematic-debugging` | バグ・テスト失敗・予期しない挙動に遭遇した時 |
+| `verification` | 完了宣言・コミット・PR作成の前 |
+| `code-review` | 主要機能完了後、マージ前、レビュー受信時 |
+| `spec-design-guide` | コード変更・ドキュメント更新時 |
+
+## コマンド
+
+| コマンド | 説明 |
+|----------|------|
+| `/codeflow` | ヒアリングファースト開発セッションを開始 |
+| `/hearing` | 構造化されたヒアリング（Q&A）セッションを開始 |
+| `/sdg` | 仕様・設計ドキュメントの作成・更新 |
+| `/release` | バージョンbump、CHANGELOG更新、タグ作成によるリリース実行 |
+
+## Codeflow フロー概要
+
+```
+Phase 1: ディスカバリー（調査）
+    ↓
+Phase 1-2: セカンドオピニオン（Gemini等）
+    ↓
+Phase 2: ディスカッション（方向性議論）
+    ↓
+Phase 3: ヒアリング（一問一答で詳細確認）
+    ↓
+Phase 4: SDG + Bite-Sized Tasks（仕様・設計・タスク分割）
+    ↓
+Phase 5: 実装（TDDスキルに従う）
+    ↓
+Phase 6: 学習（creo-memoriesに記録）
+```
+
+## 関連プラグイン
+
+| プラグイン | 説明 |
+|-----------|------|
+| [creo-memories](https://github.com/chronista-club/claude-plugin-creo-memories) | 永続記憶システム（MCP Server） |
+| [fleetflow](https://github.com/chronista-club/claude-plugin-fleetflow) | KDLベースのコンテナオーケストレーション（MCP Server） |
+
+## ライセンス
 
 MIT
