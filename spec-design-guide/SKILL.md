@@ -21,11 +21,24 @@ description: 仕様（Why）と設計（How）を記録し、Living Documentatio
 
 ## ストレージ
 
-**重要**: すべてのドキュメントはCreo Memoriesに保存されます。
+ドキュメントの種類によって保存先が異なります。
+
+### 保存先マトリックス
+
+| カテゴリ | Creo Memories | リポジトリ `docs/guide/` | 備考 |
+|---------|:---:|:---:|------|
+| **spec** | ✅ | - | プロジェクト横断検索に最適 |
+| **design** | ✅ | - | プロジェクト横断検索に最適 |
+| **guide** | ✅ | ✅ | デュアルストレージ（両方に保存） |
 
 - **ドメイン**: `sdg`（domain:019b1c05-b0d6-7eb8-95a6-1aa0c5601338）
 - **カテゴリ**: `spec`, `design`, `guide`
 - **タグ**: 機能名、技術名などで分類
+
+### なぜ guide だけデュアルストレージか
+
+- **spec/design**: 「なぜ・どう作るか」はプロジェクト横断で検索する価値が高く、Creo Memories のセマンティック検索が最適
+- **guide**: 「どう使うか」は人間が直接閲覧する機会が多い。リポジトリの `docs/guide/` にもコピーを置くことで、git clone した人やCIから参照できる
 
 ### Creo Memoriesとの連携
 
@@ -33,29 +46,47 @@ description: 仕様（Why）と設計（How）を記録し、Living Documentatio
 
 ```typescript
 // ドキュメントを保存
-remember_context({
+remember({
   content: "# Core Concepts - 仕様書\n...",
   category: "spec",
   tags: ["core-concepts", "architecture"],
-  metadata: {
-    title: "Core Concepts - 仕様書",
-    docType: "spec"
-  }
+  contentType: "markdown"
 })
 
 // ドキュメントを検索
-recall_relevant({
-  sessionId: "...",
+search({
   query: "認証システム設計",
-  threshold: 0.7
-})
-
-// カテゴリで一覧
-search_memories({
   category: "spec",
   limit: 20
 })
+
+// タグで絞り込み
+search({
+  tags: ["authentication"],
+  limit: 10
+})
 ```
+
+### guide のデュアルストレージ手順
+
+guide を作成・更新する際は、以下の2ステップを実行します：
+
+1. **Creo Memories に保存**（正）
+   ```typescript
+   remember({
+     content: "# ガイドタイトル\n...",
+     category: "guide",
+     tags: ["topic-name"],
+     contentType: "markdown"
+   })
+   ```
+
+2. **リポジトリに書き出し**（同期コピー）
+   ```
+   docs/guide/<topic-name>.md
+   ```
+   - ファイル名はタグやトピック名に合わせる
+   - Creo Memories の内容と同一にする
 
 ## スキルの起動タイミング
 
@@ -415,23 +446,36 @@ class MyError extends Error {
 
 1. **spec** にドキュメントを保存
    ```typescript
-   remember_context({
+   remember({
      content: "# 新機能 - 仕様書\n...",
      category: "spec",
-     tags: ["new-feature", "v2"]
+     tags: ["new-feature", "v2"],
+     contentType: "markdown"
    })
-````
+   ```
 
 2. **design** に設計を保存
    ```typescript
-   remember_context({
+   remember({
      content: "# 新機能 - 設計書\n...",
      category: "design",
-     tags: ["new-feature", "architecture"]
+     tags: ["new-feature", "architecture"],
+     contentType: "markdown"
    })
    ```
 
 3. **guide** に使い方を追加（必要に応じて）
+   ```typescript
+   // Step 1: Creo Memories に保存（正）
+   remember({
+     content: "# 新機能ガイド\n...",
+     category: "guide",
+     tags: ["new-feature"],
+     contentType: "markdown"
+   })
+   // Step 2: リポジトリに書き出し（同期コピー）
+   // → docs/guide/new-feature.md に同じ内容を書き出す
+   ```
 
 4. 実装開始
 
@@ -441,9 +485,9 @@ class MyError extends Error {
 
 1. 関連する仕様を検索
    ```typescript
-   recall_relevant({
-     sessionId: "...",
-     query: "該当機能の仕様"
+   search({
+     query: "該当機能の仕様",
+     category: "spec"
    })
    ```
 
@@ -457,20 +501,20 @@ class MyError extends Error {
 
 ```typescript
 // セマンティック検索（意味で検索）
-recall_relevant({
-  sessionId: "...",
+search({
   query: "認証システムの設計",
-  threshold: 0.7
-})
-
-// カテゴリ検索
-search_memories({
   category: "spec",
   limit: 20
 })
 
-// タグ検索
-search_memories({
+// カテゴリで一覧
+search({
+  category: "spec",
+  limit: 20
+})
+
+// タグで絞り込み
+search({
   tags: ["authentication"],
   limit: 10
 })
@@ -519,8 +563,8 @@ search_memories({
 3. ✅ 関連するdesignドキュメントを検索して読む（How）
 4. ✅ コード変更を実施
 5. ✅ spec/designドキュメントとの乖離をチェック
-6. ✅ 乖離があればドキュメントを更新（remember_contextで保存）
-7. ✅ 必要に応じてguideも更新
+6. ✅ 乖離があればドキュメントを更新（rememberで保存）
+7. ✅ 必要に応じてguideも更新（Creo Memories + `docs/guide/` の両方）
 
 ### 視覚化の推奨
 
@@ -576,7 +620,7 @@ search_memories({
 
 - 📝 **spec**: What & Why（Creo Memoriesに保存）
 - 🏗️ **design**: How（Creo Memoriesに保存）
-- 📖 **guide**: Usage（Creo Memoriesに保存）
+- 📖 **guide**: Usage（Creo Memories + `docs/guide/` デュアルストレージ）
 - 🎯 **Simplicity**: 型分類 + Straightforward原則 = シンプルさ
 - 🔄 **Living Documentation**: ドキュメントとコードの同期
 - 🔍 **セマンティック検索**: 関連ドキュメントを意味で検索

@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 3.0.0
+version: 3.1.0
 tags:
   - chronista
   - development
@@ -42,9 +42,9 @@ chronista-style (このスキル)
 
 ### 必須アクション
 
-1. **セッション開始時**: `recall_relevant` で関連する過去の記憶を検索
-2. **重要な決定時**: `remember_context` で記憶に刻む
-3. **過去参照時**: `recall_relevant` で呼び起こす
+1. **セッション開始時**: `search` で関連する過去の記憶を検索
+2. **重要な決定時**: `remember` で記憶に刻む
+3. **過去参照時**: `search` で呼び起こす
 
 ### 記憶に刻むべき瞬間
 
@@ -58,9 +58,8 @@ chronista-style (このスキル)
 
 | ツール | 用途 |
 |--------|------|
-| `mcp__creo-memories__remember_context` | メモリを保存 |
-| `mcp__creo-memories__recall_relevant` | セマンティック検索 |
-| `mcp__creo-memories__search_memories` | 高度な検索（フィルタ付き） |
+| `mcp__creo-memories__remember` | メモリを保存 |
+| `mcp__creo-memories__search` | 検索（セマンティック・フィルタ対応） |
 | `mcp__creo-memories__list_recent_memories` | 最近のメモリ一覧 |
 | `mcp__creo-memories__create_todo` | Todo作成 |
 | `mcp__creo-memories__list_todos` | Todo一覧 |
@@ -163,12 +162,23 @@ Phase 7: 学習（creo-memoriesに記録）
 
 仕様（Why）と設計（How）を記録し、Living Documentation原則でコードと常に同期。
 
+### ストレージ方針
+
+| カテゴリ | 保存先 | 備考 |
+|---------|--------|------|
+| **spec** | Creo Memories のみ | プロジェクト横断検索 |
+| **design** | Creo Memories のみ | プロジェクト横断検索 |
+| **guide** | Creo Memories + `docs/guide/` | デュアルストレージ |
+
+- spec/design: AI エージェントがセマンティック検索で参照
+- guide: Creo Memories（正）に保存 + リポジトリ `docs/guide/` に同期コピー（人間が直接閲覧可能）
+
 ### ディレクトリ構成
 
 ```
 spec/    # 仕様（What & Why）- フラット、番号付き
 design/  # 設計（How）- フラット、番号付き
-guides/  # ガイド（Usage）- フラット、番号付き
+guide/   # ガイド（Usage）- フラット、番号付き
 ```
 
 ### 要件定義（Requirements）

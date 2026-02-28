@@ -2,7 +2,7 @@
 skill: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 1.5.0
+version: 1.6.0
 ---
 
 # Code Flow Skill
@@ -140,7 +140,7 @@ Step 1: 質問リスト作成 → Step 2: 全体確認 → Step 3: 優先順位�
 
 - **spec/**: 仕様書（What & Why）
 - **design/**: 設計書（How）
-- **guides/**: 実装ガイド
+- **guide/**: 実装ガイド
 
 #### Bite-Sized Task 構造
 
@@ -234,7 +234,7 @@ project/
 ├── design/         # 設計書（How）
 │   ├── 01-*.md    # 重要度順
 │   └── ...
-└── guides/         # 実装ガイド
+└── guide/          # 実装ガイド
     ├── 01-*.md    # 利用順序
     └── ...
 ```

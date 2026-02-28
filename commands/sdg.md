@@ -6,11 +6,16 @@ description: Create or update spec/design documents
 
 Create or update specification and design documentation.
 
-## Document Types
+## Document Types & Storage
 
-- **spec/** - What & Why (specifications, concepts, philosophy)
-- **design/** - How (architecture, data models, implementation)
-- **guide/** - Usage (how to use, best practices)
+| Type | Storage | Description |
+|------|---------|-------------|
+| **spec/** | Creo Memories only | What & Why (specifications, concepts, philosophy) |
+| **design/** | Creo Memories only | How (architecture, data models, implementation) |
+| **guide/** | Creo Memories + `docs/guide/` | Usage (how to use, best practices) |
+
+- **spec/design**: Creo Memories のセマンティック検索でプロジェクト横断参照
+- **guide**: Creo Memories（正）に保存 + リポジトリ `docs/guide/` に同期コピー。guide 作成・更新時は両方を更新する
 
 ## Principles
 
@@ -21,3 +26,4 @@ Create or update specification and design documentation.
 ## Usage
 
 When creating or modifying code, ensure corresponding documentation is updated.
+When creating or updating a guide, save to Creo Memories first, then write the same content to `docs/guide/`.
