@@ -19,74 +19,68 @@ description: 仕様（Why）と設計（How）を記録し、Living Documentatio
 実装前に仕様と設計を明確にし、実装の助けとなるドキュメントを体系的に管理します。
 ドキュメントは「生きた写像」としてコードと常に同期し、技術的負債を防ぎ、生きたメモリーとして機能します。
 
-## ストレージ
+## 責務分担 — 3層モデル
 
-ドキュメントの種類によって保存先が異なります。
+ドキュメントは3つの場所に、それぞれの責務で配置します。
+
+### 3層の役割
+
+| 置き場 | 役割 | 内容 |
+|--------|------|------|
+| **Creo Memories** | 脳（記憶・意思決定の経緯） | 「なぜこうなったか」の議論ログ、設計判断の背景 |
+| **リポジトリ `docs/`** | 設計図（確定した仕様） | 確定版の spec / design / guide |
+| **GitHub Issues/Project** | 現場（やること・進捗） | タスク分解、マイルストーン、タイムライン |
 
 ### 保存先マトリックス
 
-| カテゴリ | Creo Memories | リポジトリ `docs/guide/` | 備考 |
+| カテゴリ | Creo Memories | リポジトリ `docs/` | 備考 |
 |---------|:---:|:---:|------|
-| **spec** | ✅ | - | プロジェクト横断検索に最適 |
-| **design** | ✅ | - | プロジェクト横断検索に最適 |
-| **guide** | ✅ | ✅ | デュアルストレージ（両方に保存） |
+| **spec** | ✅ 経緯・判断理由 | ✅ `docs/spec/` 確定版 | 両方に役割が異なる |
+| **design** | ✅ 経緯・判断理由 | ✅ `docs/design/` 確定版 | 両方に役割が異なる |
+| **guide** | ✅ 検索用 | ✅ `docs/guide/` 閲覧用 | 人間が直接参照 |
 
-- **ドメイン**: `sdg`（domain:019b1c05-b0d6-7eb8-95a6-1aa0c5601338）
-- **カテゴリ**: `spec`, `design`, `guide`
-- **タグ**: 機能名、技術名などで分類
+### creo-memories vs リポジトリの使い分け
 
-### なぜ guide だけデュアルストレージか
+- **Creo Memories**: 「なぜこの設計にしたか」「どんな議論があったか」「却下した案」— 意思決定の**プロセス**を記録
+- **リポジトリ `docs/`**: 確定した仕様・設計の**成果物**。コードと共にバージョン管理される
+- **GitHub**: タスクの**タイムライン**。いつ・誰が・何をやるか
 
-- **spec/design**: 「なぜ・どう作るか」はプロジェクト横断で検索する価値が高く、Creo Memories のセマンティック検索が最適
-- **guide**: 「どう使うか」は人間が直接閲覧する機会が多い。リポジトリの `docs/guide/` にもコピーを置くことで、git clone した人やCIから参照できる
+> **原則**: creo-memories は検索で「経緯」を引き、docs/ は git で「確定版」を管理する
 
-### Creo Memoriesとの連携
+### ワークフロー: ドキュメント作成・更新
 
-ドキュメントの操作にはCreo Memories MCPツールを使用します：
+#### 新しい spec/design を作る場合
 
-```typescript
-// ドキュメントを保存
-remember({
-  content: "# Core Concepts - 仕様書\n...",
-  category: "spec",
-  tags: ["core-concepts", "architecture"],
-  contentType: "markdown"
-})
+1. **リポジトリに確定版を作成**
+   ```
+   docs/spec/XX-feature-name.md    # 仕様書
+   docs/design/XX-feature-name.md  # 設計書
+   ```
 
-// ドキュメントを検索
-search({
-  query: "認証システム設計",
-  category: "spec",
-  limit: 20
-})
-
-// タグで絞り込み
-search({
-  tags: ["authentication"],
-  limit: 10
-})
-```
-
-### guide のデュアルストレージ手順
-
-guide を作成・更新する際は、以下の2ステップを実行します：
-
-1. **Creo Memories に保存**（正）
+2. **Creo Memories に決定経緯を記録**
    ```typescript
    remember({
-     content: "# ガイドタイトル\n...",
-     category: "guide",
-     tags: ["topic-name"],
+     content: "# Feature X 設計決定\n\n## 議論の経緯\n...\n## 却下した案\n...",
+     category: "design-decision",
+     tags: ["feature-x"],
      contentType: "markdown"
    })
    ```
 
-2. **リポジトリに書き出し**（同期コピー）
+3. **GitHub Issue でタスク化**
+   ```bash
+   gh issue create --title "Feature X 実装" --body "spec: docs/spec/XX-..."
    ```
-   docs/guide/<topic-name>.md
-   ```
-   - ファイル名はタグやトピック名に合わせる
-   - Creo Memories の内容と同一にする
+
+#### 既存ドキュメントを検索する場合
+
+```typescript
+// Creo Memories で経緯を検索
+search({ query: "認証システムの設計判断", category: "design-decision" })
+
+// リポジトリの docs/ で確定版を確認
+// → docs/spec/ と docs/design/ を直接読む
+```
 
 ## スキルの起動タイミング
 
@@ -444,81 +438,44 @@ class MyError extends Error {
 
 ### 新機能追加時
 
-1. **spec** にドキュメントを保存
-   ```typescript
-   remember({
-     content: "# 新機能 - 仕様書\n...",
-     category: "spec",
-     tags: ["new-feature", "v2"],
-     contentType: "markdown"
-   })
+1. **docs/spec/ に仕様書を作成**（リポジトリ）
+   ```
+   docs/spec/XX-new-feature.md
    ```
 
-2. **design** に設計を保存
-   ```typescript
-   remember({
-     content: "# 新機能 - 設計書\n...",
-     category: "design",
-     tags: ["new-feature", "architecture"],
-     contentType: "markdown"
-   })
+2. **docs/design/ に設計書を作成**（リポジトリ）
+   ```
+   docs/design/XX-new-feature.md
    ```
 
-3. **guide** に使い方を追加（必要に応じて）
+3. **Creo Memories に設計判断の経緯を記録**
    ```typescript
-   // Step 1: Creo Memories に保存（正）
    remember({
-     content: "# 新機能ガイド\n...",
-     category: "guide",
+     content: "# 新機能の設計決定\n\n## 判断理由\n...",
+     category: "design-decision",
      tags: ["new-feature"],
      contentType: "markdown"
    })
-   // Step 2: リポジトリに書き出し（同期コピー）
-   // → docs/guide/new-feature.md に同じ内容を書き出す
    ```
 
-4. 実装開始
+4. **GitHub Issue でタスク化**
 
-5. 実装完了後、ドキュメント更新
+5. 実装開始
+
+6. 実装完了後、docs/ のドキュメントを更新
 
 ### 既存機能修正時
 
-1. 関連する仕様を検索
+1. **docs/spec/ で確定仕様を確認**（リポジトリ）
+
+2. **Creo Memories で経緯を検索**（なぜこうなったか）
    ```typescript
-   search({
-     query: "該当機能の仕様",
-     category: "spec"
-   })
+   search({ query: "該当機能の設計判断" })
    ```
 
-2. 設計ドキュメントを検索・確認
-
-3. 変更が設計に影響する場合、ドキュメントを更新
+3. 変更が設計に影響する場合、docs/ のドキュメントを更新
 
 4. 実装
-
-### ドキュメント検索の方法
-
-```typescript
-// セマンティック検索（意味で検索）
-search({
-  query: "認証システムの設計",
-  category: "spec",
-  limit: 20
-})
-
-// カテゴリで一覧
-search({
-  category: "spec",
-  limit: 20
-})
-
-// タグで絞り込み
-search({
-  tags: ["authentication"],
-  limit: 10
-})
-```
 
 ## Claudeへの指示
 
@@ -558,13 +515,13 @@ search({
 
 ### コード変更時の必須手順
 
-1. ✅ Creo Memoriesで関連するspecドキュメントを検索
-2. ✅ specを読んで「なぜ」（What & Why）を理解
-3. ✅ 関連するdesignドキュメントを検索して読む（How）
+1. ✅ `docs/spec/` で確定仕様を確認
+2. ✅ Creo Memories で設計判断の経緯を検索（なぜこうなったか）
+3. ✅ `docs/design/` で設計書を確認（How）
 4. ✅ コード変更を実施
-5. ✅ spec/designドキュメントとの乖離をチェック
-6. ✅ 乖離があればドキュメントを更新（rememberで保存）
-7. ✅ 必要に応じてguideも更新（Creo Memories + `docs/guide/` の両方）
+5. ✅ `docs/` のドキュメントとの乖離をチェック
+6. ✅ 乖離があれば `docs/` のドキュメントを更新
+7. ✅ 重要な設計判断があれば Creo Memories に経緯を記録
 
 ### 視覚化の推奨
 
@@ -618,10 +575,9 @@ search({
 
 **キーポイント**:
 
-- 📝 **spec**: What & Why（Creo Memoriesに保存）
-- 🏗️ **design**: How（Creo Memoriesに保存）
-- 📖 **guide**: Usage（Creo Memories + `docs/guide/` デュアルストレージ）
+- 🧠 **Creo Memories**: 脳 — 設計判断の経緯・議論ログ
+- 📐 **docs/**: 設計図 — 確定した spec / design / guide
+- 🏗️ **GitHub**: 現場 — タスク・タイムライン・進捗
 - 🎯 **Simplicity**: 型分類 + Straightforward原則 = シンプルさ
 - 🔄 **Living Documentation**: ドキュメントとコードの同期
-- 🔍 **セマンティック検索**: 関連ドキュメントを意味で検索
 - 📊 **マーメイド図**: 積極的な視覚化で理解しやすく

@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 3.1.0
+version: 3.2.0
 tags:
   - chronista
   - development
@@ -97,10 +97,10 @@ Phase 3: ヒアリング（詳細確認）
     ↓
 Phase 4: 要件定義（Requirements）
     └─ 各要件に固有ID付与（REQ-XXX）
-    └─ spec/ に要件ドキュメント作成
+    └─ docs/spec/ に要件ドキュメント作成
     ↓
 Phase 5: SDG（設計ドキュメント）
-    └─ design/ に設計書作成
+    └─ docs/design/ に設計書作成
     └─ 要件IDとの紐付け
     ↓
 Phase 6: 実装 & テスト
@@ -162,23 +162,21 @@ Phase 7: 学習（creo-memoriesに記録）
 
 仕様（Why）と設計（How）を記録し、Living Documentation原則でコードと常に同期。
 
-### ストレージ方針
+### 責務分担 — 3層モデル
 
-| カテゴリ | 保存先 | 備考 |
-|---------|--------|------|
-| **spec** | Creo Memories のみ | プロジェクト横断検索 |
-| **design** | Creo Memories のみ | プロジェクト横断検索 |
-| **guide** | Creo Memories + `docs/guide/` | デュアルストレージ |
-
-- spec/design: AI エージェントがセマンティック検索で参照
-- guide: Creo Memories（正）に保存 + リポジトリ `docs/guide/` に同期コピー（人間が直接閲覧可能）
+| 置き場 | 役割 | 内容 |
+|--------|------|------|
+| **Creo Memories** | 脳（記憶・経緯） | 設計判断の理由、議論ログ、却下した案 |
+| **リポジトリ `docs/`** | 設計図（確定版） | 確定した spec / design / guide |
+| **GitHub Issues** | 現場（タスク） | タイムライン、進捗、マイルストーン |
 
 ### ディレクトリ構成
 
 ```
-spec/    # 仕様（What & Why）- フラット、番号付き
-design/  # 設計（How）- フラット、番号付き
-guide/   # ガイド（Usage）- フラット、番号付き
+docs/
+├── spec/    # 仕様（What & Why）- フラット、番号付き
+├── design/  # 設計（How）- フラット、番号付き
+└── guide/   # ガイド（Usage）- フラット、番号付き
 ```
 
 ### 要件定義（Requirements）

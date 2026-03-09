@@ -1,7 +1,7 @@
 {
   "name": "chronista-style",
   "description": "Chronista development workflow - hearing-first, SDG documentation, and discipline skills (TDD, debugging, verification, code review)",
-  "version": "3.0.0",
+  "version": "3.2.0",
   "author": {
     "name": "Mako",
     "email": "mito@chronista.club"

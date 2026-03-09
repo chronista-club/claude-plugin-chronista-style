@@ -29,11 +29,11 @@ Living Documentationは、**AIエージェント（Claude）が信頼して活�
 AIエージェント（Claude）は、Living Documentationを以下のように活用します：
 
 1. **コード変更前の理解**
-   - SPEC.mdを読んで「なぜこの設計なのか」を理解
+   - specを読んで「なぜこの設計なのか」を理解
    - 設計思想を把握してから変更を行う
 
 2. **設計意図の継承**
-   - DESIGN.mdを参照して実装方針を理解
+   - designを参照して実装方針を理解
    - 既存の設計パターンに沿った実装
 
 3. **過去の判断から学習**
@@ -60,14 +60,14 @@ Living Documentationが「信頼できる生きたメモリー」であり続け
 ### 1. コード変更時は必ずドキュメントを更新
 
 ```
-コード変更 → 該当するSPEC.md/DESIGN.mdを確認 → 必要なら更新
+コード変更 → 該当するspec/designを確認 → 必要なら更新
 ```
 
 **例**:
 
-- `parser.rs`を修正 → `spec/02-parser-feature/DESIGN.md`を確認・更新
-- データモデル変更 → `spec/01-feature-name/SPEC.md`を更新
-- 新機能追加 → 新しいspec/ディレクトリを作成
+- `parser.rs`を修正 → `docs/spec/02-parser-feature/design`を確認・更新
+- データモデル変更 → `docs/spec/01-feature-name/spec`を更新
+- 新機能追加 → 新しいdocs/spec/ディレクトリを作成
 
 ### 2. ドキュメントとコードの不一致は技術的負債
 
@@ -100,17 +100,17 @@ Living Documentationが「信頼できる生きたメモリー」であり続け
 vim src/parser/core.rs
 
 # 2. 関連ドキュメントを確認
-cat spec/02-parser-feature/DESIGN.md
+cat docs/spec/02-parser-feature/design
 
 # 3. ドキュメントが現実と一致しているか確認
 # 不一致なら更新
-vim spec/02-parser-feature/DESIGN.md
+vim docs/spec/02-parser-feature/design
 
 # 4. チェックリストを更新
-# DESIGN.mdの実装チェックリストにチェック
+# designの実装チェックリストにチェック
 
 # 5. コミット（ドキュメント更新も含める）
-git add src/parser/core.rs spec/02-parser-feature/DESIGN.md
+git add src/parser/core.rs docs/spec/02-parser-feature/design
 git commit -m "パーサー改善とドキュメント更新"
 
 # 6. PRの説明にドキュメント更新を記載
@@ -121,8 +121,8 @@ git commit -m "パーサー改善とドキュメント更新"
 レビュアーは以下を確認:
 
 - [ ] コード変更に対応するドキュメント更新があるか
-- [ ] SPEC.mdの哲学と実装が一致しているか
-- [ ] DESIGN.mdの設計と実装が一致しているか
+- [ ] specの哲学と実装が一致しているか
+- [ ] designの設計と実装が一致しているか
 - [ ] 実装チェックリストが更新されているか
 
 ### 定期的なドキュメント監査
@@ -130,12 +130,12 @@ git commit -m "パーサー改善とドキュメント更新"
 週次/月次でドキュメントとコードの乖離をチェック:
 
 ```bash
-# 各spec/ディレクトリを順番に確認
-cd spec/01-feature-name
-# SPEC.mdとmodel.rsが一致しているか
+# 各docs/spec/ディレクトリを順番に確認
+cd docs/spec/01-feature-name
+# specとmodel.rsが一致しているか
 
 cd ../02-parser-feature
-# DESIGN.mdとparser.rsが一致しているか
+# designとparser.rsが一致しているか
 ```
 
 ## ドキュメント駆動開発（DDD: Documentation Driven Development）
@@ -143,17 +143,17 @@ cd ../02-parser-feature
 ### 新機能実装の流れ
 
 ```
-1. SPEC.md作成（コンセプト・仕様・哲学）
+1. spec作成（コンセプト・仕様・哲学）
    ↓
-2. DESIGN.md作成（モデル・手法・実装）
+2. design作成（モデル・手法・実装）
    ↓
-3. DESIGN.mdに実装チェックリスト作成
+3. designに実装チェックリスト作成
    ↓
 4. 実装開始
    ↓
 5. チェックリスト更新しながら実装
    ↓
-6. 実装完了後、SPEC.md/DESIGN.mdを見直し
+6. 実装完了後、spec/designを見直し
    ↓
 7. 乖離があれば修正（ドキュメントorコード）
 ```
@@ -163,13 +163,13 @@ cd ../02-parser-feature
 テストケースもドキュメントの一部:
 
 ```rust
-/// SPEC.md FS-001: サービス名からイメージ名を推測
+/// spec FS-001: サービス名からイメージ名を推測
 ///
 /// 仕様: service名が"postgres"、versionが"16"の場合、
 ///       imageは"postgres:16"となる
 #[test]
 fn test_infer_image_name_with_version() {
-    // spec/02-parser-feature/SPEC.md FS-001に対応
+    // docs/spec/02-parser-feature/spec FS-001に対応
     let result = infer_image_name("postgres", Some("16"));
     assert_eq!(result, "postgres:16");
 }
@@ -199,7 +199,7 @@ fn test_infer_image_name_with_version() {
 # .github/workflows/docs-check.yml
 - name: ドキュメント鮮度チェック
   run: |
-    # 変更されたRustファイルに対応するspec/が更新されているかチェック
+    # 変更されたRustファイルに対応するdocs/spec/が更新されているかチェック
 ```
 
 ### pre-commit hook
@@ -213,7 +213,7 @@ changed_rs_files=$(git diff --cached --name-only | grep '\.rs$')
 
 if [ -n "$changed_rs_files" ]; then
     echo "⚠️  Rustファイルが変更されています"
-    echo "📝 関連するspec/ドキュメントを確認・更新してください"
+    echo "📝 関連するdocs/spec/ドキュメントを確認・更新してください"
     echo ""
     echo "変更ファイル:"
     echo "$changed_rs_files"
@@ -230,8 +230,8 @@ fi
 - ファイル2: 変更内容
 
 ## ドキュメント更新
-- spec/XX-YY/SPEC.md: 更新内容
-- spec/XX-YY/DESIGN.md: 更新内容
+- docs/spec/XX-YY/spec: 更新内容
+- docs/spec/XX-YY/design: 更新内容
 
 ## 理由
 なぜこの変更が必要だったか
@@ -246,8 +246,8 @@ Refs: #issue番号
 
 **重要**: コード変更を提案・実装する際は、必ず以下を実行してください:
 
-1. 変更するコードに対応する`spec/`ディレクトリを確認
-2. SPEC.md/DESIGN.mdを読んで現状を理解
+1. 変更するコードに対応する`docs/spec/`ディレクトリを確認
+2. spec/designを読んで現状を理解
 3. コード変更後、ドキュメントとの乖離をチェック
 4. 乖離があればドキュメントを更新
 5. 実装チェックリストを更新
