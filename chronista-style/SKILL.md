@@ -143,7 +143,11 @@ Phase 6: 実装 & テスト
     └─ 要件IDに対応するテスト作成
     └─ テストで要件の充足を検証
     ↓
-Phase 7: 学習（creo-memoriesに記録）
+Phase 7: リリース & 配布（条件付き）
+    └─ PR マージ → タグ → GitHub Release
+    └─ プラグイン同期（/update-plugin、該当時のみ）
+    ↓
+Phase 8: 学習（creo-memoriesに記録）
 ```
 
 ### 基本姿勢

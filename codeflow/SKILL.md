@@ -32,10 +32,10 @@ Code Flowのすべてのコミュニケーションの土台となる姿勢で�
 
 ## 概要
 
-Code Flowは以下の6つのフェーズで構成されています:
+Code Flowは以下の7つのフェーズで構成されています:
 
 ```
-Phase 1: ディスカバリー → Phase 2: ディスカッション → Phase 3: ヒアリング → Phase 4: SDG → Phase 5: 実装 → Phase 6: 学習
+Phase 1: ディスカバリー → Phase 2: ディスカッション → Phase 3: ヒアリング → Phase 4: SDG → Phase 5: 実装 → Phase 6: リリース（条件付き） → Phase 7: 学習
 ```
 
 ### Phase 1: ディスカバリー
@@ -166,7 +166,22 @@ Step 5: コミット
 **必須:** 実装時は `tdd` スキルの RED-GREEN-REFACTOR サイクルに従え。
 テストファーストで書き、失敗を確認し、最小限のコードで通せ。
 
-### Phase 6: 学習
+### Phase 6: リリース & 配布（条件付き）
+
+**トリガー条件**: 以下のいずれかに該当する場合のみ実行する。該当しなければスキップ。
+
+- PR マージ → リリースが必要な場合
+- プロダクトリリース → プラグイン同期が必要な場合
+
+```
+Step 1: PR マージ → タグ → GitHub Release
+Step 2: デプロイ（該当時）
+Step 3: プラグイン同期（該当時） → /update-plugin
+```
+
+**team-b 連携**: Aerosmith がパイプラインをディスパッチする場合、Sticky Fingers（シップ）→ Gold Experience（デプロイ）→ `/update-plugin`（プラグイン配布）の順で実行。
+
+### Phase 7: 学習
 
 セッションの知見を記録し、将来の開発に活用。
 
