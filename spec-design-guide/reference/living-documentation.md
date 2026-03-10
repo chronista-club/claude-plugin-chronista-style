@@ -107,7 +107,7 @@ vim docs/design/02-parser-feature.md
 git add src/parser/core.rs docs/design/02-parser-feature.md
 git commit -m "パーサー改善とドキュメント更新"
 
-# 6. PRの説明にドキュメント更新を記載
+# 5. PRの説明にドキュメント更新を記載
 ```
 
 ### コードレビュー時

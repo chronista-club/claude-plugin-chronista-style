@@ -304,6 +304,7 @@ flowchart LR
 > **Author**: @username
 > **Created**: YYYY-MM-DD
 > **Updated**: YYYY-MM-DD
+> **Supersedes**: {PRJ}-GUIDE-NNN（該当時のみ）
 
 ---
 
