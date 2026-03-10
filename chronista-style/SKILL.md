@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 3.3.0
+version: 3.4.0
 tags:
   - chronista
   - development
