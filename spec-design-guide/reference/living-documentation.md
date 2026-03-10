@@ -65,9 +65,9 @@ Living Documentationが「信頼できる生きたメモリー」であり続け
 
 **例**:
 
-- `parser.rs`を修正 → `docs/spec/02-parser-feature/design`を確認・更新
-- データモデル変更 → `docs/spec/01-feature-name/spec`を更新
-- 新機能追加 → 新しいdocs/spec/ディレクトリを作成
+- `parser.rs`を修正 → `docs/design/02-parser-feature.md`を確認・更新
+- データモデル変更 → `docs/spec/01-feature-name.md`を更新
+- 新機能追加 → `docs/spec/NN-new-feature.md` を新規作成
 
 ### 2. ドキュメントとコードの不一致は技術的負債
 
@@ -79,17 +79,14 @@ Living Documentationが「信頼できる生きたメモリー」であり続け
 
 ### 3. 変更のトレーサビリティ
 
-全ての変更は理由と共に記録:
+メジャー変更のみ Changelog に記録。細かい修正は git に委ねる:
 
 ```markdown
-## 変更履歴
-
-### 2025-01-06: イメージ名推測ロジック追加
-
-- **理由**: 設定の簡略化
-- **影響**: `parse_service()`の挙動変更
-- **コミット**: a9753e2
+## Changelog
+- 2026-03-10: v2 — Supersedes VP-SPEC-000。要件ID体系を刷新
 ```
+
+変更の経緯（なぜ変えたか）は creo-memories に `supersedes` パラメータで記録する。
 
 ## 実践ワークフロー
 
@@ -100,17 +97,17 @@ Living Documentationが「信頼できる生きたメモリー」であり続け
 vim src/parser/core.rs
 
 # 2. 関連ドキュメントを確認
-cat docs/spec/02-parser-feature/design
+cat docs/design/02-parser-feature.md
 
 # 3. ドキュメントが現実と一致しているか確認
 # 不一致なら更新
-vim docs/spec/02-parser-feature/design
+vim docs/design/02-parser-feature.md
 
 # 4. チェックリストを更新
 # designの実装チェックリストにチェック
 
 # 5. コミット（ドキュメント更新も含める）
-git add src/parser/core.rs docs/spec/02-parser-feature/design
+git add src/parser/core.rs docs/design/02-parser-feature.md
 git commit -m "パーサー改善とドキュメント更新"
 
 # 6. PRの説明にドキュメント更新を記載
@@ -130,12 +127,9 @@ git commit -m "パーサー改善とドキュメント更新"
 週次/月次でドキュメントとコードの乖離をチェック:
 
 ```bash
-# 各docs/spec/ディレクトリを順番に確認
-cd docs/spec/01-feature-name
-# specとmodel.rsが一致しているか
-
-cd ../02-parser-feature
-# designとparser.rsが一致しているか
+# docs/spec/ と docs/design/ のファイルを順番に確認
+# 各ドキュメントの Updated 日付と、対応コードの最終変更日を比較
+ls -la docs/spec/ docs/design/
 ```
 
 ## ドキュメント駆動開発（DDD: Documentation Driven Development）
@@ -143,15 +137,15 @@ cd ../02-parser-feature
 ### 新機能実装の流れ
 
 ```
-1. spec作成（コンセプト・仕様・哲学）
+1. spec作成（Abstract → Motivation → Scope → Requirements）
    ↓
-2. design作成（モデル・手法・実装）
+2. design作成（Abstract → Architecture → Data Model → Implementation）
    ↓
-3. designに実装チェックリスト作成
+3. creo-memories に設計判断の経緯を記録
    ↓
 4. 実装開始
    ↓
-5. チェックリスト更新しながら実装
+5. 要件（REQ-{NAME}-{NNN}）に対応するテストを書きながら実装
    ↓
 6. 実装完了後、spec/designを見直し
    ↓
@@ -163,13 +157,13 @@ cd ../02-parser-feature
 テストケースもドキュメントの一部:
 
 ```rust
-/// spec FS-001: サービス名からイメージ名を推測
+/// REQ-PARSER-001: サービス名からイメージ名を推測
 ///
 /// 仕様: service名が"postgres"、versionが"16"の場合、
 ///       imageは"postgres:16"となる
 #[test]
 fn test_infer_image_name_with_version() {
-    // docs/spec/02-parser-feature/spec FS-001に対応
+    // REQ-PARSER-001 に対応
     let result = infer_image_name("postgres", Some("16"));
     assert_eq!(result, "postgres:16");
 }
@@ -225,42 +219,15 @@ fi
 ```
 {変更内容の要約}
 
-## コード変更
-- ファイル1: 変更内容
-- ファイル2: 変更内容
-
-## ドキュメント更新
-- docs/spec/XX-YY/spec: 更新内容
-- docs/spec/XX-YY/design: 更新内容
-
-## 理由
-なぜこの変更が必要だったか
-
-## 影響範囲
-この変更が影響する範囲
+## ドキュメント更新（該当時のみ）
+- docs/spec/NN-feature.md: 更新内容
+- docs/design/NN-feature.md: 更新内容
 
 Refs: #issue番号
 ```
 
+コミットメッセージは簡潔に。詳細な理由・影響範囲は creo-memories に記録する。
+
 ## Claudeへの指示
 
-**重要**: コード変更を提案・実装する際は、必ず以下を実行してください:
-
-1. 変更するコードに対応する`docs/spec/`ディレクトリを確認
-2. spec/designを読んで現状を理解
-3. コード変更後、ドキュメントとの乖離をチェック
-4. 乖離があればドキュメントを更新
-5. 実装チェックリストを更新
-
-**禁止**:
-
-- ドキュメントを確認せずにコード変更
-- コード変更後にドキュメント更新を忘れる
-- 古い設計思想のドキュメントを放置
-
-## まとめ
-
-> **ドキュメントは死んだテキストではなく、生きたコードベースの鏡である**
-
-ドキュメントとコードは常に同期し、一方が変われば他方も変わる。
-これにより、プロジェクトの理解が容易になり、技術的負債が減少します。
+→ 具体的な手順は `spec-design-guide/SKILL.md` の「コード変更時の必須手順」に従う。

@@ -1,11 +1,11 @@
 ---
 name: spec-design-guide
-description: 仕様（Why）と設計（How）を記録し、Living Documentation原則でコードと常に同期させる
+description: 仕様（Why）・設計（How）・ガイド（Usage）を記録し、Living Documentation原則でコードと常に同期させる
 ---
 
 # Spec-Design-Guide Skill
 
-このスキルは、プロジェクトの仕様・設計ドキュメント作成をガイドし、Living Documentation原則に基づいてドキュメントとコードを同期管理します。
+このスキルは、プロジェクトの仕様・設計・ガイドドキュメント作成をガイドし、Living Documentation原則に基づいてドキュメントとコードを同期管理します。
 
 ## エイリアス
 
@@ -15,6 +15,17 @@ description: 仕様（Why）と設計（How）を記録し、Living Documentatio
 
 実装前に仕様と設計を明確にし、実装の助けとなるドキュメントを体系的に管理します。
 ドキュメントは「生きた写像」としてコードと常に同期し、技術的負債を防ぎ、生きたメモリーとして機能します。
+
+## スキルの起動タイミング
+
+このスキルは以下の場合に自動的に適用される:
+
+- コード変更・追加を行う際
+- 新機能の設計・実装を行う際
+- 既存機能のリファクタリングを行う際
+- バグ修正で設計に影響がある際
+
+**明示的に呼び出す方法**: `/spec-design-guide` または `/sdg`
 
 ## 責務分担 — 3層モデル
 
@@ -229,6 +240,9 @@ Overview → Prerequisites → Usage → Troubleshooting
 
 ...
 
+## Changelog
+（メジャー変更時のみ。細かい修正は git に委ねる）
+
 ## References
 - {PRJ}-DESIGN-NNN — 対応する設計書
 ```
@@ -273,6 +287,9 @@ flowchart LR
 ### D2: セクションタイトル
 
 ...
+
+## Changelog
+（メジャー変更時のみ）
 
 ## References
 - {PRJ}-SPEC-NNN — 対応する仕様書
@@ -321,6 +338,9 @@ flowchart LR
 **症状**: ...
 **原因**: ...
 **解決策**: ...
+
+## Changelog
+（メジャー変更時のみ）
 ```
 
 ## ワークフロー
@@ -343,21 +363,10 @@ flowchart LR
 
 ## Claudeへの指示
 
-### 設計思想: Simplicity
+### 設計思想
 
-コード設計・実装時は **Simplicity（シンプルさ）** を最優先する。
-
-#### 型の分類
-
-- **data**: 値を保持する不変データ構造
-- **calculations**（主に同期）: 値を計算する純粋関数。副作用なし
-- **actions**（主に非同期）: 値を操作する副作用のある関数
-
-#### Straightforward原則
-
-- 入力から出力までの経路を**直線的**に
-- **最小限のステップ**でロジックを組み立てる
-- 不要な中間層、抽象化、間接参照を避ける
+→ chronista-style ルートの「設計哲学: Simplicity & Straightforward」に従う。
+SDG ドキュメント自体もこの原則に基づく: 必要な情報だけ、冗長さを排除、4段階の直線的構成。
 
 ### コード変更時の必須手順
 

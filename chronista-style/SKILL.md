@@ -34,6 +34,42 @@ chronista-style (このスキル)
 
 ---
 
+## 設計哲学: Simplicity & Straightforward
+
+> **全てのスキル・全てのコード・全てのドキュメントの土台となる原則。**
+>
+> 原典: [Grokking Simplicity](https://www.manning.com/books/grokking-simplicity) — Eric Normand
+> 詳細: [エッセンス抽出](reference/grokking-simplicity.md)
+
+### Simplicity — コードの分類
+
+全てのコードは3つに分類される:
+
+- **data**: 値を保持する不変データ構造。ビジネスロジックを持たない
+- **calculations**（主に同期）: 値を計算する純粋関数。副作用なし、同じ入力に対して常に同じ出力
+- **actions**（主に非同期）: 値を操作する副作用のある関数。I/O、状態変更、外部通信
+
+この分類により、コードの性質が一目で分かり、テスト戦略が明確になる。
+
+### Straightforward — 直線的な経路
+
+- 入力から出力までの経路を**直線的**に
+- **最小限のステップ**でロジックを組み立てる
+- 不要な中間層、抽象化、間接参照を避ける
+- 3行の重複コードは、早すぎる抽象化より良い
+
+### 適用範囲
+
+| 場面 | Simplicity の適用 |
+|------|------------------|
+| **コード設計** | data/calculations/actions の分離。最小限の抽象化 |
+| **テスト（TDD）** | calculations は純粋関数テスト、actions は統合テスト |
+| **ドキュメント（SDG）** | 4段階構成。必要な情報だけ。冗長さを排除 |
+| **デバッグ** | Straightforward な経路なら原因特定が容易 |
+| **コードレビュー** | 不要な複雑さの指摘基準 |
+
+---
+
 ## 最優先: creo-memories（永続記憶）
 
 > **過去を知る者だけが、未来を正しく紡げる。**
@@ -160,87 +196,43 @@ Phase 7: 学習（creo-memoriesに記録）
 
 ## ドキュメント管理: spec-design-guide (SDG)
 
-仕様（Why）と設計（How）を記録し、Living Documentation原則でコードと常に同期。
+仕様（Why）・設計（How）・ガイド（Usage）を記録し、Living Documentation原則でコードと常に同期。
 
-### 責務分担 — 3層モデル
+### 3層構成
 
-| 置き場 | 役割 | 内容 |
-|--------|------|------|
-| **Creo Memories** | 脳（記憶・経緯） | 設計判断の理由、議論ログ、却下した案 |
-| **リポジトリ `docs/`** | 設計図（確定版） | 確定した spec / design / guide |
-| **GitHub Issues** | 現場（タスク） | タイムライン、進捗、マイルストーン |
+| 層 | 構成 | ID 例 |
+|----|------|-------|
+| **spec** (What & Why) | Abstract → Motivation → Scope → Requirements | VP-SPEC-001 |
+| **design** (How) | Abstract → Architecture → Data Model → Implementation | VP-DESIGN-001 |
+| **guide** (Usage) | Overview → Prerequisites → Usage → Troubleshooting | VP-GUIDE-001 |
 
-### ディレクトリ構成
-
-```
-docs/
-├── spec/    # 仕様（What & Why）- フラット、番号付き
-├── design/  # 設計（How）- フラット、番号付き
-└── guide/   # ガイド（Usage）- フラット、番号付き
-```
-
-### 要件定義（Requirements）
-
-> **すべての要件には固有IDを付与し、テストでトレースする**
-
-#### 要件IDフォーマット
-
-```
-REQ-<カテゴリ>-<連番>
-例: REQ-AUTH-001, REQ-UI-012, REQ-API-003
-```
-
-| カテゴリ | 用途 |
-|---------|------|
-| `CORE` | コア機能・基本要件 |
-| `AUTH` | 認証・認可 |
-| `UI` | ユーザーインターフェース |
-| `API` | API・外部連携 |
-| `PERF` | パフォーマンス要件 |
-| `SEC` | セキュリティ要件 |
-
-#### 要件ドキュメントの構造
+### 要件ID: `REQ-{NAME}-{NNN}`
 
 ```markdown
-## REQ-XXX-001: 要件タイトル
+### REQ-SESSION-001: マルチセッション管理
 
-**概要**: 何を実現するか
-
-**背景**: なぜ必要か
-
-**受け入れ条件**:
-- [ ] 条件1
-- [ ] 条件2
-
-**関連設計**: design/XX-設計名.md
+**Acceptance Criteria:**
+- [ ] 最大10セッションを同時管理
 ```
 
-#### 要件→テストのトレーサビリティ
+テストコメントに要件IDを記載してトレーサビリティを確保:
 
-```typescript
-// REQ-AUTH-001: ユーザー認証
-test('user authentication', () => {
-  // テスト実装
-})
+```rust
+/// REQ-SESSION-001: マルチセッション管理
+#[test]
+fn test_multi_session() { ... }
 ```
 
-テストコメントに要件IDを記載し、要件が正しく実装されていることを検証する。
+### 設計思想
 
-### 設計思想: Simplicity
-
-- **data**: 値を保持する
-- **calculations**: 値を計算する（主に同期）
-- **actions**: 値を操作する（主に非同期）
-- **Straightforward原則**: 入力から出力まで直線的に
+→ ルートの「設計哲学: Simplicity & Straightforward」に従う
 
 ### Living Documentation原則
 
-> **ドキュメントは死んだテキストではなく、生きたコードベースの鏡である**
+> ドキュメント = What changed、creo-memories = Why changed
 
-- ドキュメントとコードは常に同期
-- 一方が変われば他方も変わる
-- 不一致は技術的負債（バグ）として扱う
-- **要件ID未対応のテストは技術的負債**
+- ドキュメントとコードは常に同期。不一致はバグ
+- Supersedes 連携: ドキュメントと creo-memories の両方で改版を追跡
 
 → 詳細は `openskills read spec-design-guide` を参照
 
