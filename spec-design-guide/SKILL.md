@@ -9,10 +9,7 @@ description: 仕様（Why）と設計（How）を記録し、Living Documentatio
 
 ## エイリアス
 
-このスキルは以下のように呼ぶことができます：
-
-- `spec-design-guide` → 「仕様設計ガイド」
-- `sdg` → 「仕様設計ガイド」の略称
+- `spec-design-guide` / `sdg`
 
 ## 目的
 
@@ -20,10 +17,6 @@ description: 仕様（Why）と設計（How）を記録し、Living Documentatio
 ドキュメントは「生きた写像」としてコードと常に同期し、技術的負債を防ぎ、生きたメモリーとして機能します。
 
 ## 責務分担 — 3層モデル
-
-ドキュメントは3つの場所に、それぞれの責務で配置します。
-
-### 3層の役割
 
 | 置き場 | 役割 | 内容 |
 |--------|------|------|
@@ -35,9 +28,9 @@ description: 仕様（Why）と設計（How）を記録し、Living Documentatio
 
 | カテゴリ | Creo Memories | リポジトリ `docs/` | 備考 |
 |---------|:---:|:---:|------|
-| **spec** | ✅ 経緯・判断理由 | ✅ `docs/spec/` 確定版 | 両方に役割が異なる |
-| **design** | ✅ 経緯・判断理由 | ✅ `docs/design/` 確定版 | 両方に役割が異なる |
-| **guide** | ✅ 検索用 | ✅ `docs/guide/` 閲覧用 | 人間が直接参照 |
+| **spec** | 経緯・判断理由 | `docs/spec/` 確定版 | 両方に役割が異なる |
+| **design** | 経緯・判断理由 | `docs/design/` 確定版 | 両方に役割が異なる |
+| **guide** | 検索用 | `docs/guide/` 閲覧用 | 人間が直接参照 |
 
 ### creo-memories vs リポジトリの使い分け
 
@@ -47,537 +40,391 @@ description: 仕様（Why）と設計（How）を記録し、Living Documentatio
 
 > **原則**: creo-memories は検索で「経緯」を引き、docs/ は git で「確定版」を管理する
 
-### ワークフロー: ドキュメント作成・更新
+### Supersedes 連携
 
-#### 新しい spec/design を作る場合
+ドキュメント改版時は **両方** で Supersedes を記録する:
 
-1. **リポジトリに確定版を作成**
-   ```
-   docs/spec/XX-feature-name.md    # 仕様書
-   docs/design/XX-feature-name.md  # 設計書
-   ```
+- **ドキュメント側**: メタデータの `Supersedes:` フィールド + Changelog に「何が変わったか」
+- **creo-memories 側**: `supersedes` パラメータで「なぜ変わったか」を経緯として記録
 
-2. **Creo Memories に決定経緯を記録**
-   ```typescript
-   remember({
-     content: "# Feature X 設計決定\n\n## 議論の経緯\n...\n## 却下した案\n...",
-     category: "design-decision",
-     tags: ["feature-x"],
-     contentType: "markdown"
-   })
-   ```
+> ドキュメント = What changed、creo-memories = Why changed
 
-3. **GitHub Issue でタスク化**
-   ```bash
-   gh issue create --title "Feature X 実装" --body "spec: docs/spec/XX-..."
-   ```
+## ドキュメント ID 体系
 
-#### 既存ドキュメントを検索する場合
+| Prefix | 種別 | 例 |
+|--------|------|-----|
+| `{PRJ}-SPEC-NNN` | 要件定義 (What & Why) | VP-SPEC-001 |
+| `{PRJ}-DESIGN-NNN` | 設計 (How) | VP-DESIGN-001 |
+| `{PRJ}-GUIDE-NNN` | ガイド (Usage) | VP-GUIDE-001 |
 
-```typescript
-// Creo Memories で経緯を検索
-search({ query: "認証システムの設計判断", category: "design-decision" })
+`{PRJ}` はプロジェクト略称（VP, CM, FF 等）。
 
-// リポジトリの docs/ で確定版を確認
-// → docs/spec/ と docs/design/ を直接読む
+### ファイル配置規則
+
+```
+docs/
+├── spec/{NN}-{kebab-case}.md      → {PRJ}-SPEC-{NNN}
+├── design/{NN}-{kebab-case}.md    → {PRJ}-DESIGN-{NNN}
+└── guide/{NN}-{kebab-case}.md     → {PRJ}-GUIDE-{NNN}
 ```
 
-## スキルの起動タイミング
+### 相互参照
 
-このスキルは以下の場合に自動的に適用されます：
-
-- ✅ コード変更・追加を行う際
-- ✅ 新機能の設計・実装を行う際
-- ✅ 既存機能のリファクタリングを行う際
-- ✅ バグ修正で設計に影響がある際
-
-**ユーザーがスキルを明示的に呼び出す方法**:
-
-- `/spec-design-guide` または `/sdg` コマンド
-- 「spec」「design」「SPEC.md」「設計書」などのキーワードを含む質問
-
-## 関連リファレンス
-
-- [Living Documentation原則](reference/living-documentation.md) - ドキュメントとコードの同期管理の詳細
-
-## ドキュメントの役割
-
-### spec（カテゴリ）- コンセプト、仕様、哲学
-
-**What & Why** - 何を作るか、なぜ作るか
-
-- コンセプト・ビジョン
-- 設計哲学・原則
-- 機能仕様
-- ユーザー体験
-
-### design（カテゴリ）- モデル、手法、実装
-
-**How** - どう作るか
-
-- データモデル
-- アーキテクチャ
-- 実装手法
-- 技術的詳細
-
-### guide（カテゴリ）- ガイド
-
-**Usage** - どう使うか
-
-- 使い方
-- ベストプラクティス
-- トラブルシューティング
-
-## spec のテンプレート
-
-**目的**: コンセプト、仕様、哲学
-**カテゴリ**: `spec`
-**タグ**: 機能名（例: `core-concepts`, `storage`, `mcp`）
+ドキュメント間の参照は **ID のみ** で行う。ファイルパスは命名規則から推論する。
 
 ```markdown
-# {機能名} - 仕様書
+<!-- 本文中 -->
+VP-SPEC-001 の REQ-SESSION-001 を満たすため...
 
-## コンセプト
-
-### ビジョン
-
-この機能が目指すもの、解決する問題、提供する価値。
-
-### 哲学・設計原則
-
-- 原則1: なぜこの設計を選んだか
-- 原則2: トレードオフと判断基準
-- 原則3: ユーザー体験への配慮
-
-### 他との違い
-
-既存のソリューションとの違い、独自性。
-
-### システム概要図
-
-\`\`\`mermaid
-flowchart TD
-A[入力] --> B[処理]
-B --> C[出力]
-B --> D{条件分岐}
-D -->|Yes| E[処理A]
-D -->|No| F[処理B]
-\`\`\`
-
-## 仕様
-
-### 機能仕様
-
-#### FS-001: 機能名
-
-**目的**: この機能が何をするか
-
-**入力/出力**:
-
-- 入力: ...
-- 出力: ...
-
-**振る舞い**:
-
-1. ステップ1
-2. ステップ2
-
-**制約**:
-
-- 制約1
-
-### インターフェース仕様
-
-\`\`\`typescript
-// ユーザーが使う形式
-function example() {
-// ...
-}
-\`\`\`
-
-### 非機能仕様
-
-- **パフォーマンス**: 期待される性能
-- **セキュリティ**: セキュリティ考慮事項
-- **互換性**: 後方互換性の方針
-
-## 哲学的考察
-
-### なぜこの仕様か
-
-選択の理由、背景にある思想。
-
-### ユーザー体験
-
-ユーザーがどう感じるか、どう使うか。
-
-### 進化の方向性
-
-将来どう発展させるか、拡張の余地。
-
-## 変更履歴
-
-### YYYY-MM-DD: 変更内容
-
-- **理由**: なぜこの変更が必要だったか
-- **影響**: どのコンポーネントに影響するか
-- **コミット**: コミットハッシュ
+<!-- References セクション -->
+## References
+- VP-SPEC-001 — コアコンセプト
+- VP-DESIGN-001 — アーキテクチャ設計
 ```
 
-## design のテンプレート
+## メタデータ（ヘッダ）
 
-**目的**: モデル、手法、実装
-**カテゴリ**: `design`
-**タグ**: 設計種類（例: `architecture`, `data-model`, `api`）
+全ドキュメント共通で blockquote スタイルのメタデータを配置する。
+
+### Spec / Guide のメタデータ
 
 ```markdown
-# {設計種類} - 設計書
+# {PRJ}-SPEC-NNN: タイトル
 
-## 設計思想: Simplicity（シンプルさ）
+> **Status**: Draft | Active | Deprecated
+> **Author**: @username
+> **Created**: YYYY-MM-DD
+> **Updated**: YYYY-MM-DD
+> **Supersedes**: {PRJ}-SPEC-NNN（該当時のみ）
+```
 
-シンプルなコードを実現するため、以下の原則に従う。
+### Design のメタデータ
 
-### 型の分類
+```markdown
+# {PRJ}-DESIGN-NNN: タイトル
 
-基本的に、全ての型は以下に分類される：
+> **Status**: Draft | Active | Deprecated
+> **Author**: @username
+> **Created**: YYYY-MM-DD
+> **Updated**: YYYY-MM-DD
+> **Implements**: {PRJ}-SPEC-NNN
+> **Supersedes**: {PRJ}-DESIGN-NNN（該当時のみ）
+```
 
-- **data**: 値を保持する
-- **calculations**（主に同期）: 値を計算する
-- **actions**（主に非同期）: 値を操作する
+### Status 遷移
 
-calculations, actionsは関数的に実装されるのが望ましい。
+```
+Draft → Active → Deprecated
+```
 
-### Straightforward原則
+## 要件 ID 規則
 
-入力から出力までの経路を直線的に、最小限のステップになるように、ロジックを組み立てる。
+要件は `REQ-{NAME}-{NNN}` 形式で番号付けする。
 
-**これらの原則を守ることで、理解しやすく保守しやすいシンプルなコードが実現される。**
+- `{NAME}`: ドメインを表す短い単語（SESSION, UI, PERF, AUTH 等）
+- `{NNN}`: 3桁ゼロパディング連番（001〜）
 
-## データモデル
+```markdown
+### REQ-SESSION-001: マルチセッション管理
 
-### 構造定義
+複数の Claude CLI セッションを同時に保持し、切替できること。
 
-\`\`\`typescript
-interface Example {
-  field1: Type1
-  field2: Type2
-}
-\`\`\`
+**Acceptance Criteria:**
+- [ ] 最大10セッションを同時管理
+- [ ] セッション切替が1秒以内
+```
 
-### モデルの関係性
+## ドキュメントの役割と構成
 
-\`\`\`mermaid
-classDiagram
-class ModelA {
-+field1: Type1
-+field2: Type2
-+method1()
-}
-class ModelB {
-+field1: Type1
-+method1()
-}
-class ModelC {
-+field1: Type1
-}
-ModelA --> ModelB : uses
-ModelA --> ModelC : contains
-\`\`\`
+### spec（What & Why）— 4段階構成
 
-## アーキテクチャ
+```
+Abstract → Motivation → Scope → Requirements
+```
 
-### コンポーネント構成
+| セクション | 目的 |
+|-----------|------|
+| **Abstract** | 1-2文の要約。読み手が3秒で「これは何か」を把握 |
+| **Motivation** | なぜ必要か。解決したい課題や背景 |
+| **Scope** | In Scope / Out of Scope。境界の明確化 |
+| **Requirements** | `REQ-{NAME}-{NNN}` 形式の要件リスト |
+
+### design（How）— 実装寄り4段階構成
+
+```
+Abstract → Architecture → Data Model → Implementation
+```
+
+| セクション | 目的 |
+|-----------|------|
+| **Abstract** | 設計の概要。どの Spec を実装するか |
+| **Architecture** | コンポーネント構成図。**Mermaid 図を最低1つ必須** |
+| **Data Model** | データ構造・型定義・リレーション |
+| **Implementation** | 実装詳細。`D{N}:` で番号付けしたセクション |
+
+### guide（Usage）— 固定4段階構成
+
+```
+Overview → Prerequisites → Usage → Troubleshooting
+```
+
+| セクション | 目的 |
+|-----------|------|
+| **Overview** | ガイドの目的と対象読者 |
+| **Prerequisites** | 必要な環境・知識・ツール |
+| **Usage** | ステップバイステップの手順 |
+| **Troubleshooting** | よくある問題と対処法 |
+
+## 変更履歴の運用
+
+- **細かい修正**: git に委ねる。メタデータの `Updated:` 日付のみ更新
+- **メジャー変更**: Changelog セクションに記録（Supersedes レベルの大きな改版のみ）
+
+```markdown
+## Changelog
+- 2026-03-10: v2 — Supersedes VP-SPEC-000。要件ID体系を刷新
+```
+
+## テンプレート
+
+### spec テンプレート
+
+```markdown
+# {PRJ}-SPEC-NNN: タイトル
+
+> **Status**: Draft
+> **Author**: @username
+> **Created**: YYYY-MM-DD
+> **Updated**: YYYY-MM-DD
+
+---
+
+## Abstract
+
+（1-2文の要約）
+
+## Motivation
+
+（なぜ必要か。解決したい課題や背景）
+
+## Scope
+
+### In Scope
+- ...
+
+### Out of Scope
+- ...
+
+## Requirements
+
+### REQ-{NAME}-001: 要件タイトル
+
+説明文。
+
+**Acceptance Criteria:**
+- [ ] 基準1
+- [ ] 基準2
+
+### REQ-{NAME}-002: 要件タイトル
+
+...
+
+## References
+- {PRJ}-DESIGN-NNN — 対応する設計書
+```
+
+### design テンプレート
+
+```markdown
+# {PRJ}-DESIGN-NNN: タイトル
+
+> **Status**: Draft
+> **Author**: @username
+> **Created**: YYYY-MM-DD
+> **Updated**: YYYY-MM-DD
+> **Implements**: {PRJ}-SPEC-NNN
+
+---
+
+## Abstract
+
+（設計の概要。どの Spec のどの要件を実装するか）
+
+## Architecture
+
+（コンポーネント構成。Mermaid 図を最低1つ含めること）
 
 \`\`\`mermaid
 flowchart LR
-Input[入力] --> Parser[パーサー]
-Parser --> Validator[バリデーター]
-Validator --> Processor[プロセッサー]
-Processor --> Output[出力]
+    A[Component A] --> B[Component B]
+    B --> C[Component C]
 \`\`\`
 
-### コンポーネント詳細
+## Data Model
 
-#### Component A
+（データ構造・型定義）
 
-**責務**: ...
-**インターフェース**:
-\`\`\`typescript
-interface ComponentA {
-  method(): Promise<T>
-}
-\`\`\`
+## Implementation
 
-## 実装手法
+### D1: セクションタイトル
 
-### アルゴリズム
+...
 
-処理の流れ、アルゴリズムの選択理由。
+### D2: セクションタイトル
 
-\`\`\`mermaid
-sequenceDiagram
-participant User
-participant System
-participant Database
+...
 
-    User->>System: リクエスト
-    System->>Database: データ取得
-    Database-->>System: データ
-    System->>System: 処理
-    System-->>User: レスポンス
-
-\`\`\`
-
-### エラーハンドリング
-
-\`\`\`typescript
-class MyError extends Error {
-  constructor(message: string) {
-    super(message)
-  }
-}
-\`\`\`
-
-### パフォーマンス最適化
-
-- 最適化ポイント1
-- 最適化ポイント2
-
-## テスト戦略
-
-### ユニットテスト
-
-- テスト対象1
-- テスト対象2
-
-### 統合テスト
-
-- シナリオ1
-- シナリオ2
-
-## 実装チェックリスト
-
-- [ ] データモデル実装
-- [ ] コア機能実装
-- [ ] エラーハンドリング
-- [ ] テスト作成
-- [ ] ドキュメント更新
-
-## 変更履歴
-
-### YYYY-MM-DD: 変更内容
-
-- **理由**: なぜこの変更が必要だったか
-- **影響**: どのコンポーネントに影響するか
-- **コミット**: コミットハッシュ
+## References
+- {PRJ}-SPEC-NNN — 対応する仕様書
 ```
 
-## guide のテンプレート
+### guide テンプレート
 
-**目的**: 実用的な使い方ガイド
-**カテゴリ**: `guide`
-**タグ**: トピック名（例: `getting-started`, `deployment`, `troubleshooting`）
+```markdown
+# {PRJ}-GUIDE-NNN: タイトル
 
-````markdown
-# {トピック名}
+> **Status**: Draft
+> **Author**: @username
+> **Created**: YYYY-MM-DD
+> **Updated**: YYYY-MM-DD
 
-## 概要
+---
 
-このガイドの目的と対象読者。
+## Overview
 
-## 前提条件
+（ガイドの目的と対象読者）
+
+## Prerequisites
 
 - 必要な環境
 - 必要な知識
 - 必要なツール
 
-## 手順
+## Usage
 
-### ステップ1: ...
+### Step 1: タイトル
 
-詳細な説明とコード例。
+手順の説明。
 
-```bash
+\`\`\`bash
 # コマンド例
-```
-````
+\`\`\`
 
-### ステップ2: ...
+### Step 2: タイトル
 
-## コード例
+...
 
-```typescript
-// 実用的なコード例
-```
+## Troubleshooting
 
-## ベストプラクティス
-
-- 推奨される使い方
-- アンチパターン
-
-## トラブルシューティング
-
-### 問題1: ...
+### 問題: タイトル
 
 **症状**: ...
 **原因**: ...
 **解決策**: ...
-
-## よくある質問
-
-**Q**: ...
-**A**: ...
-
-## 次のステップ
-
-関連するガイドへのリンク。
-
-````
+```
 
 ## ワークフロー
 
 ### 新機能追加時
 
-1. **docs/spec/ に仕様書を作成**（リポジトリ）
-   ```
-   docs/spec/XX-new-feature.md
-   ```
-
-2. **docs/design/ に設計書を作成**（リポジトリ）
-   ```
-   docs/design/XX-new-feature.md
-   ```
-
-3. **Creo Memories に設計判断の経緯を記録**
-   ```typescript
-   remember({
-     content: "# 新機能の設計決定\n\n## 判断理由\n...",
-     category: "design-decision",
-     tags: ["new-feature"],
-     contentType: "markdown"
-   })
-   ```
-
-4. **GitHub Issue でタスク化**
-
+1. `docs/spec/NN-feature-name.md` 作成（仕様書）
+2. `docs/design/NN-feature-name.md` 作成（設計書）
+3. Creo Memories に設計判断の経緯を記録（`category: "design-decision"`）
+4. GitHub Issue でタスク化
 5. 実装開始
-
 6. 実装完了後、docs/ のドキュメントを更新
 
 ### 既存機能修正時
 
-1. **docs/spec/ で確定仕様を確認**（リポジトリ）
-
-2. **Creo Memories で経緯を検索**（なぜこうなったか）
-   ```typescript
-   search({ query: "該当機能の設計判断" })
-   ```
-
+1. `docs/spec/` で確定仕様を確認
+2. Creo Memories で経緯を検索（`search({ query: "..." })`）
 3. 変更が設計に影響する場合、docs/ のドキュメントを更新
-
 4. 実装
 
 ## Claudeへの指示
 
-**重要**: このスキルが有効な場合、コード変更を提案・実装する際は必ず以下を実行してください：
+### 設計思想: Simplicity
 
-### 設計思想: Simplicity（シンプルさ）の追求
-
-コード設計・実装時は、**Simplicity（シンプルさ）** を最優先してください。
-以下の原則を守ることで、理解しやすく保守しやすいコードを実現します。
+コード設計・実装時は **Simplicity（シンプルさ）** を最優先する。
 
 #### 型の分類
 
-全ての型は以下に分類されます：
-
 - **data**: 値を保持する不変データ構造
-  - 例: `interface User { id: UserId; name: string }`
-  - 純粋なデータ、ビジネスロジックを持たない
-
-- **calculations**（主に同期）: 値を計算する純粋関数
-  - 例: `function calculateTotal(items: Item[]): Money`
-  - 副作用なし、同じ入力に対して常に同じ出力
-  - 関数的に実装（引数を受け取り、結果を返す）
-
+- **calculations**（主に同期）: 値を計算する純粋関数。副作用なし
 - **actions**（主に非同期）: 値を操作する副作用のある関数
-  - 例: `async function saveUser(user: User): Promise<void>`
-  - I/O、状態変更、外部システムとの通信
-  - 関数的に実装（引数を受け取り、Resultを返す）
 
 #### Straightforward原則
 
 - 入力から出力までの経路を**直線的**に
 - **最小限のステップ**でロジックを組み立てる
 - 不要な中間層、抽象化、間接参照を避ける
-- コードの流れが追いやすく、理解しやすいことを優先
-
-**→ これらの原則 = Simplicity（シンプルさ）の実現**
 
 ### コード変更時の必須手順
 
-1. ✅ `docs/spec/` で確定仕様を確認
-2. ✅ Creo Memories で設計判断の経緯を検索（なぜこうなったか）
-3. ✅ `docs/design/` で設計書を確認（How）
-4. ✅ コード変更を実施
-5. ✅ `docs/` のドキュメントとの乖離をチェック
-6. ✅ 乖離があれば `docs/` のドキュメントを更新
-7. ✅ 重要な設計判断があれば Creo Memories に経緯を記録
+1. `docs/spec/` で確定仕様を確認
+2. Creo Memories で設計判断の経緯を検索
+3. `docs/design/` で設計書を確認
+4. コード変更を実施
+5. `docs/` のドキュメントとの乖離をチェック
+6. 乖離があればドキュメントを更新
+7. 重要な設計判断があれば Creo Memories に経緯を記録
 
-### 視覚化の推奨
+### Mermaid 図の活用
 
-**マーメイド図を積極的に活用**してください：
+Design の Architecture セクションには **最低1つの Mermaid 図を必須** とする。図の種類は自由。
 
-#### specでの図の使用
+#### 利用可能な Mermaid 図の種類
 
-- ✅ **フローチャート**: システムの処理の流れ、ユーザーの操作フロー
-- ✅ **状態遷移図**: ステートマシン、ライフサイクル
-- ✅ **シーケンス図**: ユーザーとシステムの対話
+| 種類 | 構文 | 用途 |
+|------|------|------|
+| **Flowchart** | `flowchart TD` | 処理フロー、コンポーネント構成 |
+| **Sequence Diagram** | `sequenceDiagram` | API 呼び出し、コンポーネント間通信 |
+| **Class Diagram** | `classDiagram` | データモデル、型の関係性 |
+| **State Diagram** | `stateDiagram-v2` | 状態遷移、ライフサイクル |
+| **ER Diagram** | `erDiagram` | DB 設計、リレーション |
+| **C4 Context** | `C4Context` | システムと外部アクターの関係（L1） |
+| **C4 Container** | `C4Container` | システム内コンテナ構成（L2） |
+| **C4 Component** | `C4Component` | コンテナ内コンポーネント（L3） |
+| **C4 Dynamic** | `C4Dynamic` | C4 + シーケンス図風（動的フロー） |
+| **C4 Deployment** | `C4Deployment` | デプロイ構成 |
+| **Gantt** | `gantt` | スケジュール、タイムライン |
+| **Pie Chart** | `pie` | 割合・分布 |
+| **Gitgraph** | `gitGraph` | ブランチ戦略 |
+| **Mindmap** | `mindmap` | アイデア整理、概念マップ |
+| **Timeline** | `timeline` | 時系列イベント |
+| **Sankey** | `sankey-beta` | フロー量の可視化 |
+| **Block Diagram** | `block-beta` | ブロック構成図 |
+| **Quadrant Chart** | `quadrantChart` | 2軸マトリクス（優先度評価等） |
+| **XY Chart** | `xychart-beta` | 折れ線・棒グラフ |
+| **Packet** | `packet-beta` | ネットワークパケット構造 |
+| **Architecture** | `architecture-beta` | クラウド構成図 |
+| **Kanban** | `kanban` | カンバンボード |
 
-#### designでの図の使用
+#### spec での推奨図
+- **Flowchart**: 処理の流れ、ユーザー操作フロー
+- **State Diagram**: ステートマシン、ライフサイクル
+- **Mindmap**: コンセプト整理
 
-- ✅ **クラス図**: データモデルの関係性
-- ✅ **フローチャート**: アーキテクチャ、コンポーネント構成
-- ✅ **シーケンス図**: コンポーネント間の相互作用
-- ✅ **ER図**: データベース設計（該当する場合）
+#### design での推奨図
+- **Flowchart / C4**: アーキテクチャ全体像
+- **Class Diagram / ER Diagram**: データモデルの関係性
+- **Sequence Diagram**: コンポーネント間の相互作用
 
 ### 禁止事項
 
-- ❌ specを確認せずにコード変更
-- ❌ designの関連ドキュメントを確認せずに設計変更
-- ❌ ドキュメント更新を忘れる
-- ❌ 古い情報を放置
-- ❌ 実装とドキュメントの不一致を許容
-- ❌ 図で表現できるものをテキストだけで説明
+- spec を確認せずにコード変更
+- design の関連ドキュメントを確認せずに設計変更
+- ドキュメント更新を忘れる
+- 実装とドキュメントの不一致を許容
 
 ### Living Documentation原則
 
 > **ドキュメントは死んだテキストではなく、生きたコードベースの鏡である**
 
-#### 基本原則
-
 - ドキュメントとコードは常に同期
-- 一方が変われば他方も変わる
 - 不一致は技術的負債（バグ）として扱う
+- AIエージェントが信頼して活用できる生きたメモリーとして機能する
 
-#### 生きたメモリーとしての機能
+## 関連リファレンス
 
-ドキュメントは**AIエージェント（Claude）が信頼して活用できる生きたメモリー**として機能する：
-
-- ✅ **常に新鮮**: 最新のコード状態を正確に反映
-- ✅ **信頼できる**: 実装と完全に一致し、嘘がない
-- ✅ **活用可能**: AIエージェントが読んで理解し、意思決定の根拠にできる
-- ✅ **進化する**: コードの変化とともに成長・更新される
-- ✅ **検索可能**: セマンティック検索で関連ドキュメントを即座に発見
-
-## まとめ
-
-このスキルは、仕様と設計を明確にし、Living Documentation原則に基づいてドキュメントとコードを同期させることで、プロジェクトの品質と保守性を高めます。
-
-**キーポイント**:
-
-- 🧠 **Creo Memories**: 脳 — 設計判断の経緯・議論ログ
-- 📐 **docs/**: 設計図 — 確定した spec / design / guide
-- 🏗️ **GitHub**: 現場 — タスク・タイムライン・進捗
-- 🎯 **Simplicity**: 型分類 + Straightforward原則 = シンプルさ
-- 🔄 **Living Documentation**: ドキュメントとコードの同期
-- 📊 **マーメイド図**: 積極的な視覚化で理解しやすく
+- [Living Documentation原則](reference/living-documentation.md) - ドキュメントとコードの同期管理の詳細
