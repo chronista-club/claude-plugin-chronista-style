@@ -103,10 +103,7 @@ cat docs/design/02-parser-feature.md
 # 不一致なら更新
 vim docs/design/02-parser-feature.md
 
-# 4. チェックリストを更新
-# designの実装チェックリストにチェック
-
-# 5. コミット（ドキュメント更新も含める）
+# 4. コミット（ドキュメント更新も含める）
 git add src/parser/core.rs docs/design/02-parser-feature.md
 git commit -m "パーサー改善とドキュメント更新"
 
@@ -120,7 +117,7 @@ git commit -m "パーサー改善とドキュメント更新"
 - [ ] コード変更に対応するドキュメント更新があるか
 - [ ] specの哲学と実装が一致しているか
 - [ ] designの設計と実装が一致しているか
-- [ ] 実装チェックリストが更新されているか
+- [ ] ドキュメントのメタデータ（Updated日付）が更新されているか
 
 ### 定期的なドキュメント監査
 

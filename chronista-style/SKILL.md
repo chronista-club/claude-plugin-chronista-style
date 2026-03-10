@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 3.2.0
+version: 3.3.0
 tags:
   - chronista
   - development
@@ -132,7 +132,7 @@ Phase 2: ディスカッション（方向性議論）
 Phase 3: ヒアリング（詳細確認）
     ↓
 Phase 4: 要件定義（Requirements）
-    └─ 各要件に固有ID付与（REQ-XXX）
+    └─ 各要件に固有ID付与（REQ-{NAME}-{NNN}）
     └─ docs/spec/ に要件ドキュメント作成
     ↓
 Phase 5: SDG（設計ドキュメント）
@@ -436,6 +436,10 @@ openskills read codeflow           # 開発フロー
 openskills read spec-design-guide  # SDG
 openskills read fleetflow          # コンテナ管理
 ```
+
+### 設計哲学リファレンス
+
+- [Grokking Simplicity エッセンス抽出](reference/grokking-simplicity.md)
 
 ### ツールリファレンス
 

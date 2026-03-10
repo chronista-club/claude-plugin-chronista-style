@@ -274,7 +274,7 @@ Timeline 1 (ユーザーA)      Timeline 2 (ユーザーB)
 | 概念 | Rust での表現 |
 |------|-------------|
 | Data | `struct`, `enum`（`#[derive(Clone)]`） |
-| Calculations | `fn` + `&self`（`&mut` なし、I/O なし） |
+| Calculations | 純粋な `fn`（`&mut` なし、I/O なし）。`&self` は読み取り専用 |
 | Actions | `async fn`, `fn` with `&mut`, I/O |
 | Copy-on-Write | `.clone()` + 変更 + return |
 | Defensive Copying | API 境界での `.clone()` / `.into()` |
