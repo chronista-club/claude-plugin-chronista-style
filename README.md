@@ -7,7 +7,8 @@ Chronistaとしての開発ワークフローを支えるClaude Codeプラグイ
 ## インストール
 
 ```bash
-/install chronista-club/claude-plugin-chronista-style
+/plugin marketplace add chronista-club/claude-plugin-chronista-style
+/plugin install chronista-style@chronista-style
 ```
 
 ## スキル一覧
