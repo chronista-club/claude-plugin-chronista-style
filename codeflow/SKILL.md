@@ -2,7 +2,7 @@
 skill: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 1.6.0
+version: 1.7.0
 ---
 
 # Code Flow Skill
@@ -159,12 +159,30 @@ Step 5: コミット
 - 完全なコード（「バリデーション追加」ではなく実際のコード）
 - 実行コマンドと期待される出力
 
+#### Linear Issue 連携
+
+タスクを Linear Issue として登録し、進捗を一元管理する。
+
+```
+Step 1: save_issue でタスクを登録（project + team 指定）
+Step 2: 依存関係を設定（blocks / blockedBy）
+Step 3: ブランチ名は Linear 生成の形式を使用
+```
+
+- `save_issue` MCP ツールで作成
+- 必ず `project` と `team` を指定
+- 優先度: 1=Urgent, 2=High, 3=Medium, 4=Low
+
 ### Phase 5: 実装（TDD）
 
 チェックリストを生成し、**`tdd` スキルに従って**実装をガイドします。
 
 **必須:** 実装時は `tdd` スキルの RED-GREEN-REFACTOR サイクルに従え。
 テストファーストで書き、失敗を確認し、最小限のコードで通せ。
+
+**Linear ステータス連動:**
+- 実装開始 → `save_issue(id, state: "In Progress")`
+- 実装完了 → PR マージで自動クローズ（`Closes AC-XX`）
 
 ### Phase 6: リリース & 配布（条件付き）
 
@@ -177,6 +195,7 @@ Step 5: コミット
 Step 1: PR マージ → タグ → GitHub Release
 Step 2: デプロイ（該当時）
 Step 3: プラグイン同期（該当時） → /update-plugin
+Step 4: Linear プロジェクト進捗を確認・更新
 ```
 
 **team-b 連携**: Aerosmith がパイプラインをディスパッチする場合、Sticky Fingers（シップ）→ Gold Experience（デプロイ）→ `/update-plugin`（プラグイン配布）の順で実行。
