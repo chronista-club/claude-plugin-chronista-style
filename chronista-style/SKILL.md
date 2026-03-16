@@ -264,69 +264,6 @@ fleetflow deploy prod --pull --yes  # CI/CDデプロイ
 
 ---
 
-## 開発ツール
-
-### mise - 開発環境管理
-
-プロジェクトごとにツールバージョンを自動切り替え。
-
-```bash
-mise install    # ツールをインストール
-mise run dev    # 開発サーバー起動
-mise run test   # テスト実行
-```
-
-### Chrome DevTools MCP
-
-ブラウザの自動操作とE2Eテスト。
-
-| ツール | 用途 |
-|--------|------|
-| `mcp__chrome-devtools__new_page` | ページを開く |
-| `mcp__chrome-devtools__take_snapshot` | DOM構造を取得 |
-| `mcp__chrome-devtools__click` | 要素をクリック |
-| `mcp__chrome-devtools__take_screenshot` | 画面キャプチャ |
-
-### SurrealDB CLI（本番データベース接続）
-
-Creo Memories本番SurrealDBに接続するためのカスタムコマンド。
-
-| コマンド | 用途 |
-|----------|------|
-| `surreal-prod` | 本番SurrealDBに接続（NS全体アクセス） |
-| `surreal-prod memories` | memoriesデータベース指定で接続 |
-| `surreal-tunnel` | SSHトンネルを開く（ローカルCLI用） |
-
-```bash
-# 対話モードで接続
-surreal-prod memories
-
-# クエリ実行例
-creo/memories> SELECT count() FROM memories GROUP ALL;
-creo/memories> INFO FOR NS;
-
-# データベース指定なしで全DBアクセス
-surreal-prod
-creo> USE DB memories;
-creo/memories> SELECT * FROM labels;
-```
-
-**認証情報**: `data_admin` (Namespace OWNER) - `--auth-level namespace` 自動設定済み
-
-### Rust製CLIツール
-
-高速な代替コマンド群。
-
-| ツール | 代替対象 | 特徴 |
-|--------|----------|------|
-| `lsd` | `ls` | カラフル表示、アイコン |
-| `bat` | `cat` | シンタックスハイライト |
-| `rg` | `grep` | 高速検索 |
-| `fd` | `find` | シンプルで高速 |
-| `zoxide` | `cd` | スマートなディレクトリ移動 |
-
----
-
 ## スキルの起動ルール
 
 ### The Iron Rule
@@ -403,55 +340,12 @@ creo/memories> SELECT * FROM labels;
 
 ## プロジェクト管理
 
-### 開発フロー
-
-- githubを活用して、開発を進めています
-- Project, Issue, Pull Requestを活用した管理を行います
-- 開発開始前に、"事前チェックタスク"として、接続確認を行います
-
-### イシュー管理ルール
-
-#### nextラベル
-
-直近で取り組みたいタスクには`next`ラベルを付ける。
-
-```bash
-# イシュー作成時にnextラベルを付与
-gh issue create --title "タスク名" --label "next"
-
-# 既存イシューにnextラベルを追加
-gh issue edit <issue-number> --add-label "next"
-```
-
-優先度が下がったら`next`ラベルを外す:
-```bash
-gh issue edit <issue-number> --remove-label "next"
-```
+- **Linear** で Issue 管理（SSOT）。GitHub Issues は使わない
+- PR は `gh` コマンドで作成。`Closes CREO-XX` で Linear 自動クローズ
+- `/dashboard` で全プロジェクトの状況を VP に表示
 
 ---
 
 ## リファレンス
 
-### スキル詳細
-
-```bash
-openskills read creo-memories      # 永続記憶
-openskills read codeflow           # 開発フロー
-openskills read spec-design-guide  # SDG
-openskills read fleetflow          # コンテナ管理
-```
-
-### 設計哲学リファレンス
-
 - [Grokking Simplicity エッセンス抽出](reference/grokking-simplicity.md)
-
-### ツールリファレンス
-
-- [mise リファレンス](reference/mise-reference.md)
-- [Chrome DevTools MCP リファレンス](reference/chrome-devtools-mcp-reference.md)
-- [Rust CLI Tools リファレンス](reference/rust-cli-tools.md)
-
-### 実践例
-
-- [Webダッシュボードのテスト例](examples/chrome-mcp-dashboard-test.md)
-- [mise設定ファイルの例](examples/mise-config.toml)
