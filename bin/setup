@@ -16,6 +16,7 @@ fi
 
 # --- Rust 製 高速 CLI ツール ---
 RUST_CLI=(
+  # コア（既存コマンド代替）
   lsd        # ls 代替
   fd         # find 代替
   ripgrep    # grep 代替 (rg)
@@ -24,13 +25,26 @@ RUST_CLI=(
   git-delta  # diff 代替 (delta)
   sd         # sed 代替
   xh         # curl 代替
+  procs      # ps 代替
+  # データ処理
   jless      # JSON 閲覧
+  jaq        # jq 代替（5-10倍速、YAML/TOML 対応）
+  # 開発支援
   tokei      # コード統計
   hyperfine  # ベンチマーク
+  bacon      # Rust バックグラウンドチェッカー
+  cargo-nextest  # 次世代 Rust テストランナー
+  # Git
+  git-cliff  # CHANGELOG 自動生成
+  gitu       # Magit 風 Git TUI
+  # ターミナル UX
+  starship   # 高速シェルプロンプト
+  zoxide     # 学習型ディレクトリジャンプ
   yazi       # ファイルマネージャ
   zellij     # ターミナル多重化
   grex       # 正規表現生成
-  procs      # ps 代替
+  # ネットワーク
+  oha        # HTTP 負荷テスト（ratatui TUI）
 )
 
 # --- 開発インフラ ---
