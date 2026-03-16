@@ -1,0 +1,114 @@
+#!/bin/bash
+# Chronista Style — 開発環境セットアップ
+# brew ベースで chronista-style に必要な CLI ツールをインストールする
+set -euo pipefail
+
+echo "🎨 Chronista Style Setup"
+echo "========================"
+echo ""
+
+# brew 確認
+if ! command -v brew &>/dev/null; then
+  echo "❌ Homebrew が見つかりません"
+  echo "   https://brew.sh/ からインストールしてください"
+  exit 1
+fi
+
+# --- Rust 製 高速 CLI ツール ---
+RUST_CLI=(
+  lsd        # ls 代替
+  fd         # find 代替
+  ripgrep    # grep 代替 (rg)
+  bat        # cat 代替
+  dust       # du 代替
+  git-delta  # diff 代替 (delta)
+  sd         # sed 代替
+  xh         # curl 代替
+  jless      # JSON 閲覧
+  tokei      # コード統計
+  hyperfine  # ベンチマーク
+  yazi       # ファイルマネージャ
+  zellij     # ターミナル多重化
+  grex       # 正規表現生成
+  procs      # ps 代替
+)
+
+# --- 開発インフラ ---
+DEV_INFRA=(
+  gh         # GitHub CLI
+  mise       # バージョン管理
+  tmux       # セッション管理（並列開発）
+  jq         # JSON 処理
+)
+
+# --- サービス系 CLI ---
+SERVICES=(
+  1password-cli  # op — シークレット管理
+  usacloud       # さくらクラウド CLI
+  surrealdb/tap/surreal  # SurrealDB CLI
+)
+
+install_packages() {
+  local label="$1"
+  shift
+  local packages=("$@")
+  local to_install=()
+
+  for pkg in "${packages[@]}"; do
+    if brew list "$pkg" &>/dev/null; then
+      echo "  ✓ $pkg"
+    else
+      to_install+=("$pkg")
+    fi
+  done
+
+  if [ ${#to_install[@]} -gt 0 ]; then
+    echo ""
+    echo "  Installing: ${to_install[*]}"
+    brew install "${to_install[@]}"
+  fi
+}
+
+echo "📦 Rust CLI ツール"
+install_packages "rust-cli" "${RUST_CLI[@]}"
+echo ""
+
+echo "🔧 開発インフラ"
+install_packages "dev-infra" "${DEV_INFRA[@]}"
+echo ""
+
+echo "☁️  サービス系 CLI"
+install_packages "services" "${SERVICES[@]}"
+echo ""
+
+# --- ccws (cargo install) ---
+echo "🏗  ccws (Claude Code Workspace)"
+if command -v ccws &>/dev/null; then
+  echo "  ✓ ccws ($(ccws --version 2>/dev/null || echo 'installed'))"
+else
+  if command -v cargo &>/dev/null; then
+    echo "  Installing ccws..."
+    cargo install --git https://github.com/chronista-club/ccws
+  else
+    echo "  ⚠ cargo が見つかりません。ccws は手動でインストールしてください"
+    echo "    rustup をインストール後: cargo install --git https://github.com/chronista-club/ccws"
+  fi
+fi
+echo ""
+
+# --- 手動インストールが必要なもの ---
+echo "📋 手動インストール"
+echo "  以下は brew 外のため手動で:"
+if ! command -v wrangler &>/dev/null; then
+  echo "  • wrangler: bun add -g wrangler"
+else
+  echo "  ✓ wrangler"
+fi
+if ! command -v tailscale &>/dev/null; then
+  echo "  • Tailscale: Mac App Store からインストール"
+else
+  echo "  ✓ tailscale"
+fi
+echo ""
+
+echo "✅ セットアップ完了"
