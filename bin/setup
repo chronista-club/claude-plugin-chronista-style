@@ -55,7 +55,17 @@ install_packages() {
   local to_install=()
 
   for pkg in "${packages[@]}"; do
-    if brew list "$pkg" &>/dev/null; then
+    # パッケージ名からコマンド名を推定（tap/name の場合は最後の部分）
+    local cmd="${pkg##*/}"
+    # brew パッケージ名とコマンド名が違うもの
+    case "$cmd" in
+      ripgrep)       cmd="rg" ;;
+      git-delta)     cmd="delta" ;;
+      1password-cli) cmd="op" ;;
+      surreal)       cmd="surreal" ;;
+    esac
+
+    if command -v "$cmd" &>/dev/null || brew list "$pkg" &>/dev/null; then
       echo "  ✓ $pkg"
     else
       to_install+=("$pkg")
