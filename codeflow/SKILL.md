@@ -2,7 +2,7 @@
 skill: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 1.7.0
+version: 1.8.0
 ---
 
 # Code Flow Skill
@@ -35,7 +35,7 @@ Code Flowのすべてのコミュニケーションの土台となる姿勢で�
 Code Flowは以下の7つのフェーズで構成されています:
 
 ```
-Phase 1: ディスカバリー → Phase 2: ディスカッション → Phase 3: ヒアリング → Phase 4: SDG → Phase 5: 実装 → Phase 6: リリース（条件付き） → Phase 7: 学習
+Phase 1: ディスカバリー → Phase 2: ディスカッション → Phase 3: ヒアリング → Phase 4: SDG → Phase 4-5: ブランチ & PR → Phase 5: 実装 → Phase 6: リリース（条件付き） → Phase 7: 学習
 ```
 
 ### Phase 1: ディスカバリー
@@ -173,6 +173,24 @@ Step 3: ブランチ名は Linear 生成の形式を使用
 - 必ず `project` と `team` を指定
 - 優先度: 1=Urgent, 2=High, 3=Medium, 4=Low
 
+### Phase 4-5: ブランチ & PR フロー
+
+**main に直コミットしない。** 必ず Linear ブランチで PR フローを踏む。
+
+```
+Step 1: Linear Issue のブランチ名を使用（mako/{team-key}-XX-...）
+Step 2: ブランチ作成 → 実装 → コミット
+Step 3: PR 作成（gh pr create）— Closes {TEAM-KEY}-XX でマージ時に自動クローズ
+Step 4: レビュー（team-b Moody Blues 等）
+Step 5: SHIP IT → マージ
+```
+
+**ブランチ運用ルール:**
+- `main` / `master` への直プッシュ禁止
+- ブランチ名は Linear が生成する `mako/{team-key}-XX-...` 形式を使用
+- PR の body に `Closes {TEAM-KEY}-XX` を含めて Linear Issue を自動クローズ
+- レビューで SHIP IT が出るまでマージしない
+
 ### Phase 5: 実装（TDD）
 
 チェックリストを生成し、**`tdd` スキルに従って**実装をガイドします。
@@ -182,7 +200,7 @@ Step 3: ブランチ名は Linear 生成の形式を使用
 
 **Linear ステータス連動:**
 - 実装開始 → `save_issue(id, state: "In Progress")`
-- 実装完了 → PR マージで自動クローズ（`Closes AC-XX`）
+- 実装完了 → PR マージで自動クローズ（`Closes {TEAM-KEY}-XX`）
 
 ### Phase 6: リリース & 配布（条件付き）
 
