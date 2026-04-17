@@ -8,6 +8,17 @@
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-04-17
+
+### Added
+- **新スキル `route`** (v1.0.0): Issue からゴールへの最適 path を探索する経路探索スキル
+  - 6 フェーズ: Survey → Plot → Compare → Choose → 🚦 HARD GATE → Travel → Log
+  - ケーススタディ: fleetstage FSC-22 (2026-04-17, 半日想定 → 45 分で完走)
+  - 「グルーブを忘れない」姿勢セクション（codeflow の姉妹節）
+  - 発火の目安・アンチパターン集付き
+- **新コマンド `/route`** (`commands/route.md`): Route スキルのエントリポイント
+  - Issue ID を引数で受け、Survey〜Choose まで実行して HARD GATE で承認を待つ
+
 ## [2.0.1] - 2026-04-17
 
 ### Added
