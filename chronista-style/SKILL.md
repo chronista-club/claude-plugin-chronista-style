@@ -349,6 +349,70 @@ fleetflow deploy prod --pull --yes  # CI/CDデプロイ
 - PR は `gh` コマンドで作成。`Closes CREO-XX` で Linear 自動クローズ
 - `/dashboard` で全プロジェクトの状況を VP に表示
 
+### Issue-first の原則（ガイドライン）
+
+**新機能・改修は Linear Issue 化から始める。** 手を動かす前に「このタスクの成功基準はなに？」と聞かれて Linear を指せる状態にする。
+
+```
+アイデア / 依頼
+    ↓
+Linear Issue 化
+    └─ 成功基準（チェックボックス）
+    └─ 想定変更ファイル
+    └─ 非対象（別 Issue）を明記
+    └─ ## Meta / Branch slug を記載
+    ↓
+Branch（mako/{team-key}-{NN}-{slug} 形式、英字 kebab-case）
+    ↓
+実装
+    ↓
+PR（body に Linear URL 記載、Closes CREO-XX）
+```
+
+例外: 即時の typo 修正・1 行の inline コメント・hotfix などは Issue 化せず直接 PR で OK。判断軸は「次の人がこの変更を見て **なぜ** 必要だったか分かるか」。分からなければ Issue 化。
+
+#### Branch slug の規約
+
+Linear の auto-generated `gitBranchName` は Issue title をそのまま含むため、日本語混じり・長大になりがち。GitHub 側で non-ASCII branch name の warning が出るし、CLI で扱いにくい。
+
+対策: Issue description 末尾に **Meta セクション**を置いて slug を明示する。
+
+```markdown
+## Meta
+- Branch slug: `short-kebab-slug`
+```
+
+例:
+- Title: 「Landing「はじめ方」セクションを習熟度別カード構造に改修」
+- Branch slug: `landing-usecases`
+- 実 branch: `mako/creo-48-landing-usecases`
+
+slug のルール:
+- 英字小文字 + 数字 + ハイフン（`[a-z0-9-]+`）
+- 20 文字以内目安、内容が類推できる意味語
+- 動詞より**名詞・機能領域**（`add-feature-x` より `feature-x`）
+
+### テストリストの 3 層 SSOT
+
+TDD のテストリストは**変化速度で層を分ける**（詳細: `tdd-ssot-layers` memory）。
+
+| 層 | 責務 | 寿命 | 場所 |
+|----|------|------|------|
+| **Linear Issue** | ユーザー観測可能な成功基準（不変） | Issue 完了まで | Linear description |
+| **PR description** | テストリスト（S/M/L ラベル付き、☐→☑） | PR マージまで | GitHub PR body |
+| **`*.test.ts`** | `describe/it` 構造 = リストの実装形 | コードの寿命 | テストファイル |
+
+判定ルール:
+- 「このフィーチャは何を達成する？」 → **Linear Issue** を見る
+- 「今どこまで進んだ？」 → **PR description** のチェックリスト
+- 「何がコードで保証されているか？」 → **test ファイルの実行結果**
+
+紐付け: Linear Issue ID を PR description 冒頭に記載。test ファイルの describe JSDoc に `@see CREO-XX` を入れる。
+
+### 連携テスト（Medium）の粒度
+
+「**モック不要で繋がる範囲**」が Medium の上限（詳細: `test-pyramid-medium-scope` memory）。外部 SDK / API / Network / DB / DOM の境界を越えない、自分たちのコードが素のまま動く部分のみ対象にする。モックを書きたくなったら Large 層（E2E）へ移行するか、単体テスト側に分解する合図。
+
 ---
 
 ## リファレンス
