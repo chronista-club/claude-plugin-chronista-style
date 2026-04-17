@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 4.1.0
+version: 4.2.0
 tags:
   - chronista
   - development
@@ -412,6 +412,32 @@ TDD のテストリストは**変化速度で層を分ける**（詳細: `tdd-ss
 ### 連携テスト（Medium）の粒度
 
 「**モック不要で繋がる範囲**」が Medium の上限（詳細: `test-pyramid-medium-scope` memory）。外部 SDK / API / Network / DB / DOM の境界を越えない、自分たちのコードが素のまま動く部分のみ対象にする。モックを書きたくなったら Large 層（E2E）へ移行するか、単体テスト側に分解する合図。
+
+### Update Finalization Flow（変更 → 副作用 → 標準コマンド）
+
+変更の**タイプ**によって必要な副作用が異なる。最後は**標準コマンド**で締めるのが健全（カスタム /foo コマンド乱立を避ける）。
+
+| # | Update タイプ | 副作用 | 標準 finalize |
+|---|---|---|---|
+| 1 | docs / guideline のみ | なし | 次セッションで自動 |
+| 2 | skill ロジック | session 再読込 | Claude Code reload / restart |
+| 3 | config / schema | 設定再読込 | `.mcp.json` reload / restart |
+| 4 | infra（コンテナ / service） | deploy + restart | `mise run deploy:xxx` |
+| 5 | auth / tenant 切替 | secrets 再 inject + re-deploy + **ユーザー再ログイン** | deploy + browser 再ログイン |
+| 6 | DB schema | migration 実行 | `mise run migrate:xxx` |
+| 7 | destructive（データ削除 / tenant 削除） | **ユーザー明示承認** + backup | 手動（スクリプト化してもユーザー確認必須） |
+
+**判定のヒント**:
+- 変更パスが `*/SKILL.md` のみ → type 1（今開いてる session に影響無し、次起動で反映）
+- `.fleetflow/*.kdl` or Dockerfile → type 4
+- `migrations/*.surql` → type 6
+- Auth0 client / tenant → type 5
+- 複数 type を兼ねる場合は**数字の大きい方**を採用
+
+**原則**:
+- 副作用は**最小単位に分解**して可視化（`git commit -m "[type:4] ..."` や PR description で宣言）
+- 締めは**標準コマンド**に戻す（plugin コマンドを最後にしない）
+- Type 5 / 7 は実行前にユーザー承認を必ず得る
 
 ---
 
