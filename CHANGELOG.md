@@ -8,6 +8,15 @@
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-04-17
+
+### Added
+- `hooks/session-start.sh` に **Atlas 自動認識フロー** を追加。ディレクトリ名ベース（A）を優先し、git remote URL（C）をフォールバックとするハイブリッド検出
+- hook 出力で Claude に「優先候補 A で exact match → フォールバック C → AskUserQuestion」の順序を明示
+
+### Fixed
+- hook スクリプトで BSD sed の `+?` 非互換エラーを解消（macOS 対応）
+
 ## [2.0.0] - 2026-04-17
 
 大規模リファクタ。**破壊的変更を含む**。
