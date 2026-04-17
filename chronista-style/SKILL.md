@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 3.4.0
+version: 4.0.0
 tags:
   - chronista
   - development
@@ -120,35 +120,40 @@ chronista-style (このスキル)
 
 ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発ワークフロー。
 
-### フェーズ構成
+### ステップ構成
 
 ```
-Phase 1: ディスカバリー（調査）
+Discovery（調査）
     ↓
-Phase 1-2: セカンドオピニオン（Gemini等）
+Second Opinion（Gemini等・任意）
     ↓
-Phase 2: ディスカッション（方向性議論）
+Discussion（方向性議論）
     ↓
-Phase 3: ヒアリング（詳細確認）
+Hearing（詳細確認）
     ↓
-Phase 4: 要件定義（Requirements）
+Requirements（要件定義）
     └─ 各要件に固有ID付与（REQ-{NAME}-{NNN}）
     └─ docs/spec/ に要件ドキュメント作成
     ↓
-Phase 5: SDG（設計ドキュメント）
+SDG（設計ドキュメント）
     └─ docs/design/ に設計書作成
     └─ 要件IDとの紐付け
     ↓
-Phase 6: 実装 & テスト
+Branch & PR
+    └─ main直コミット禁止、Linear Issue ブランチで PR フロー
+    ↓
+Implementation（実装 & テスト）
     └─ 要件IDに対応するテスト作成
     └─ テストで要件の充足を検証
     ↓
-Phase 7: リリース & 配布（条件付き）
+Release（リリース & 配布・条件付き）
     └─ PR マージ → タグ → GitHub Release
     └─ プラグイン同期（/update-plugin、該当時のみ）
     ↓
-Phase 8: 学習（creo-memoriesに記録）
+Learning（creo-memoriesに記録）
 ```
+
+各ステップは**名前で参照**する（番号は使わない）。依存関係は矢印のみで表現する。
 
 ### 基本姿勢
 
@@ -191,7 +196,7 @@ Phase 8: 学習（creo-memoriesに記録）
 
 **ポイント**:
 - 調査結果が出たらすぐにタスク化
-- 各フェーズの終わりでユーザー確認を挟む
+- 各ステップの終わりでユーザー確認を挟む
 - 考える時間を最小化し、手を動かす時間を最大化
 
 → 詳細は `openskills read codeflow` を参照

@@ -1,3 +1,0 @@
-chronista-style
-codeflow
-spec-design-guide

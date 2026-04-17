@@ -1,6 +1,7 @@
 ---
 name: code-review
 description: コードレビューの依頼時・受信時に使用。技術的正直さを最優先する規律スキル。
+version: 1.0.0
 tags: [discipline, code-review, feedback, yagni]
 ---
 

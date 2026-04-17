@@ -2,7 +2,7 @@
 skill: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 1.8.0
+version: 2.0.0
 ---
 
 # Code Flow Skill
@@ -32,28 +32,28 @@ Code Flowのすべてのコミュニケーションの土台となる姿勢で�
 
 ## 概要
 
-Code Flowは以下の7つのフェーズで構成されています:
+Code Flow は **ステップ名で管理** します（番号は使いません）。依存関係は矢印のみで表現します。
 
 ```
-Phase 1: ディスカバリー → Phase 2: ディスカッション → Phase 3: ヒアリング → Phase 4: SDG → Phase 4-5: ブランチ & PR → Phase 5: 実装 → Phase 6: リリース（条件付き） → Phase 7: 学習
+Discovery → Second Opinion（任意）→ Discussion → Hearing → SDG（+ Bite-Sized Tasks）→ Branch & PR → Implementation → Release（条件付き）→ Learning
 ```
 
-### Phase 1: ディスカバリー
+### Discovery（ディスカバリー）
 
-実装前の情報収集・調査フェーズ。
+実装前の情報収集・調査ステップ。
 
 - **現状分析**: コードベースの調査、既存実装の把握
 - **技術調査**: 使えるアルゴリズム、ライブラリ、パターンの探索
 - **事例収集**: 類似実装、ベストプラクティスの調査
 - **ナレッジ参照**: 過去の知見・パターンを検索（メモリシステムがあれば活用）
 
-### Phase 1-2: セカンドオピニオン
+### Second Opinion（セカンドオピニオン）
 
 別のAI（Gemini等）に第二意見を求めることで、視野を広げ見落としを防ぐ。
 
 **活用タイミング**
-- Phase 1の調査結果をレビューしてもらう
-- Phase 2で方向性を決める前に別視点を得る
+- Discovery の調査結果をレビューしてもらう
+- Discussion で方向性を決める前に別視点を得る
 
 **確認ポイント**
 - 技術選定の妥当性確認
@@ -69,19 +69,19 @@ Gemini MCP経由で質問:
 「この技術選定で見落としているリスクはありますか？」
 ```
 
-### HARD GATE: Phase 1-2
+### HARD GATE: Before Implementation
 
 <HARD-GATE>
 設計承認なしにコードを書くな。
 
-どんなに「シンプル」に見えても、Phase 1-2 を経ずに実装に入るな。
+どんなに「シンプル」に見えても、Discovery → Discussion を経ずに実装に入るな。
 「シンプル」なプロジェクトこそ、未検証の仮定が最も多くの手戻りを生む。
 設計は短くてもいい（数行でも可）。だが、提示して承認を得ろ。
 </HARD-GATE>
 
-### Phase 2: ディスカッション 💬
+### Discussion（ディスカッション） 💬
 
-調査結果とセカンドオピニオンを元にユーザーと方向性を議論。**ここが一番楽しいフェーズ！**
+調査結果とセカンドオピニオンを元にユーザーと方向性を議論。**ここが一番楽しいステップ！**
 
 - 現状の分析結果を共有（「こんな感じでした」）
 - セカンドオピニオンからの指摘事項を共有（「Geminiさんはこう言ってます」）
@@ -96,9 +96,9 @@ Gemini MCP経由で質問:
 - 図や例を使って認識を合わせる
 - 決まらなくても焦らない（次のセッションで続きをやればいい）
 
-### Phase 3: ヒアリング 🎤
+### Hearing（ヒアリング） 🎤
 
-方針決定後、詳細を詰めるための質問フェーズ。**質問をTodo管理して、優先順位をつけながら進める。**
+方針決定後、詳細を詰めるための質問ステップ。**質問をTodo管理して、優先順位をつけながら進める。**
 
 **ヒアリングフロー**
 
@@ -134,7 +134,7 @@ Step 1: 質問リスト作成 → Step 2: 全体確認 → Step 3: 優先順位�
 - 「わからない」「後で決める」も立派な回答
 - 質問が多すぎたら「今日はここまでにして、続きは次回」もOK
 
-### Phase 4: SDG（Spec-Design-Guide） + Bite-Sized Tasks
+### SDG（Spec-Design-Guide） + Bite-Sized Tasks
 
 収集した情報を元に、仕様書（SPEC）と設計書（DESIGN）を生成し、**実装タスクを bite-sized に分割**する。
 
@@ -173,7 +173,7 @@ Step 3: ブランチ名は Linear 生成の形式を使用
 - 必ず `project` と `team` を指定
 - 優先度: 1=Urgent, 2=High, 3=Medium, 4=Low
 
-### Phase 4-5: ブランチ & PR フロー
+### Branch & PR（ブランチ & PR フロー）
 
 **main に直コミットしない。** 必ず Linear ブランチで PR フローを踏む。
 
@@ -191,7 +191,7 @@ Step 5: SHIP IT → マージ
 - PR の body に `Closes {TEAM-KEY}-XX` を含めて Linear Issue を自動クローズ
 - レビューで SHIP IT が出るまでマージしない
 
-### Phase 5: 実装（TDD）
+### Implementation（実装・TDD）
 
 チェックリストを生成し、**`tdd` スキルに従って**実装をガイドします。
 
@@ -202,7 +202,7 @@ Step 5: SHIP IT → マージ
 - 実装開始 → `save_issue(id, state: "In Progress")`
 - 実装完了 → PR マージで自動クローズ（`Closes {TEAM-KEY}-XX`）
 
-### Phase 6: リリース & 配布（条件付き）
+### Release（リリース & 配布・条件付き）
 
 **トリガー条件**: 以下のいずれかに該当する場合のみ実行する。該当しなければスキップ。
 
@@ -218,7 +218,7 @@ Step 4: Linear プロジェクト進捗を確認・更新
 
 **team-b 連携**: Aerosmith がパイプラインをディスパッチする場合、Sticky Fingers（シップ）→ Gold Experience（デプロイ）→ `/update-plugin`（プラグイン配布）の順で実行。
 
-### Phase 7: 学習
+### Learning（学習）
 
 セッションの知見を記録し、将来の開発に活用。
 

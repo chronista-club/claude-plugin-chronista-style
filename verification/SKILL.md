@@ -1,6 +1,7 @@
 ---
 name: verification
 description: 作業の完了を宣言する前に使用。証拠なき完了宣言を防ぐ規律スキル。
+version: 1.0.0
 tags: [discipline, verification, completion, evidence]
 ---
 
@@ -80,7 +81,7 @@ NG: 「リンター通ったからビルドも大丈夫」
 **要件:**
 ```
 OK: 計画を再読 → チェックリスト作成 → 各項目検証 → 差分または完了を報告
-NG: 「テスト通ったのでフェーズ完了」
+NG: 「テスト通ったのでステップ完了」
 ```
 
 ## いつ適用するか

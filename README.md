@@ -2,7 +2,7 @@
 
 Chronistaとしての開発ワークフローを支えるClaude Codeプラグイン。ヒアリングファースト開発、Living Documentation、4つの規律スキルを統合。
 
-**バージョン:** 3.0.0
+> **バージョン**: プラグイン本体は `.claude-plugin/marketplace.json` を、各スキルは個別の `SKILL.md` frontmatter を参照。履歴は [CHANGELOG.md](./CHANGELOG.md) に記録。
 
 ## インストール
 
@@ -18,7 +18,7 @@ Chronistaとしての開発ワークフローを支えるClaude Codeプラグイ
 | `codeflow` | プロセス（柔軟） | ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー |
 | `spec-design-guide` | 実装（柔軟） | 仕様（What & Why）と設計（How）をLiving Documentation原則で管理 |
 | `tdd` | 規律（厳守） | テストファーストで実装するRED-GREEN-REFACTORサイクル |
-| `systematic-debugging` | 規律（厳守） | 根本原因を特定してから修正する4フェーズデバッグ |
+| `systematic-debugging` | 規律（厳守） | 根本原因を特定してから修正する4ステップデバッグ |
 | `verification` | 規律（厳守） | 証拠なき完了宣言を防ぐ。検証コマンド実行→出力確認→主張 |
 | `code-review` | 実装（柔軟） | 技術的正直さを最優先するレビュー規律。YAGNI チェック付き |
 
@@ -50,20 +50,26 @@ Chronistaとしての開発ワークフローを支えるClaude Codeプラグイ
 ## Codeflow フロー概要
 
 ```
-Phase 1: ディスカバリー（調査）
+Discovery（調査）
     ↓
-Phase 1-2: セカンドオピニオン（Gemini等）
+Second Opinion（Gemini等・任意）
     ↓
-Phase 2: ディスカッション（方向性議論）
+Discussion（方向性議論）
     ↓
-Phase 3: ヒアリング（一問一答で詳細確認）
+Hearing（一問一答で詳細確認）
     ↓
-Phase 4: SDG + Bite-Sized Tasks（仕様・設計・タスク分割）
+SDG + Bite-Sized Tasks（仕様・設計・タスク分割）
     ↓
-Phase 5: 実装（TDDスキルに従う）
+Branch & PR（main直コミット禁止）
     ↓
-Phase 6: 学習（creo-memoriesに記録）
+Implementation（TDDスキルに従う）
+    ↓
+Release（条件付き）
+    ↓
+Learning（creo-memoriesに記録）
 ```
+
+各ステップは**名前で参照**する（番号は使わない）。詳細は `codeflow` スキルを参照。
 
 ## 関連プラグイン
 

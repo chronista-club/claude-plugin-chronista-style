@@ -1,21 +1,54 @@
 ---
-description: Begin a structured hearing session
+description: 構造化されたヒアリング（Q&A）セッションを起動。まず何について聞きたいか尋ねる
 ---
 
-# Hearing Session
+# Hearing 起動
 
-Start a structured Q&A session to gather requirements.
+Hearing ステップのエントリポイント。**一問一答** を徹底する。
 
-## Process
+## 実行手順
 
-1. **Create question list** - Identify all questions to ask
-2. **Review with user** - Share the question list for additions/removals
-3. **Prioritize** - Let user choose the order
-4. **One-by-one** - Ask questions sequentially, record answers
+### 1. 対象トピックのキャプチャ
 
-## Tips
+ユーザーのメッセージに既にトピックが含まれていればそれを採用。なければ `AskUserQuestion` で尋ねる:
 
-- Ask specific questions (prefer "A or B?" over "How do you want to do this?")
-- Confirm understanding ("So you mean...?")
-- "I don't know" or "Decide later" are valid answers
-- Break long sessions into multiple parts
+> 「何について聞きたいですか？」
+
+フリーテキスト回答。例: 「認証機能の詳細設計」「DB スキーマの移行戦略」。
+
+### 2. 質問候補の自動抽出
+
+トピックから質問候補を **3〜7 件** Claude が書き出す。ユーザー価値が高い順・決定が必要な順に並べる。
+
+### 3. 候補の一括 Todo 登録
+
+`mcp__creo-memories__create_todo` を繰り返し呼び、flow ドメインに登録する。
+
+- tag 形式: `hearing:{YYYY-MM-DD}:{title slug}`（例: `hearing:2026-04-17:auth-design`）
+- priority: 各質問に対して Claude が判断して付与（1=urgent, 2=high, 3=medium, 4=low）
+
+登録完了後に `mcp__creo-memories__list_todos` で一覧をユーザーに提示。
+
+### 4. 追加・削除の確認
+
+> 「この質問リストで進めますか？追加・削除ありますか？」
+
+`AskUserQuestion` で確認。削除や追加があれば `create_todo` / `complete_todo`（or `delete_todo`）で反映。
+
+### 5. 優先順位付け
+
+`AskUserQuestion` で「どれから答えたい？」を選択させる。選択肢は上位の質問 3〜4 件をチップとして提示。
+
+### 6. 一問一答ループ
+
+選ばれた質問から 1 問ずつ投げる:
+
+- 回答を得たら `complete_todo` でマーク
+- 派生質問が生じたら `create_todo` で追加（再度 flow ドメイン）
+- すべて完了するまで繰り返す。途中中断は「ここまで」と宣言して OK
+
+## ヒアリングのコツ
+
+- 質問は具体的に（「どうしますか？」より「A と B どちらがいいですか？」）
+- 回答を受けて「つまり〜ということですね？」と確認
+- 「わからない」「後で決める」も立派な回答
