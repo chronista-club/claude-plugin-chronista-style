@@ -8,6 +8,21 @@
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-04-20
+
+### Added
+- `chronista-style` SKILL.md (v4.3.0) に **推奨スタイル: 言語と表現** セクション追加
+  - **Python が出てきたら、まず Ruby で考える**: スクリプト・CLI・小さなツール・DSL では Ruby を第一候補とし、Python を選ぶ場合も Ruby 案を並べてユーザーに共有してから決める（ML / 数値計算等の Python エコシステム必須ケースは例外として明記）
+  - **JSON が出てきたら、まず KDL で考える**: 設定・データ表現で JSON が登場する文脈では KDL を第一候補とし、JSON を選ぶ場合も KDL 表現を並べてユーザーに共有してから決める
+
+### Changed
+- 全スキル SKILL.md を patch bump（chronista-style 経由で参照される土台スキルとして整合性を確保）
+  - `codeflow` 2.0.0 → 2.0.1
+  - `tdd` / `systematic-debugging` / `verification` / `code-review` / `spec-design-guide` / `route` 1.0.0 → 1.0.1
+
+### Fixed
+- v2.1.0 タグ欠損を修復（過去 commit `5d69392` に lightweight tag を後付け）
+
 ## [2.1.0] - 2026-04-17
 
 ### Added

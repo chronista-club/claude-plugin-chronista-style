@@ -1,7 +1,7 @@
 ---
 name: spec-design-guide
 description: 仕様（Why）・設計（How）・ガイド（Usage）を記録し、Living Documentation原則でコードと常に同期させる
-version: 1.0.0
+version: 1.0.1
 tags: [documentation, spec, design, guide, living-documentation]
 ---
 
