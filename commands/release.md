@@ -85,6 +85,30 @@ git tag vX.Y.Z
 
 **タグは lightweight tag**（`-a` は使わない）。コミットメッセージは日本語でも OK、ただしプレフィックスは `release: vX.Y.Z — ` で統一。
 
+#### 🚦 Tag Verify Gate（必須）
+
+tag 作成**直後**に必ず以下を実行し、tag が実体として存在するか検証する:
+
+```bash
+git tag -l vX.Y.Z          # 出力が "vX.Y.Z" であること
+git rev-parse vX.Y.Z       # commit SHA が返ること
+```
+
+**失敗時**: `git tag` が silently skip された可能性（既存 tag 衝突等）。即座に原因を特定し、ユーザーに報告して指示を仰ぐ。**Step 8 に進んではいけない**。
+
+#### 🔍 過去ドリフト検出（推奨）
+
+`git log --oneline | grep -E '^[a-f0-9]+ release: v'` で「release: vX.Y.Z」commit を列挙し、対応する tag が全て存在するか確認:
+
+```bash
+# 各 release commit に対応する tag があるか
+for v in $(git log --oneline | grep -oE 'release: v[0-9]+\.[0-9]+\.[0-9]+' | awk '{print $2}'); do
+  git rev-parse "$v" >/dev/null 2>&1 || echo "MISSING TAG: $v"
+done
+```
+
+欠損 tag を検出したら、`AskUserQuestion` で「過去 commit に後付け tag するか？」を尋ねて修復する。
+
 ### Step 8: 確認
 
 - `git log --oneline -3` で結果を表示
