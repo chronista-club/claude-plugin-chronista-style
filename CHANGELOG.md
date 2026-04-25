@@ -8,6 +8,26 @@
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-04-25
+
+### Changed
+- **`code-review` SKILL.md (1.0.1 → 2.0.0)** — 規律スキルから「実行手法 + 規律 + 受信」の統合スキルに刷新 (BREAKING)
+  - **§A. レビュアー (主体)** 新設 — Quick / Standard / Deep の 3 mode、`team-bucciarati` Stand 連携 (Aerosmith / Moody Blues / Purple Haze / Spice Girl / Gold Experience)
+  - **§B. 著者 (受信)** — 旧 SKILL.md の Part 1, 2 を吸収 (依頼 / 受信 / 禁止レスポンス / YAGNI / 反論)
+  - **§C. 定期実行** 新設 — `/schedule` 経由で週次 / 月次 Deep review を回す手順
+  - **§D. 共通規律** — performative agreement 禁止、信頼度スコアリング 75+
+  - 移行: 既存ユーザは規律部分 (旧 Part 1, 2) は §B + §D に再配置されたが内容は同じ
+- `reference/` 配下に詳細手順を分離
+  - `modes.md` — Quick / Standard / Deep の詳細フロー
+  - `stand-mapping.md` — Pass 1〜8 の観点と Stand 対応表
+  - `periodic-setup.md` — `/schedule` 連携手順
+  - `examples.md` — 実例 (Quick / Deep / 定期 / 受信側 / 反論)
+
+### Why
+- 既存 `code-review` は「規律」のみ、「実行手法」のスキルが穴だった
+- multi-pass 手法を別 skill にする案も検討したが、ユーザ feedback「skill 増やしたくない、定期的にやりたいがスコープは可変」を受けて 1 skill に統合
+- Hybrid Z (parallel + iterative) で scope に応じて Quick から Deep までシームレスに切替可能
+
 ## [2.2.0] - 2026-04-20
 
 ### Added
