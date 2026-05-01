@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 4.3.0
+version: 4.4.0
 tags:
   - chronista
   - development
@@ -23,11 +23,16 @@ tags:
 chronista-style (このスキル)
 ├── creo-memories        【最優先】永続記憶
 ├── codeflow             開発フロー
+├── route                Issue→ゴールの最適 path 探索
 ├── spec-design-guide    ドキュメント管理
 ├── tdd                  テスト駆動開発【規律】
 ├── systematic-debugging 体系的デバッグ【規律】
 ├── verification         完了前検証【規律】
 ├── code-review          コードレビュー【規律】
+├── council              意思決定の合議【AI 協働】
+├── santa-method         多 agent 敵対的検証【AI 協働】
+├── agent-harness        agent harness 設計【AI 協働】
+├── agent-introspection  agent self-debug【AI 協働】
 ├── fleetflow            コンテナオーケストレーション
 └── ツール群              mise, Chrome DevTools, Rust CLI, SurrealDB CLI
 ```
