@@ -8,6 +8,32 @@
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-05-01
+
+### Added
+- **新スキル `council`** (v1.0.0): 4-voice 合議で意思決定
+  - Architect / Skeptic / Pragmatist / Critic の 4 視点で trade-off を可視化
+  - Anti-anchoring mechanism: subagent を fresh context で召集 (会話履歴を渡さない)
+  - 元 ECC `council` から chronista 適合 fork (memory-first 連携、 VP 文脈の例追加)
+- **新スキル `santa-method`** (v1.0.0): 多 agent 敵対的検証 (adversarial verification)
+  - Generate → Dual Review → Verdict Gate → Fix Until Nice の 4 フェーズ
+  - 両者 PASS 必須、 各 round fresh agent (前 round の anchoring 防止)
+  - 元 Ronald Skelton (RapportScore.ai) から chronista 適合 fork
+- **新スキル `agent-harness`** (v1.0.0): AI agent harness 設計
+  - Action space / Observation / Recovery / Context budget の 4 軸
+  - VP Stand Actor Framework / ccws worker autonomous mode と整合
+- **新スキル `agent-introspection`** (v1.0.0): AI agent 自身の failure self-debug
+  - Capture → Diagnose → Contain → Report の 4 フェーズ
+  - `systematic-debugging` (コード/システムバグ) と領域分離 (こちらは agent loop / drift / max tool call)
+
+### Changed
+- `chronista-style` SKILL.md (v4.3.0 → v4.4.0): スキル構成に 4 新 skill + 既存 `route` を register
+
+### Notes
+- 4 新 skill は **AI 協働カテゴリ** として一塊で機能: council (decide) → santa-method (verify) → agent-harness (design) → agent-introspection (debug)
+- 元 ECC plugin (everything-claude-code) の同名 skill から chronista 適合 fork。 ECC plugin 全体は disable しつつ、 必要 skill のみ chronista 側に統合する軽量 cherry-pick 戦略
+- 各 skill は memory-first 連携セクション (creo-memories integration) を持ち、 VP 文脈の具体例 (D11 / Stand × Pane × Lane / ccws worker / Mailbox) を含む
+
 ## [2.3.0] - 2026-04-25
 
 ### Changed
