@@ -1,0 +1,18 @@
+{
+  "name": "chronista-style",
+  "description": "Chronista development workflow - hearing-first approach and SDG documentation",
+  "version": "2.4.0",
+  "author": {
+    "name": "Mako",
+    "email": "mito@chronista.club"
+  },
+  "repository": "https://github.com/chronista-club/claude-plugin-chronista-style",
+  "homepage": "https://github.com/chronista-club/claude-plugin-chronista-style",
+  "keywords": [
+    "workflow",
+    "development",
+    "hearing-first",
+    "sdg",
+    "documentation"
+  ]
+}
