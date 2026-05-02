@@ -10,7 +10,7 @@
     {
       "name": "chronista-style",
       "description": "Chronista development workflow - hearing-first approach and SDG documentation",
-      "version": "2.4.0",
+      "version": "0.24.0",
       "author": {
         "name": "Mako",
         "email": "mito@chronista.club"
