@@ -14,5 +14,6 @@
     "hearing-first",
     "sdg",
     "documentation"
-  ]
+  ],
+  "license": "MIT"
 }
