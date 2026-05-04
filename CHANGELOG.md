@@ -6,6 +6,26 @@
 プラグイン全体の version は `.claude-plugin/marketplace.json` を正とする（SSoT）。
 各スキル個別の version は該当 `SKILL.md` の frontmatter に記載。
 
+## [0.24.2] - 2026-05-04
+
+### Added
+- **新スキル `size-stepper`** (v1.0.0): design token を 「演奏できる Live Token」 として扱う 4 層 architecture
+  - TS class (SizeStepper) + Solid signal + CSS scope mirror + MIDI 2.0 connector
+  - namespace 階層 (UI → BUTTON / HEADER) + parent 継承 + lock per-key
+  - adjacent ceiling / per-key precision / bounds override / Export to clipboard
+  - Korg Keystage 1 row binding (CC 0-7 = UI 5 step + BUTTON.m + HEADER.{m,l})
+  - 「最終 const 化」 lifecycle (探索 → 確定候補 → 焼き戻し → 運用) を仕組み化
+  - origin: fleetstage-hq commits 87207917 / 735b5188 / 97e98a24
+
+## [0.24.1] - 2026-05-02
+
+### Changed
+- Skill tree refactor: 12 skill dir (agent-harness, agent-introspection, chronista-style, code-review, codeflow, council, route, santa-method, spec-design-guide, systematic-debugging, tdd, verification) を root から `skills/` 下に移動 (公式 spec 準拠)
+
+### Removed
+- Redundant inner `.claude-plugin/marketplace.json` (self-referential で冗長、 plugin.json のみに統一)
+
+
 ## [Unreleased]
 
 ## [2.4.0] - 2026-05-01
