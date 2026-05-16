@@ -6,6 +6,11 @@
 プラグイン全体の version は `.claude-plugin/marketplace.json` を正とする（SSoT）。
 各スキル個別の version は該当 `SKILL.md` の frontmatter に記載。
 
+## [Unreleased]
+
+### Changed
+- `codeflow` SKILL.md を `2.0.1` → `2.1.0`: Linear 連携記述を memory-native (memory-as-issue) に更新。2026-04-23 pivot (Linear → creo-memories) を反映し、Cross-Project Handoff subsection を追加 (PR #8)
+
 ## [0.24.2] - 2026-05-04
 
 ### Added
@@ -25,8 +30,6 @@
 ### Removed
 - Redundant inner `.claude-plugin/marketplace.json` (self-referential で冗長、 plugin.json のみに統一)
 
-
-## [Unreleased]
 
 ## [2.4.0] - 2026-05-01
 
