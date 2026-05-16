@@ -2,7 +2,7 @@
 skill: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 2.0.1
+version: 2.1.0
 ---
 
 # Code Flow Skill
@@ -159,36 +159,51 @@ Step 5: コミット
 - 完全なコード（「バリデーション追加」ではなく実際のコード）
 - 実行コマンドと期待される出力
 
-#### Linear Issue 連携
+#### Issue 連携 — memory-as-issue（creo-memories）
 
-タスクを Linear Issue として登録し、進捗を一元管理する。
+タスクは **creo-memories の memory** として登録し、進捗を memory layer で一元管理する（2026-04-23 pivot: Linear → creo-memories）。memory = Issue / Todo / Decision / Milestone の unified layer。
 
 ```
-Step 1: save_issue でタスクを登録（project + team 指定）
-Step 2: 依存関係を設定（blocks / blockedBy）
-Step 3: ブランチ名は Linear 生成の形式を使用
+Step 1: remember でタスクを memory 化（atlasId 指定）
+Step 2: lifecycle は category、priority / size / cycle は tags で表現
+Step 3: 親子・依存は derivedFrom / references / concept で接続
+Step 4: ブランチ名は memory の slug から推論
 ```
 
-- `save_issue` MCP ツールで作成
-- 必ず `project` と `team` を指定
-- 優先度: 1=Urgent, 2=High, 3=Medium, 4=Low
+- **lifecycle = category**: spark → backlog → todo → in-progress → in-review → done（+ cancelled / **reborn** = 死んだ work の蘇生）
+- **tags**: `priority:high` / `size:M` / `cycle:2026-W17`
+- **重複防止**: 新規作成は `supersedes` 省略で dry-run → `supersedeCandidates` を確認 → 確定
+- **mutation**: `patch_memory`（atomic in-place / CAS）/ `append_memory`（末尾追記）/ `annotate`（comment）。`update_memory` は fork するため lifecycle 更新に使わない
+- Linear は **外部共有面としてのみ残置**（cross-org / team 共有時）。primary trace は creo-memories
+
+#### Cross-Project Handoff
+
+別 project への修正依頼は issue 化せず、**handoff memory 1 個**で渡す（Cross-Project Handoff Protocol 準拠）。
+
+```
+requester: handoff memory を receiver の Atlas に作成（self-contained context、category: todo）
+receiver:  patch_memory で claim（CAS 排他）→ in-progress → 結果を append_memory → in-review
+requester: 検証 → done（再発時は reborn）
+```
+
+1 handoff = 1 living memory。request / 作業 / 結果 / 検証が同じ memory に積層する。
 
 ### Branch & PR（ブランチ & PR フロー）
 
-**main に直コミットしない。** 必ず Linear ブランチで PR フローを踏む。
+**main に直コミットしない。** 必ずブランチで PR フローを踏む。
 
 ```
-Step 1: Linear Issue のブランチ名を使用（mako/{team-key}-XX-...）
+Step 1: memory の slug からブランチ名を推論（mako/{slug} or mako/{short-id}-{slug}）
 Step 2: ブランチ作成 → 実装 → コミット
-Step 3: PR 作成（gh pr create）— Closes {TEAM-KEY}-XX でマージ時に自動クローズ
+Step 3: PR 作成（gh pr create）— PR body に対応 memory ID を参照
 Step 4: レビュー（team-b Moody Blues 等）
 Step 5: SHIP IT → マージ
 ```
 
 **ブランチ運用ルール:**
 - `main` / `master` への直プッシュ禁止
-- ブランチ名は Linear が生成する `mako/{team-key}-XX-...` 形式を使用
-- PR の body に `Closes {TEAM-KEY}-XX` を含めて Linear Issue を自動クローズ
+- ブランチ名は memory slug ベース（`mako/{slug}` 形式）
+- PR body に対応 memory ID を記載し、マージ後に memory の category を done に更新
 - レビューで SHIP IT が出るまでマージしない
 
 ### Implementation（実装・TDD）
@@ -198,9 +213,9 @@ Step 5: SHIP IT → マージ
 **必須:** 実装時は `tdd` スキルの RED-GREEN-REFACTOR サイクルに従え。
 テストファーストで書き、失敗を確認し、最小限のコードで通せ。
 
-**Linear ステータス連動:**
-- 実装開始 → `save_issue(id, state: "In Progress")`
-- 実装完了 → PR マージで自動クローズ（`Closes {TEAM-KEY}-XX`）
+**memory category 連動:**
+- 実装開始 → memory の category を `in-progress` に
+- レビュー待ち → `in-review`、マージ完了 → `done`
 
 ### Release（リリース & 配布・条件付き）
 
@@ -213,7 +228,7 @@ Step 5: SHIP IT → マージ
 Step 1: PR マージ → タグ → GitHub Release
 Step 2: デプロイ（該当時）
 Step 3: プラグイン同期（該当時） → /update-plugin
-Step 4: Linear プロジェクト進捗を確認・更新
+Step 4: memory の進捗を更新（Initiative / Milestone memory の category）
 ```
 
 **team-b 連携**: Aerosmith がパイプラインをディスパッチする場合、Sticky Fingers（シップ）→ Gold Experience（デプロイ）→ `/update-plugin`（プラグイン配布）の順で実行。
