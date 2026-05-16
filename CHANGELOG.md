@@ -8,8 +8,14 @@
 
 ## [Unreleased]
 
+## [0.24.3] - 2026-05-17
+
+### Added
+- `bin/setup-windows`: Windows (Git Bash + winget) 用の開発環境セットアップスクリプト
+
 ### Changed
 - `codeflow` SKILL.md を `2.0.1` → `2.1.0`: Linear 連携記述を memory-native (memory-as-issue) に更新。2026-04-23 pivot (Linear → creo-memories) を反映し、Cross-Project Handoff subsection を追加 (PR #8)
+- `bin/setup` を macOS 専用化し OS 判定を追加 (Windows は `bin/setup-windows` に委譲)。パッケージ群を BUILD_SUPPORT / LSP / LINT / AI / cask / font 等に再編・拡張
 
 ## [0.24.2] - 2026-05-04
 
