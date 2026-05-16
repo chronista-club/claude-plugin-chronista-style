@@ -1,0 +1,285 @@
+#!/usr/bin/env bash
+# Chronista Style — Windows 開発環境セットアップ
+# 前提: Git Bash (= MSYS2/MinGW-w64) 上で実行する
+# Package manager: winget（Windows 10/11 標準）
+#
+# 使い方: Git Bash を起動して `bin/setup-windows` を実行
+set -euo pipefail
+
+echo "🎨 Chronista Style Setup (Windows)"
+echo "===================================="
+echo ""
+
+# OS 判定 — Git Bash 以外で走らせない保護
+case "$(uname -s)" in
+  MSYS*|MINGW*|CYGWIN*) ;;
+  *)
+    echo "❌ この script は Windows の Git Bash 専用です"
+    echo "   macOS は bin/setup を使ってください"
+    exit 1
+    ;;
+esac
+
+# winget 確認
+if ! command -v winget &>/dev/null; then
+  echo "❌ winget が見つかりません"
+  echo "   Windows 10 1809+ / Windows 11 では標準搭載"
+  echo "   Microsoft Store から 「App Installer」 をインストールしてください"
+  exit 1
+fi
+
+# --- Rust 製 高速 CLI ツール（winget id） ---
+WINGET_RUST_CLI=(
+  lsd-rs.lsd                  # ls 代替
+  sharkdp.fd                  # find 代替
+  BurntSushi.ripgrep.MSVC     # grep 代替 (rg)
+  sharkdp.bat                 # cat 代替
+  bootandy.dust               # du 代替
+  dandavison.delta            # diff 代替
+  chmln.sd                    # sed 代替
+  ducaale.xh                  # curl 代替
+  dalance.procs               # ps 代替
+  PaulJuliusMartinez.jless    # JSON 閲覧
+  XAMPPRocky.tokei            # コード統計
+  sharkdp.hyperfine           # ベンチマーク
+  orhun.git-cliff             # CHANGELOG 自動生成
+  Starship.Starship           # 高速シェルプロンプト
+  ajeetdsouza.zoxide          # 学習型ディレクトリジャンプ
+  sxyazi.yazi                 # ファイルマネージャ
+  pemistahl.grex              # 正規表現生成
+)
+
+# --- 開発インフラ ---
+WINGET_DEV_INFRA=(
+  GitHub.cli                  # gh
+  jdx.mise                    # 言語ランタイムの SSOT
+  jqlang.jq                   # JSON 処理
+  ellie.atuin                 # shell history sync
+  RubyInstallerTeam.Ruby.3.3  # Ruby ランタイム
+  Oven-sh.Bun                 # bun
+)
+
+# --- ビルド支援 ---
+WINGET_BUILD=(
+  Mozilla.sccache             # Rust ビルドキャッシュ
+  zig.zig                     # cargo-zigbuild 用 cross-compile
+)
+
+# --- LSP / 言語サーバ ---
+# 注: tsc / tsserver は bun 同梱、typescript-language-server は BUN_GLOBALS で入る
+WINGET_LSP=(
+  rust-lang.rust-analyzer     # Rust LSP
+)
+
+# --- Lint / 品質チェック ---
+# Apple 専用 (swiftformat/swiftlint/xcbeautify) は除外
+WINGET_LINT=(
+  rhysd.actionlint            # GitHub Actions workflow linter
+  koalaman.shellcheck         # シェルスクリプト linter
+)
+
+# --- AI / セカンドオピニオン ---
+WINGET_AI=(
+  Google.GeminiCLI            # Gemini CLI（要確認: id が変動する可能性）
+  OpenAI.CodexCLI             # Codex CLI（要確認: id が変動する可能性）
+)
+
+# --- サービス系 CLI ---
+WINGET_SERVICES=(
+  AgileBits.1Password.CLI     # op
+  RedHat.Podman               # コンテナランタイム
+  tailscale.tailscale         # VPN
+)
+
+# --- GUI Apps ---
+# kitty は Windows 版なし → wezterm に置き換え
+WINGET_GUI=(
+  wez.wezterm                 # GPU 加速ターミナル（kitty の代替）
+  Zed-Industries.Zed          # 高速エディタ
+  Anthropic.Claude            # Claude Desktop
+  Discord.Discord             # コミュニティ
+)
+
+# --- bun global packages ---
+BUN_GLOBALS=(
+  wrangler                       # Cloudflare Workers CLI
+  typescript-language-server     # TS LSP
+)
+
+install_winget() {
+  local label="$1"
+  shift
+  local packages=("$@")
+
+  for pkg in "${packages[@]}"; do
+    # winget list は標準出力に「No installed package found」 等の noise を出すので grep で判定
+    if winget list --id "$pkg" --exact -e 2>/dev/null | grep -q "$pkg"; then
+      echo "  ✓ $pkg"
+    else
+      echo "  Installing: $pkg"
+      winget install --id "$pkg" --exact --silent --accept-package-agreements --accept-source-agreements \
+        || echo "  ⚠ $pkg の install 失敗（id が変わっている可能性、 winget search で確認）"
+    fi
+  done
+}
+
+install_cargo() {
+  local cmd="$1"
+  local install_arg="$2"
+  local label="${3:-$cmd}"
+  if command -v "$cmd" &>/dev/null; then
+    echo "  ✓ $label"
+  else
+    if command -v cargo &>/dev/null; then
+      echo "  Installing $label..."
+      # shellcheck disable=SC2086  # word splitting は意図的（複数引数渡し）
+      cargo install $install_arg
+    else
+      echo "  ⚠ cargo 未検出 → mise で rust toolchain を入れてから再実行"
+      echo "    手動: cargo install $install_arg"
+    fi
+  fi
+}
+
+install_bun_globals() {
+  if ! command -v bun &>/dev/null; then
+    echo "  ⚠ bun 未検出 → DEV_INFRA の install を確認してから再実行"
+    return
+  fi
+  for pkg in "$@"; do
+    if command -v "$pkg" &>/dev/null; then
+      echo "  ✓ $pkg"
+    else
+      echo "  Installing (bun): $pkg"
+      bun add -g "$pkg"
+    fi
+  done
+}
+
+echo "📦 Rust CLI ツール"
+install_winget "rust-cli" "${WINGET_RUST_CLI[@]}"
+echo ""
+
+echo "🔧 開発インフラ"
+install_winget "dev-infra" "${WINGET_DEV_INFRA[@]}"
+echo ""
+
+echo "🏗  ビルド支援"
+install_winget "build" "${WINGET_BUILD[@]}"
+echo ""
+
+echo "🧠 LSP / 言語サーバ（mise で project 上書き想定）"
+install_winget "lsp" "${WINGET_LSP[@]}"
+echo ""
+
+echo "🧪 Lint / 品質チェック"
+install_winget "lint" "${WINGET_LINT[@]}"
+echo ""
+
+echo "🤖 AI / セカンドオピニオン"
+install_winget "ai" "${WINGET_AI[@]}"
+echo ""
+
+echo "☁️  サービス系 CLI"
+install_winget "services" "${WINGET_SERVICES[@]}"
+echo ""
+
+echo "🖥  GUI Apps"
+install_winget "gui" "${WINGET_GUI[@]}"
+echo ""
+
+# --- Nerd Font 案内（winget では別途 oh-my-posh 経由 or 手動） ---
+echo "🔤 Fonts"
+echo "  • Nerd Font: https://www.nerdfonts.com/font-downloads"
+echo "    推奨: Monaspace Nerd Font / FiraCode Nerd Font"
+echo "    oh-my-posh 使う場合: oh-my-posh font install"
+echo ""
+
+# --- cargo install 系 ---
+echo "🦀 cargo install 系"
+install_cargo "cargo-zigbuild"  "cargo-zigbuild"   "cargo-zigbuild (cross-build-image skill 必須)"
+
+# vantage-point CLI (vp + ccws を同梱) — ~/repos/vantage-point の clone 前提
+VP_CLI_PATH="$HOME/repos/vantage-point/crates/vp-cli"
+if command -v vp &>/dev/null && command -v ccws &>/dev/null; then
+  echo "  ✓ vp + ccws (vantage-point CLI)"
+elif [ -d "$VP_CLI_PATH" ]; then
+  if command -v cargo &>/dev/null; then
+    echo "  Installing vp + ccws from $VP_CLI_PATH..."
+    cargo install --path "$VP_CLI_PATH"
+  else
+    echo "  ⚠ cargo 未検出 → mise で rust toolchain 入れてから再実行"
+  fi
+else
+  echo "  • vp: ~/repos/vantage-point を clone してから再実行"
+  install_cargo "ccws" "--git https://github.com/chronista-club/ccws"
+fi
+
+# fleetstage CLI (fsctl)
+FLEETSTAGE_CLI_PATH="$HOME/repos/fleetstage/crates/fleetstage-cli"
+if command -v fsctl &>/dev/null; then
+  echo "  ✓ fsctl (fleetstage CLI)"
+elif [ -d "$FLEETSTAGE_CLI_PATH" ]; then
+  if command -v cargo &>/dev/null; then
+    echo "  Installing fsctl from $FLEETSTAGE_CLI_PATH..."
+    cargo install --path "$FLEETSTAGE_CLI_PATH"
+  else
+    echo "  ⚠ cargo 未検出 → mise で rust toolchain 入れてから再実行"
+  fi
+else
+  echo "  • fsctl: ~/repos/fleetstage を clone してから再実行"
+fi
+echo ""
+
+# --- bun global packages ---
+echo "📦 bun global packages"
+install_bun_globals "${BUN_GLOBALS[@]}"
+echo ""
+
+# --- mise install ---
+echo "🛠  mise install（言語ランタイム同期）"
+if command -v mise &>/dev/null; then
+  # Windows の mise config は %USERPROFILE%\.config\mise\config.toml
+  if [ -f "$HOME/.config/mise/config.toml" ]; then
+    echo "  Running: mise install"
+    mise install || echo "  ⚠ mise install で警告あり"
+  else
+    echo "  ⚠ ~/.config/mise/config.toml が無い → 初期化してから再実行"
+  fi
+else
+  echo "  ⚠ mise 未検出（DEV_INFRA で入るはず — 上のエラーを確認）"
+fi
+echo ""
+
+# --- 認証確認 / 残作業 ---
+echo "📋 認証確認 / 残作業"
+
+# gh 認証
+if command -v gh &>/dev/null; then
+  if gh auth status &>/dev/null; then
+    echo "  ✓ gh 認証済み"
+  else
+    echo "  • gh 未認証: gh auth login"
+  fi
+fi
+
+# 1Password CLI（anycreative テナント）
+if command -v op &>/dev/null; then
+  if op account list &>/dev/null && op account list 2>/dev/null | grep -q anycreative; then
+    echo "  ✓ op (anycreative テナント設定済み)"
+  else
+    echo "  • op: anycreative テナントに sign-in 必要"
+    echo "    op signin --account anycreative.1password.com"
+  fi
+fi
+
+# Windows 特有の補足案内
+echo ""
+echo "📝 Windows 特有のメモ"
+echo "  • Terminal multiplexer: tmux は WSL2 経由 or Windows Terminal の split で代替"
+echo "  • Nerd Font: terminal の表示設定で明示的に選択する必要あり"
+echo "  • PATH: winget install 後は新しい Git Bash を起動して PATH 反映"
+echo "  • Tailscale GUI: winget 経由で同時に install 済み"
+echo ""
+
+echo "✅ セットアップ完了"
