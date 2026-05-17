@@ -19,7 +19,7 @@ tags: [agent-design, harness, action-space, observation, tool-design]
 - 新しい agent を設計する (例: VP の Stand Actor Framework、 ccwire mesh の worker)
 - 既存 agent の cost-per-task が高い
 
-VP-D11 の **StandActor trait 階層 (Renderable / Headless / Pty)** や、**ccws worker の autonomous mode** を設計するときの判断軸として使う。
+VP-D11 の **StandActor trait 階層 (Renderable / Headless / Pty)** や、**VP worker lane の autonomous mode** を設計するときの判断軸として使う。
 
 ## いつ使わないか
 
@@ -186,7 +186,7 @@ D11-A で `StandActor` 基底 + `Renderable / Headless / Pty` trait を設計す
 
 → agent-harness の 4 軸を design 議論の checklist として使う。
 
-### 例 2: ccws worker の autonomous mode
+### 例 2: worker lane の autonomous mode
 
 Worker が autonomous で走るとき:
 

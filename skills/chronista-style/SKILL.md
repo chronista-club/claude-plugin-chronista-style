@@ -107,7 +107,7 @@ chronista-style (このスキル)
 設定・データ表現・スキーマ等で **JSON が登場する文脈では、まず KDL（KDL Document Language）に置き換えて考え、ユーザーと情報共有する**。
 
 - KDL は人間が読み書きしやすく、コメント・複数行値・型注釈をネイティブにサポート
-- fleetflow / ccws 等、本エコシステムは KDL を採用済み
+- fleetflow / vp lane 等、本エコシステムは KDL を採用済み
 - JSON は**機械間 wire format** としては有用だが、人間が触る設計層には不向き
 
 **ルール**:

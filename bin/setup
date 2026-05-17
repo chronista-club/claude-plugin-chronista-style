@@ -254,14 +254,13 @@ install_cargo() {
 }
 install_cargo "cargo-zigbuild"  "cargo-zigbuild"   "cargo-zigbuild (cross-build-image skill 必須)"
 
-# vantage-point CLI (vp + ccws を同梱) — ~/repos/vantage-point の clone 前提
-# clone 不在時は ccws のみ chronista-club/ccws から git install で fallback
+# vantage-point CLI (vp) — ~/repos/vantage-point の clone 前提
 VP_CLI_PATH="$HOME/repos/vantage-point/crates/vp-cli"
-if command -v vp &>/dev/null && command -v ccws &>/dev/null; then
-  echo "  ✓ vp + ccws (vantage-point CLI)"
+if command -v vp &>/dev/null; then
+  echo "  ✓ vp (vantage-point CLI)"
 elif [ -d "$VP_CLI_PATH" ]; then
   if command -v cargo &>/dev/null; then
-    echo "  Installing vp + ccws from $VP_CLI_PATH..."
+    echo "  Installing vp from $VP_CLI_PATH..."
     cargo install --path "$VP_CLI_PATH"
   else
     echo "  ⚠ cargo 未検出 → mise で rust toolchain 入れてから再実行"
@@ -269,8 +268,6 @@ elif [ -d "$VP_CLI_PATH" ]; then
 else
   echo "  • vp: ~/repos/vantage-point を clone してから再実行"
   echo "    git clone git@github.com:chronista-club/vantage-point.git ~/repos/vantage-point"
-  # ccws だけは standalone repo にも存在するので fallback で install
-  install_cargo "ccws" "--git https://github.com/chronista-club/ccws"
 fi
 
 # fleetstage CLI (fsctl) — Proprietary repo、~/repos/fleetstage の clone 前提
