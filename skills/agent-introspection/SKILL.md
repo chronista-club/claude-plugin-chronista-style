@@ -22,7 +22,7 @@ tags: [agent-failure, self-debug, introspection, recovery, ai-debugging]
 
 ## いつ使うか
 
-AI agent (Claude Code session / VP Stand actor / ccws worker / 自作 LLM agent) が次のような**症状**を見せたとき:
+AI agent (Claude Code session / VP Stand actor / VP worker lane / 自作 LLM agent) が次のような**症状**を見せたとき:
 
 - **Max tool call / loop limit** で停止
 - 同じ tool / cmd を **繰り返し呼ぶ**のに前進しない
@@ -181,7 +181,7 @@ agent failure pattern は **再利用可能な instinct** になりやすい。 
 
 ## chronista 文脈での適用例
 
-### 例 1: ccws worker autonomous mode の drift
+### 例 1: worker autonomous mode の drift
 
 Worker が autonomous で走っていて、同じ tool を反復し始めた:
 
@@ -236,7 +236,7 @@ session が長くなり、 reasoning quality が落ちた感覚があるとき:
 - 「もう 1 回 retry してみよう」を **2 回以上**思った
 - token 消費が前進と釣り合わない
 - agent が drift して original goal を見失っている感覚
-- ccws worker / VP Stand actor の loop / idle / stuck
+- VP worker lane / VP Stand actor の loop / idle / stuck
 
 逆に発火しないケース:
 - 1 回限りの transient error (retry で resolve、 pattern なし)
