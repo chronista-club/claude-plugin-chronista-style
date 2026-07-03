@@ -1,5 +1,5 @@
 {
-  "description": "chronista-style SessionStart: inject project context and prompt creo-memories search",
+  "description": "chronista-style hooks: SessionStart (project context + creo-memories search) and Stop (fabrication tripwire — block reporting tool results with no matching tool_result this turn)",
   "hooks": {
     "SessionStart": [
       {
@@ -8,6 +8,17 @@
           {
             "type": "command",
             "command": "${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/fabrication-tripwire.sh",
             "timeout": 10
           }
         ]

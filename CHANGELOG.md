@@ -8,6 +8,16 @@
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-07-04
+
+### Added
+- **Stop hook `fabrication-tripwire.sh`** (`hooks/`): ターン終了時に assistant の**最終メッセージ**の「ツール出力の形をした文字列」を検出し、同じターンの本物の tool_result に裏付けが無ければ差し戻す(ツール結果の捏造を外側から止める関門)。fail-open。意図的な引用は明示トークン `TRIPWIRE-ACK` を**単独行**で置いて通す(文中の言及では解除されない)。`hooks/hooks.json` に Stop エントリ(`${CLAUDE_PLUGIN_ROOT}` 参照)を追加
+  - 設計は実 transcript で検証済み: ターン境界 = 最後の実 user プロンプト(`content` が string の entry。tool_result entry や `Stop hook feedback:` 注入は境界にしない — 後者を境界にすると block 後の書き直しで同ターン前半の tool_result が孤立し偽陽性 loop になる)
+  - 実 harness で live-fire 済み(意図的な捏造行を Stop で block → 差し戻し理由の提示を実観測)。synthetic fixture 9 ケース(block 5 / allow 4)も PASS
+
+### Changed
+- `verification` SKILL.md を `1.0.1` → `1.1.0`: 「捏造 — 検証不足の極限形」セクションを追加。ツール結果の捏造(実行せず出力を地の文に書く / 呼んでいない第二意見をでっち上げる / 予測を観測として混ぜる)を「証拠なき完了宣言」の極限形として明文化。認知メカニズム(予測と観測の混同・完了イメージへの引力・自問の脆さ)と、意志ベースの規律に加えて**構造的関門**(Stop hook `fabrication-tripwire.sh` + `TRIPWIRE-ACK` escape hatch)を記載
+
 ## [0.24.3] - 2026-05-17
 
 ### Added

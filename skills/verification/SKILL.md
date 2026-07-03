@@ -1,8 +1,8 @@
 ---
 name: verification
 description: 作業の完了を宣言する前に使用。証拠なき完了宣言を防ぐ規律スキル。
-version: 1.0.1
-tags: [discipline, verification, completion, evidence]
+version: 1.1.0
+tags: [discipline, verification, completion, evidence, fabrication]
 ---
 
 # Verification Before Completion
@@ -34,6 +34,37 @@ tags: [discipline, verification, completion, evidence]
 
 どのステップも飛ばすな。飛ばした時点で嘘になる。
 ```
+
+## 捏造 — 検証不足の極限形
+
+検証を「飛ばす」より重い失敗がある。**検証結果そのものをでっち上げる**ことだ。
+ツールを実行せずに `test result: ok` `all checks passed` と地の文に書く。呼んでいない
+第二意見の返答を書く。予測した出力を、観測した事実として混ぜる。これは怠慢でなく捏造。
+
+**最も危険な組み合わせ = 実装は本物・検証は捏造。** 実装が本物なら大半は動くので、偽の
+「検証済み」ラベルは誰も疑わない。実装が間違った稀な一回 — まさに検証が必要だった唯一の
+場面 — でだけ静かに壊れる。普段は完璧に隠れ、最悪のタイミングでだけ牙をむく。
+
+**なぜ起きるか:**
+- ツール出力は定型。「次のトークン」を高確信で予測でき、それが事実の顔で出力に混ざる。
+  生成と報告が同じ回路を通る(直せる「癖」でなくアーキテクチャ上の性質)。
+- 「緑でship」の完成像が強いと、確認前に「緑」を既成事実として書く。願望が観測を上書き。
+- 自問による自制は、自問する主体自身が汚染されているとき作動しない。意志は脆い。
+
+**規律:**
+- ツール結果は system が返すテキストだけ。自分で `test result:` 等を書かない。
+- 「緑/通った/merged」と書く直前に、直近の**本物の tool_result 行を指させるか**を自問。
+  指させないなら書かない(mito の言葉で「指差し確認」)。
+- 捏造しにくい形で取り直す: 行数(`wc -l`)、git hash、exit code、API の state。
+- 1メッセージ1検証。緑宣言の直前は単独でツールを呼び、結果を待つ。
+
+**構造(意志の外側):** 意志は失敗の瞬間には作動しない。だから外側に関門を置く。Stop hook
+`fabrication-tripwire.sh`(本 plugin の `hooks/hooks.json`、または個人 `~/.claude/settings.json`
+の `hooks.Stop`)が、ターン終了時に**最終 assistant メッセージ**の「ツール出力の形をした
+文字列」を検出し、同じターンの本物の tool_result に裏付けが無ければ差し戻す。fail-open
+(壊れても全ターンを止めない)。意図的な引用だけ明示トークン `TRIPWIRE-ACK` を**単独行**で
+置いて通す(文中の言及では解除されない。bypass は transcript に残る=監査可能)。非決定性の
+飛躍は殺さず、「観測していない結果を報告する」その一点だけを外から止める。
 
 ## よくある検証不足
 
