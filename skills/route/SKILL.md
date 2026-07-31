@@ -1,5 +1,5 @@
 ---
-skill: route
+name: route
 description: Issue からゴールへの最適な path を探索し、最小コストで到達する
 tags: [workflow, route-finding, path, scope, yagni]
 version: 1.0.1

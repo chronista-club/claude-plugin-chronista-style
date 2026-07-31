@@ -1,5 +1,6 @@
 ---
 description: Issue からゴールへの最適な path を探索（Survey→Plot→Compare→Choose→GATE→Travel→Log）
+argument-hint: "[issue-id]"
 ---
 
 # Route 起動

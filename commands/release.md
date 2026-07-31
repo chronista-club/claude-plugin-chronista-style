@@ -1,9 +1,6 @@
 ---
 description: プロジェクト形式を自動検出してバージョンbump・CHANGELOG更新・タグ作成を実行
-arguments:
-  - name: version
-    description: リリースバージョン（例: 0.3.0, 1.0.0）。省略時は対話で決定
-    required: false
+argument-hint: "[version]"
 ---
 
 # Release

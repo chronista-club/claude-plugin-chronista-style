@@ -10,6 +10,14 @@
 
 ### Fixed
 - **バージョン SSoT の記述をリポジトリ実態に同期**（Living Documentation）: `0.24.1` (#7) で内側の `.claude-plugin/marketplace.json` を撤去し `plugin.json` に一本化したにもかかわらず、`commands/release.md` / `README.md` / `CHANGELOG.md` ヘッダが `marketplace.json` を SSoT と記述したままだった。`/release` の Step 1 検出表がプラグインを検出できず手順が破綻するため修正。検出表には marketplace repo 形式も併記し、両方ある場合の優先順位（`plugin.json` が本体の正）を明示
+- **`commands/release.md` の frontmatter が YAML として壊れていた**: `description: リリースバージョン（例: 0.3.0, 1.0.0）` の全角括弧内にある 2 つ目の `: ` でパース失敗し、ブロック全体（1 行目の `description` 含む）が失われていた。併せて、コマンド仕様に存在しない `arguments:` フィールドを正規の `argument-hint` に置換
+- `commands/route.md`: `$ARGUMENTS` を使うのに `argument-hint` が無かったため追加
+- `skills/{codeflow,route,size-stepper}/SKILL.md`: frontmatter の必須キーが `skill:` になっていたのを `name:` に統一（他 12 スキルは `name:`）
+- `skills/cross-build-image/SKILL.md`: 同梱スクリプトの呼び出しが cwd 相対（`./build-and-push.sh`）で install 後に解決できなかったため `${CLAUDE_PLUGIN_ROOT}` 経由に修正
+- `hooks/hooks.json`: `${CLAUDE_PLUGIN_ROOT}` が未クォートで、install パスにスペースが含まれると hook が起動しなかった。`bash "..."` 形式に修正（スペース入りパスで実行検証済み）
+
+### Changed
+- `skills/cross-build-image/SKILL.md` / `skills/size-stepper/SKILL.md`: `~/repos/...` を指す参照を **「開発中のエイリアス — あるところには、ある」** として再定義。参照先を持つ環境でのみ解決でき、skill の動作条件ではないことを明示
 
 ## [0.25.1] - 2026-07-31
 
