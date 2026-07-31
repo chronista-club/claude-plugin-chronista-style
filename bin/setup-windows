@@ -250,6 +250,23 @@ else
 fi
 echo ""
 
+# --- プロジェクト設定ファイル（実体は nexus/shared、Windows は symlink 不安定のためコピー運用） ---
+echo "📄 プロジェクト設定ファイル"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+NEXUS_MCP="$HOME/repos/nexus/shared/claude/.mcp.json"
+if [ -f "$REPO_ROOT/.mcp.json" ]; then
+  echo "  ✓ .mcp.json"
+elif [ -f "$NEXUS_MCP" ]; then
+  cp "$NEXUS_MCP" "$REPO_ROOT/.mcp.json"
+  echo "  + .mcp.json を nexus/shared/claude からコピー"
+elif [ -f "$REPO_ROOT/.mcp.json.example" ]; then
+  cp "$REPO_ROOT/.mcp.json.example" "$REPO_ROOT/.mcp.json"
+  echo "  + .mcp.json を .mcp.json.example から生成"
+else
+  echo "  • .mcp.json.example なし（skip）"
+fi
+echo ""
+
 # --- 認証確認 / 残作業 ---
 echo "📋 認証確認 / 残作業"
 

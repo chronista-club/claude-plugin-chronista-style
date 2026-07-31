@@ -1,4 +1,5 @@
 .DS_Store
 
 # ユーザレベルの MCP 設定 (環境ごとに異なる、コミットしない)
+# 復元: bin/setup が .mcp.json.example からコピー生成する (example パターン)
 .mcp.json

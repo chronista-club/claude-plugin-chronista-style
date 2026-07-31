@@ -8,6 +8,12 @@
 
 ## [Unreleased]
 
+### Added
+- `.mcp.json.example`: プロジェクト共有可能な MCP サーバー雛形（gitnexus を bunx 起動で環境非依存に定義）。`bin/setup` / `bin/setup-windows` に `.mcp.json` 補完ステップを追加 — 実体 `~/repos/nexus/shared/claude/.mcp.json` への symlink を優先（`rm` / `git clean` で消えるのはリンクだけ、実体は nexus の git が保護）、nexus 不在時は example からコピー。Windows は symlink 不安定のため常にコピー運用。dangling symlink は掃除して再解決。運用原則: gitignore する手作りファイルは復元手段（example / 生成スクリプト）とセットにする
+
+### Changed
+- `code-review` SKILL.md を `2.0.0` → `2.1.0`: §C 定期実行を削除（未使用のため）。`reference/periodic-setup.md` も削除し、§D 共通規律 → §C、§E 既存スキルとの関係 → §D に再番号。`reference/examples.md` / `reference/modes.md` からも定期 review への言及を除去
+
 ## [0.25.0] - 2026-07-04
 
 ### Added
