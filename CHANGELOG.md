@@ -8,6 +8,8 @@
 
 ## [Unreleased]
 
+## [0.25.1] - 2026-07-31
+
 ### Added
 - `.mcp.json.example`: プロジェクト共有可能な MCP サーバー雛形（gitnexus を bunx 起動で環境非依存に定義）。`bin/setup` / `bin/setup-windows` に `.mcp.json` 補完ステップを追加 — **共有 config store**（`$CHRONISTA_SHARED_CONFIG/claude/.mcp.json`、個人設定を集約した repo の `shared/` を想定。未設定なら example にフォールバック）への symlink を優先（`rm` / `git clean` で消えるのはリンクだけ、実体は store 側の git が保護）、store 不在時は example からコピー。Windows は symlink 不安定のため常にコピー運用。dangling symlink は掃除して再解決。運用原則: gitignore する手作りファイルは復元手段（example / 生成スクリプト）とセットにする
 
