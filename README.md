@@ -2,7 +2,7 @@
 
 Chronistaとしての開発ワークフローを支えるClaude Codeプラグイン。ヒアリングファースト開発、Living Documentation、4つの規律スキルを統合。
 
-> **バージョン**: プラグイン本体は `.claude-plugin/marketplace.json` を、各スキルは個別の `SKILL.md` frontmatter を参照。履歴は [CHANGELOG.md](./CHANGELOG.md) に記録。
+> **バージョン**: プラグイン本体は `.claude-plugin/plugin.json` を、各スキルは個別の `SKILL.md` frontmatter を参照。履歴は [CHANGELOG.md](./CHANGELOG.md) に記録。
 
 ## インストール
 

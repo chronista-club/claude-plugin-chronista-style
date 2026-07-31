@@ -3,10 +3,13 @@
 本プラグインの主要な変更を [Keep a Changelog](https://keepachangelog.com/ja/1.1.0/) に沿って記録する。
 バージョニングは [Semantic Versioning](https://semver.org/lang/ja/) に準拠する。
 
-プラグイン全体の version は `.claude-plugin/marketplace.json` を正とする（SSoT）。
+プラグイン全体の version は `.claude-plugin/plugin.json` を正とする（SSoT）。
 各スキル個別の version は該当 `SKILL.md` の frontmatter に記載。
 
 ## [Unreleased]
+
+### Fixed
+- **バージョン SSoT の記述をリポジトリ実態に同期**（Living Documentation）: `0.24.1` (#7) で内側の `.claude-plugin/marketplace.json` を撤去し `plugin.json` に一本化したにもかかわらず、`commands/release.md` / `README.md` / `CHANGELOG.md` ヘッダが `marketplace.json` を SSoT と記述したままだった。`/release` の Step 1 検出表がプラグインを検出できず手順が破綻するため修正。検出表には marketplace repo 形式も併記し、両方ある場合の優先順位（`plugin.json` が本体の正）を明示
 
 ## [0.25.1] - 2026-07-31
 
