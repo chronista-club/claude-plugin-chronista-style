@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "gitnexus": {
+      "command": "bunx",
+      "args": ["gitnexus", "mcp"]
+    }
+  }
+}

@@ -306,6 +306,27 @@ else
 fi
 echo ""
 
+# --- プロジェクト設定ファイル（実体は nexus/shared に置き、project は symlink で参照） ---
+echo "📄 プロジェクト設定ファイル"
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+NEXUS_MCP="$HOME/repos/nexus/shared/claude/.mcp.json"
+# dangling symlink（nexus 側の移動等）は掃除して再リンク
+if [ -L "$REPO_ROOT/.mcp.json" ] && [ ! -e "$REPO_ROOT/.mcp.json" ]; then
+  rm "$REPO_ROOT/.mcp.json"
+fi
+if [ -e "$REPO_ROOT/.mcp.json" ]; then
+  echo "  ✓ .mcp.json"
+elif [ -f "$NEXUS_MCP" ]; then
+  ln -s "$NEXUS_MCP" "$REPO_ROOT/.mcp.json"
+  echo "  + .mcp.json → nexus/shared/claude に symlink（実体は nexus の git が保護）"
+elif [ -f "$REPO_ROOT/.mcp.json.example" ]; then
+  cp "$REPO_ROOT/.mcp.json.example" "$REPO_ROOT/.mcp.json"
+  echo "  + .mcp.json を .mcp.json.example から生成"
+else
+  echo "  • .mcp.json.example なし（skip）"
+fi
+echo ""
+
 # --- 認証確認 / 残作業 ---
 echo "📋 認証確認 / 残作業"
 
