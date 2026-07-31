@@ -250,15 +250,17 @@ else
 fi
 echo ""
 
-# --- プロジェクト設定ファイル（実体は nexus/shared、Windows は symlink 不安定のためコピー運用） ---
+# --- プロジェクト設定ファイル（実体は共有 config store、Windows は symlink 不安定のためコピー運用） ---
 echo "📄 プロジェクト設定ファイル"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-NEXUS_MCP="$HOME/repos/nexus/shared/claude/.mcp.json"
+# 共有 config store: CHRONISTA_SHARED_CONFIG で差し替え可（未設定なら既定パス）
+SHARED_CONFIG_DIR="${CHRONISTA_SHARED_CONFIG:-$HOME/repos/nexus/shared}"
+SHARED_MCP="$SHARED_CONFIG_DIR/claude/.mcp.json"
 if [ -f "$REPO_ROOT/.mcp.json" ]; then
   echo "  ✓ .mcp.json"
-elif [ -f "$NEXUS_MCP" ]; then
-  cp "$NEXUS_MCP" "$REPO_ROOT/.mcp.json"
-  echo "  + .mcp.json を nexus/shared/claude からコピー"
+elif [ -f "$SHARED_MCP" ]; then
+  cp "$SHARED_MCP" "$REPO_ROOT/.mcp.json"
+  echo "  + .mcp.json を共有 config store からコピー"
 elif [ -f "$REPO_ROOT/.mcp.json.example" ]; then
   cp "$REPO_ROOT/.mcp.json.example" "$REPO_ROOT/.mcp.json"
   echo "  + .mcp.json を .mcp.json.example から生成"
