@@ -253,9 +253,8 @@ echo ""
 # --- プロジェクト設定ファイル（実体は共有 config store、Windows は symlink 不安定のためコピー運用） ---
 echo "📄 プロジェクト設定ファイル"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-# 共有 config store: CHRONISTA_SHARED_CONFIG で差し替え可（未設定なら既定パス）
-SHARED_CONFIG_DIR="${CHRONISTA_SHARED_CONFIG:-$HOME/repos/nexus/shared}"
-SHARED_MCP="$SHARED_CONFIG_DIR/claude/.mcp.json"
+# 共有 config store: CHRONISTA_SHARED_CONFIG で指す（未設定なら example にフォールバック）
+SHARED_MCP="${CHRONISTA_SHARED_CONFIG:+${CHRONISTA_SHARED_CONFIG}/claude/.mcp.json}"
 if [ -f "$REPO_ROOT/.mcp.json" ]; then
   echo "  ✓ .mcp.json"
 elif [ -f "$SHARED_MCP" ]; then

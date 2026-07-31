@@ -309,10 +309,10 @@ echo ""
 # --- プロジェクト設定ファイル（実体は共有 config store、project 側は symlink で参照） ---
 echo "📄 プロジェクト設定ファイル"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-# 共有 config store: 個人設定を集約した repo の shared/。
-# CHRONISTA_SHARED_CONFIG で差し替え可（未設定なら既定パス、無ければ example にフォールバック）
-SHARED_CONFIG_DIR="${CHRONISTA_SHARED_CONFIG:-$HOME/repos/nexus/shared}"
-SHARED_MCP="$SHARED_CONFIG_DIR/claude/.mcp.json"
+# 共有 config store: 個人設定を集約した repo の shared/ 等を CHRONISTA_SHARED_CONFIG で指す。
+# 例) export CHRONISTA_SHARED_CONFIG="$HOME/repos/<your-config-repo>/shared"
+# 未設定なら .mcp.json.example にフォールバック
+SHARED_MCP="${CHRONISTA_SHARED_CONFIG:+${CHRONISTA_SHARED_CONFIG}/claude/.mcp.json}"
 # dangling symlink（共有先の移動等）は掃除して再リンク
 if [ -L "$REPO_ROOT/.mcp.json" ] && [ ! -e "$REPO_ROOT/.mcp.json" ]; then
   rm "$REPO_ROOT/.mcp.json"
