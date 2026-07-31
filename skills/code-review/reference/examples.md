@@ -99,34 +99,7 @@
 
 ---
 
-## 例 3: 定期 Deep (月次)
-
-**状況**: `/schedule` で登録した monthly-main-deep-review が起動。
-
-```
-> [自動起動: 2026-05-01 09:00]
->
-> Plan (default):
->   - 対象: main 全体
->   - 深さ: 浅く全体 (default、Phase 1 only)
->   - 出力: canvas + docs/review/main-monthly-2026-05.md
-
-> Phase 1 dispatch (parallel, 4 Stand)
->
-> Aggregate
->
-> Major issue 自動起票 (Linear):
->   - VP-XXX: app.rs HashMap leak (M1 から起票)
->   - VP-YYY: ...
->
-> docs/review/main-monthly-2026-05.md に保存
->
-> 完了通知 (Slack / Discord)
-```
-
----
-
-## 例 4: 受信側 (B mode)
+## 例 3: 受信側 (B mode)
 
 **状況**: ユーザが「ここのエラーハンドリング、let-else 使ったら？」とコメント。
 
@@ -145,7 +118,7 @@
 
 ---
 
-## 例 5: 反論 (B mode)
+## 例 4: 反論 (B mode)
 
 **状況**: 外部 reviewer (Stand) が「この関数を public にすべき」と指摘。
 
@@ -166,4 +139,3 @@
 - **Quick で何も出ない** → そもそも Quick で十分。Standard 化は不要
 - **Standard で Major が連発** → Phase 2 に深掘り (iterate) を入れて Deep 化
 - **Deep が 30 分超** → Stand を 4 → 3 に絞る、または Pass を 8 → 5 に減らす
-- **定期 review で同じ Major が毎回出る** → 該当 issue を Linear で固定追跡、review からは除外

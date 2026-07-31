@@ -86,7 +86,7 @@ Agent(subagent_type=spice-girl, prompt="...")
 
 ## Deep mode
 
-**用途**: PR > 1000 行 / 大規模 refactor / merge 前最終確認 / 定期 review
+**用途**: PR > 1000 行 / 大規模 refactor / merge 前最終確認
 
 **所要時間**: 10-30 分
 
@@ -138,4 +138,4 @@ Phase 1 + Phase 2 をマージ → 最終 severity matrix
 | ヒアリング | スキップ | 1-2 問 | 3-4 問 |
 | Iterate | なし | なし | あり (Deep のみ) |
 | 出力 | コンソール / PR コメント | canvas / md / PR コメント | canvas + md + PR コメント (複数) |
-| 適用 PR 規模 | <200 行 | 200-1000 行 | >1000 行 / refactor / 定期 |
+| 適用 PR 規模 | <200 行 | 200-1000 行 | >1000 行 / refactor |

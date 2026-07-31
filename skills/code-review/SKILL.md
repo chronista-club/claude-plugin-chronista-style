@@ -1,7 +1,7 @@
 ---
 name: code-review
 description: コードレビューの実行手法と規律。スコープに応じて Quick / Standard / Deep モードを選択、team-bucciarati の Stand を観点別に dispatch。レビューする側 / 受ける側の両方をカバー。
-version: 2.0.0
+version: 2.1.0
 tags: [code-review, refactor, methodology, discipline, team-bucciarati, hearing-first, chronista-style]
 ---
 
@@ -17,13 +17,11 @@ tags: [code-review, refactor, methodology, discipline, team-bucciarati, hearing-
 |---|---|
 | **主体的にレビューしたい** (PR / branch / refactor) | [§A. レビュアー](#a-レビュアー-主体) |
 | **レビューを受けた** (user / 外部 reviewer から) | [§B. 著者](#b-著者-受信) |
-| **定期的にレビューしたい** (週次 / 月次) | [§C. 定期実行](#c-定期実行) |
-| **規律で迷った** (反論すべき？ performative になってる？) | [§D. 共通規律](#d-共通規律) |
+| **規律で迷った** (反論すべき？ performative になってる？) | [§C. 共通規律](#c-共通規律) |
 
 詳細は `reference/` 配下:
 - [`reference/modes.md`](reference/modes.md) — Quick / Standard / Deep の詳細フロー
 - [`reference/stand-mapping.md`](reference/stand-mapping.md) — 観点 ↔ Stand 対応表 (Pass 1〜8)
-- [`reference/periodic-setup.md`](reference/periodic-setup.md) — `/schedule` 連携手順
 - [`reference/examples.md`](reference/examples.md) — 実例
 
 ---
@@ -38,7 +36,7 @@ tags: [code-review, refactor, methodology, discipline, team-bucciarati, hearing-
 |---|---|---|
 | **< 200 行 / single concern** | **Quick** | スキップ可 |
 | **200-1000 行 / 複数モジュール** | **Standard** | 1-2 問 |
-| **> 1000 行 / refactor / merge 前 / 定期** | **Deep** | 3-4 問 |
+| **> 1000 行 / refactor / merge 前** | **Deep** | 3-4 問 |
 
 明示で override OK (ユーザが「Deep でやって」と言ったら従う)。
 
@@ -242,29 +240,13 @@ Aggregate 結果を見せた後:
 
 ---
 
-## §C. 定期実行
+## §C. 共通規律
 
-毎日 Deep mode は重い。**週次 / 月次で main / 主要 branch に対して定期 Deep review** を `/schedule` で回す。
-
-### よくあるパターン
-
-- 毎週月曜 09:00 — main 全体に Quick mode (drift 検出)
-- 毎月 1 日 — main に Deep mode (構造的負債の棚卸し)
-- リリース前 — release branch に Deep mode 1 回
-
-### セットアップ
-
-`/schedule` skill 経由で remote agent を登録。詳細手順 + cron 例は [`reference/periodic-setup.md`](reference/periodic-setup.md)。
-
----
-
-## §D. 共通規律
-
-### D.1 技術評価 > 感情的パフォーマンス
+### C.1 技術評価 > 感情的パフォーマンス
 
 レビューはコードの技術的正しさを評価する場。社交的快適さや感謝表明は副次的。
 
-### D.2 YAGNI チェック
+### C.2 YAGNI チェック
 
 ```
 「ちゃんと実装すべき」と言われたら:
@@ -273,16 +255,16 @@ Aggregate 結果を見せた後:
   使われている → 適切に実装
 ```
 
-### D.3 Performative Agreement 禁止
+### C.3 Performative Agreement 禁止
 
 「素晴らしい指摘！」「おっしゃる通り！」は **空のシグナル**。技術的価値で sort せよ。
 代わりに **「修正しました」「反論します、理由は X」「不明点があります」** で答える。
 
-### D.4 反論の仕方
+### C.4 反論の仕方
 
 防御的にならず、技術的根拠を述べる。具体的な質問をする。動作するテスト / コードを参照する。
 
-### D.5 信頼度スコアリング
+### C.5 信頼度スコアリング
 
 issue を報告する時、信頼度を 0-100 で付ける。
 
@@ -298,7 +280,7 @@ issue を報告する時、信頼度を 0-100 で付ける。
 
 ---
 
-## §E. 既存スキルとの関係
+## §D. 既存スキルとの関係
 
 - **`codeflow`** — 開発全体フロー。本 skill は Implementation 完了直後の品質ゲート
 - **`route`** — issue → goal の path 探索。本 skill はレビュー時の path 探索版

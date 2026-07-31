@@ -8,6 +8,9 @@
 
 ## [Unreleased]
 
+### Changed
+- `code-review` SKILL.md を `2.0.0` → `2.1.0`: §C 定期実行を削除（未使用のため）。`reference/periodic-setup.md` も削除し、§D 共通規律 → §C、§E 既存スキルとの関係 → §D に再番号。`reference/examples.md` / `reference/modes.md` からも定期 review への言及を除去
+
 ## [0.25.0] - 2026-07-04
 
 ### Added
