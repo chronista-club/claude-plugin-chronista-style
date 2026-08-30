@@ -2,7 +2,7 @@
 name: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 2.1.0
+version: 2.1.1
 ---
 
 # Code Flow Skill
@@ -161,7 +161,7 @@ Step 5: コミット
 
 #### Issue 連携 — memory-as-issue（creo-memories）
 
-タスクは **creo-memories の memory** として登録し、進捗を memory layer で一元管理する（2026-04-23 pivot: Linear → creo-memories）。memory = Issue / Todo / Decision / Milestone の unified layer。
+タスクは **creo-memories の memory** として登録し、進捗を memory layer で一元管理する。memory = Issue / Todo / Decision / Milestone の unified layer。
 
 ```
 Step 1: remember でタスクを memory 化（atlasId 指定）
@@ -174,7 +174,6 @@ Step 4: ブランチ名は memory の slug から推論
 - **tags**: `priority:high` / `size:M` / `cycle:2026-W17`
 - **重複防止**: 新規作成は `supersedes` 省略で dry-run → `supersedeCandidates` を確認 → 確定
 - **mutation**: `patch_memory`（atomic in-place / CAS）/ `append_memory`（末尾追記）/ `annotate`（comment）。`update_memory` は fork するため lifecycle 更新に使わない
-- Linear は **外部共有面としてのみ残置**（cross-org / team 共有時）。primary trace は creo-memories
 
 #### Cross-Project Handoff
 

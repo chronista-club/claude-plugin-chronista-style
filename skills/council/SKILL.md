@@ -1,7 +1,7 @@
 ---
 name: council
 description: 多義的な意思決定・トレードオフ・go/no-go 判断のために、4 voice の合議を召集する。複数の妥当な path が存在し、選択前に構造化された反対意見が必要なときに使う。
-version: 1.0.0
+version: 1.0.1
 origin: ECC (Everything Claude Code) — chronista 適合 fork
 tags: [decision, council, ambiguity, multi-voice, second-opinion]
 ---
@@ -169,7 +169,7 @@ council の verdict が **実態を変える decision** なら memory に pin。
 |---|---|
 | 設計判断 (Stand × Pane × Lane の分割等) | `mcp__creo-memories__remember` (category: `design-decision`、 tag: `[council, decision-log]`) |
 | Council が initial position を変えた | reason 込みで `relationReason` に「council で X が補強されて Y → Z に変更」 |
-| Phase / Linear issue 単位の go/no-go | Linear comment + memory 両方 |
+| Phase / memory 単位の go/no-go | memory に記録 |
 
 **記録するべき重要メタ**:
 - 4 voice の raw position (verdict だけでなく)
@@ -194,10 +194,10 @@ council の verdict が **実態を変える decision** なら memory に pin。
 
 - **Architect**: D シリーズ (D-series 直接後継、design 文書系譜と整合)
 - **Skeptic**: `(P-a)` (commit message 軽量、Phase 番号の意味論を汚さない)
-- **Pragmatist**: D シリーズ (既存系譜が分かりやすい、Linear 検索性)
+- **Pragmatist**: D シリーズ (既存系譜が分かりやすい、memory 検索性)
 - **Critic**: D シリーズ番号も将来衝突 risk
 
-→ **Verdict**: D シリーズ採用、commit prefix は対応 Linear ID で統一。
+→ **Verdict**: D シリーズ採用、commit prefix は対応 D 番号で統一。
 
 ## NG パターン
 

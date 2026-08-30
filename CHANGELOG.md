@@ -8,6 +8,17 @@
 
 ## [Unreleased]
 
+### Changed
+- **Linear への依存を完全に除去** — 実運用で使われなくなったため、現行ガイダンスから存在ごとオミットした（`CHANGELOG.md` の歴史エントリは記録として温存）
+  - `commands/dashboard.md`: **creo-memories ベースに全面書き換え**。`list_todos(status: "active", groupBy: "atlas")` を取得元とし、creo の todo が **active / done の 2 値**で中間状態を持たない事実に合わせ、`priority` → `updatedAt` 順で「今動いているもの」を表現する（旧「In Progress」相当の状態は再現しない）
+  - `chronista-style` `4.4.0` → `4.5.0`: Issue 管理の SSOT を memory に変更。Issue-first の原則・Branch slug 規約・テストリストの 3 層 SSOT を memory ベースへ書き換え
+  - `codeflow` `2.1.0` → `2.1.1` / `council` `1.0.0` → `1.0.1` / `route` `1.0.1` → `1.0.2`: 残存していた Linear 参照を除去
+  - `commands/route.md` / `commands/sdg.md` / `hooks/session-start.sh`: Linear MCP 参照を creo-memories に置換
+
+### Added
+- `chronista-style` に **ブランチ運用（nightly trunk）** セクションを新設。開発 trunk を `nightly` とし、日々の PR は `--base nightly` で積む。リリース時に version bump して `nightly → main` を **merge commit** でマージし、main で tag を打つ（squash すると履歴が発散し次回リリースで全面コンフリクトするため）
+  - 併せて **GitHub のデフォルトブランチは `main` のまま**にする理由を明記。プラグイン marketplace（`chronista-club/claude-plugins`）の source 定義に `ref` 指定が無く、**デフォルトブランチがそのまま配布元になる**ため、nightly をデフォルトにすると未リリース版が配布される
+
 ### Fixed
 - **バージョン SSoT の記述をリポジトリ実態に同期**（Living Documentation）: `0.24.1` (#7) で内側の `.claude-plugin/marketplace.json` を撤去し `plugin.json` に一本化したにもかかわらず、`commands/release.md` / `README.md` / `CHANGELOG.md` ヘッダが `marketplace.json` を SSoT と記述したままだった。`/release` の Step 1 検出表がプラグインを検出できず手順が破綻するため修正。検出表には marketplace repo 形式も併記し、両方ある場合の優先順位（`plugin.json` が本体の正）を明示
 - **`commands/release.md` の frontmatter が YAML として壊れていた**: `description: リリースバージョン（例: 0.3.0, 1.0.0）` の全角括弧内にある 2 つ目の `: ` でパース失敗し、ブロック全体（1 行目の `description` 含む）が失われていた。併せて、コマンド仕様に存在しない `arguments:` フィールドを正規の `argument-hint` に置換
