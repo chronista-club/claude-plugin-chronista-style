@@ -20,9 +20,12 @@ arguments:
 
 | 検出 | 形式 | バージョン SSoT |
 |------|------|----------------|
-| `.claude-plugin/marketplace.json` が存在 | **Claude Code プラグイン** | `plugins[].version`（該当 plugin name を特定） |
+| `.claude-plugin/plugin.json` が存在 | **Claude Code プラグイン** | `version` フィールド |
+| `.claude-plugin/marketplace.json` が存在（marketplace repo） | **Claude Code marketplace** | `plugins[].version`（該当 plugin name を特定） |
 | `Cargo.toml` が存在（workspace ルート） | **Rust** | `package.version` または `workspace.package.version` |
 | `package.json` が存在 | **npm** | `version` フィールド |
+
+プラグイン単体の repo は `plugin.json` のみを持つ（本 repo がこれ）。両方ある場合は `plugin.json` を本体の正とし、`marketplace.json` は配布メタとして追従させる。
 
 複数検出された場合は `AskUserQuestion` で「どの形式でリリースしますか？」を尋ねる。
 
@@ -69,7 +72,7 @@ Keep a Changelog 形式で [X.Y.Z] エントリを追加する。既存 `CHANGEL
 
 検出された形式に応じて、対象ファイルを更新:
 
-- **プラグイン**: `.claude-plugin/marketplace.json` の該当 `plugins[].version` を書き換え
+- **プラグイン**: `.claude-plugin/plugin.json` の `version` を書き換え（marketplace repo の場合は `.claude-plugin/marketplace.json` の該当 `plugins[].version`）
 - **Rust**: `Cargo.toml` の `version` を書き換え（workspace ルートなら `workspace.package.version`）
 - **npm**: `package.json` の `version` を書き換え
 
