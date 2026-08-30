@@ -1,5 +1,5 @@
 ---
-skill: size-stepper
+name: size-stepper
 description: design token (spacing / typography / radius 等) を 「演奏できる Live Token」 として扱う architecture skill。 TS class + Solid signal + CSS scope mirror + MIDI 2.0 連携で 物理 fader 演奏しながら token を tweak、 lock + Export to clipboard で const 化までの lifecycle を提供
 tags: [design-system, design-token, css-variable, solid, midi, live-tweak, korg-keystage, fleetstage]
 version: 1.0.0
@@ -197,9 +197,9 @@ permission granted state なら silent restore、 そうでなければ user cli
 - production runtime で token を変えたい (= remote config 案件、 別 architecture)
 - multi-user collaborative tweak (= server-side state 案件、 別 architecture)
 
-## 実装 reference
+## 実装 reference（開発中のエイリアス — あるところには、ある）
 
-fleetstage-hq の実コードが SSOT:
+fleetstage-hq の実コードが SSOT。 以下は **開発中のエイリアス**で、 参照先を持つ環境でのみ解決できる（skill の動作条件ではなく、 持っている人が正本に辿るための道標）:
 
 - `~/repos/fleetstage/crates/fleetstage-hq/ui/src/design/size-stepper.ts` — SizeStepper class
 - `~/repos/fleetstage/crates/fleetstage-hq/ui/src/design/index.ts` — namespace SSOT + registry
@@ -214,4 +214,4 @@ fleetstage-hq の実コードが SSOT:
 
 - `chronista-style` — ヒアリングファースト + 一問一答 + ユーモア
 - `codeflow` — Discovery → Hearing → SDG → Implementation の workflow
-- `~/repos/chronista-handbook/domain.md § Creo UI Design System` — handbook 上での domain knowledge
+- `~/repos/chronista-handbook/domain.md § Creo UI Design System` — handbook 上での domain knowledge（開発中のエイリアス）

@@ -85,16 +85,19 @@ ENTRYPOINT ["/usr/local/bin/<bin>"]
 
 ## 実装スクリプト
 
-`scripts/build-and-push.sh` を skill に同梱。 env var 全 override 対応:
+`scripts/build-and-push.sh` を skill に同梱。 env var 全 override 対応。
+**呼び出しは `${CLAUDE_PLUGIN_ROOT}` 経由**（cwd 相対だと install 後に解決できない）:
 
 ```bash
+SCRIPT="${CLAUDE_PLUGIN_ROOT}/skills/cross-build-image/scripts/build-and-push.sh"
+
 # default 動作
-./build-and-push.sh
+"$SCRIPT"
 
 # fleetstage-hq-api 例 (ROOT は cwd、 .mise.toml で 1.95 解決)
 PACKAGE=fleetstage-hq BIN=fleetstage-hq-api \
 IMAGE=ghcr.io/chronista-club/fleetstage-hq-api \
-./build-and-push.sh
+"$SCRIPT"
 ```
 
 主要 env (以下を default 値か上書き):
@@ -152,7 +155,9 @@ echo '[tools]\nrust = "1.95"' > .mise.toml
 - `project_rustls23_cryptoprovider_trap.md` — wss 接続の rustls 0.23 罠
 - `project_mac_zigbuild_image_loop.md` — fleetstage 内での参考実装と運用知見
 
-## 参考実装
+## 参考実装（開発中のエイリアス — あるところには、ある）
+
+以下は chronista 内部の実 clone を指す **開発中のエイリアス**。 参照先を持つ環境でのみ解決でき、 持たない環境では「そういう実装が別にある」という手がかりとして読む（skill の動作条件ではない）。
 
 - `~/repos/fleetstage/scripts/build-and-push-hq-api.sh` — fleetstage-hq-api 用の wrapper
 - `~/repos/fleetstage/Dockerfile.hq-api` — slim Dockerfile (ca-certs + non-root + COPY binary だけ)
