@@ -8,6 +8,21 @@
 
 ## [Unreleased]
 
+### Added
+- **新スキル `parallel-dev`** (v0.2.0): 並列開発の道具選びを「**隔離・出荷**」の 2 層モデルで判断する規律スキル
+  - **隔離**（テスト・ビルドが独立に走る）は worktree が解く — 小タスク = session worktree / 大タスク = VP lane
+  - **出荷**（依存 PR の列車）は GitHub native stacked PR (`gh stack`) が解く — bottom merge で server-side cascading rebase
+  - 「メイン作業中に別スコープの修正が混ざった」場合は手を止めず、コミット時に `git add -p` でハンク単位に割って別ブランチへ回す（混ざりを咎めず、後から割る）
+  - 2026-08-28 に仮想ブランチによる「分流」層を廃止し 3 層 → 2 層へ移行。分流層は VP lane と役割が重複し実運用で出番がなかった
+
+### Fixed
+- `skills/parallel-dev/SKILL.md`: VP の呼び出しが `vp flow_handoff`（MCP ツール名の形）になっていたのを、実際の CLI である `vp flow handoff <name> --task-spec <file|->` に修正（2 箇所）
+- **`chronista-style` のスキルツリーが実態と乖離していた** — `4.5.0` → `4.6.0`
+  - routing の入口であるルートスキルに `parallel-dev` / `cross-build-image` / `size-stepper` の 3 件が未記載で、実質そのスキルが隠れていた
+  - 廃止済みの `fleetflow` が残っていた（marketplace からも削除済み。CLI 本体 `chronista-club/fleetflow` は継続）
+  - 記載 15 件 = 実ディレクトリ 15 件を機械的に照合して一致を確認
+- `README.md`: スキル一覧が 15 件中 7 件、コマンド表が 6 件中 4 件しか記載していなかったため全件に更新。スキルタイプの分類説明も表の種別と一致させた（`AI 協働` / `実装技術` の 2 分類を追記）
+
 ### Changed
 - **Linear への依存を完全に除去** — 実運用で使われなくなったため、現行ガイダンスから存在ごとオミットした（`CHANGELOG.md` の歴史エントリは記録として温存）
   - `commands/dashboard.md`: **creo-memories ベースに全面書き換え**。`list_todos(status: "active", groupBy: "atlas")` を取得元とし、creo の todo が **active / done の 2 値**で中間状態を持たない事実に合わせ、`priority` → `updatedAt` 順で「今動いているもの」を表現する（旧「In Progress」相当の状態は再現しない）
