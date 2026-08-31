@@ -71,7 +71,7 @@ context=$(cat <<EOF
 ### 記憶の検索（Atlas 確定後）
 
 1. \`mcp__creo-memories__search\` query=\`"${atlas_candidate_dir}"\` limit=5
-2. \`mcp__creo-memories__search\` query=\`"${branch}"\` limit=3（ブランチ名から Linear Issue 推測）
+2. \`mcp__creo-memories__search\` query=\`"${branch}"\` limit=3（ブランチ名から関連 memory を推測）
 3. \`mcp__creo-memories__list_recent_memories\` limit=5（直近の活動）
 
 関連記憶が見つかった場合、1-2 行で要約して「関連記憶を検索しました」と報告する。

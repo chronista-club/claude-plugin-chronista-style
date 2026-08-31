@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 4.4.0
+version: 4.6.0
 tags:
   - chronista
   - development
@@ -24,6 +24,7 @@ chronista-style (このスキル)
 ├── creo-memories        【最優先】永続記憶
 ├── codeflow             開発フロー
 ├── route                Issue→ゴールの最適 path 探索
+├── parallel-dev         並列開発の道具選び（隔離・出荷の 2 層）
 ├── spec-design-guide    ドキュメント管理
 ├── tdd                  テスト駆動開発【規律】
 ├── systematic-debugging 体系的デバッグ【規律】
@@ -33,7 +34,8 @@ chronista-style (このスキル)
 ├── santa-method         多 agent 敵対的検証【AI 協働】
 ├── agent-harness        agent harness 設計【AI 協働】
 ├── agent-introspection  agent self-debug【AI 協働】
-├── fleetflow            コンテナオーケストレーション
+├── cross-build-image    Mac → linux/amd64 の cross build【実装技術】
+├── size-stepper         design token を演奏する【実装技術】
 └── ツール群              mise, Chrome DevTools, Rust CLI, SurrealDB CLI
 ```
 
@@ -191,7 +193,7 @@ SDG（設計ドキュメント）
     └─ 要件IDとの紐付け
     ↓
 Branch & PR
-    └─ main直コミット禁止、Linear Issue ブランチで PR フロー
+    └─ nightly 直コミット禁止、memory 起票 → ブランチ → PR フロー
     ↓
 Implementation（実装 & テスト）
     └─ 要件IDに対応するテスト作成
@@ -396,37 +398,56 @@ fleetflow deploy prod --pull --yes  # CI/CDデプロイ
 
 ## プロジェクト管理
 
-- **Linear** で Issue 管理（SSOT）。GitHub Issues は使わない
-- PR は `gh` コマンドで作成。`Closes CREO-XX` で Linear 自動クローズ
+- **creo-memories の memory** で Issue 管理（SSOT）。GitHub Issues / 外部 tracker は使わない
+- PR は `gh` コマンドで作成。body 冒頭に memory ID（`mem_xxx`）を記載し、マージ後に `complete_todo` で閉じる
 - `/dashboard` で全プロジェクトの状況を VP に表示
+
+### ブランチ運用（nightly trunk）
+
+開発 trunk は **`nightly`**。`main` は**リリース済みの状態**のみを指す。
+
+```
+feature ──PR(squash)──> nightly ──version bump──> main ──tag──> リリース
+```
+
+- 日々の PR は **nightly 宛て**に積む: `gh pr create --base nightly`
+- リリース時に version bump して **nightly → main をマージ**し、main で tag を打つ
+- nightly → main は **merge commit**（squash すると履歴が発散し、次回リリースで全面コンフリクトする）
+
+**GitHub のデフォルトブランチは `main` のまま**にすること。プラグイン marketplace
+（`chronista-club/claude-plugins`）の source 定義に ref 指定が無く、**デフォルト
+ブランチがそのまま配布元になる**ため。nightly をデフォルトにすると未リリース版が
+配布される。その代わり PR のベース指定漏れに注意（`--base nightly` を必ず付ける）。
 
 ### Issue-first の原則（ガイドライン）
 
-**新機能・改修は Linear Issue 化から始める。** 手を動かす前に「このタスクの成功基準はなに？」と聞かれて Linear を指せる状態にする。
+**新機能・改修は memory 起票から始める。** 手を動かす前に「このタスクの成功基準はなに？」と聞かれて memory を指せる状態にする。
 
 ```
 アイデア / 依頼
     ↓
-Linear Issue 化
+memory 起票（creo-memories、category: todo）
     └─ 成功基準（チェックボックス）
     └─ 想定変更ファイル
-    └─ 非対象（別 Issue）を明記
+    └─ 非対象（別 memory）を明記
     └─ ## Meta / Branch slug を記載
     ↓
-Branch（mako/{team-key}-{NN}-{slug} 形式、英字 kebab-case）
+Branch（{type}/{slug} 形式、英字 kebab-case）
     ↓
 実装
     ↓
-PR（body に Linear URL 記載、Closes CREO-XX）
+PR（nightly 宛て、body 冒頭に memory ID）
 ```
 
-例外: 即時の typo 修正・1 行の inline コメント・hotfix などは Issue 化せず直接 PR で OK。判断軸は「次の人がこの変更を見て **なぜ** 必要だったか分かるか」。分からなければ Issue 化。
+例外: 即時の typo 修正・1 行の inline コメント・hotfix などは起票せず直接 PR で OK。判断軸は「次の人がこの変更を見て **なぜ** 必要だったか分かるか」。分からなければ起票する。
 
 #### Branch slug の規約
 
-Linear の auto-generated `gitBranchName` は Issue title をそのまま含むため、日本語混じり・長大になりがち。GitHub 側で non-ASCII branch name の warning が出るし、CLI で扱いにくい。
+ブランチ名は `{type}/{slug}` 形式（`fix/plugin-spec-compliance` 等）。type は conventional commits に揃える（feat / fix / docs / refactor / chore）。
 
-対策: Issue description 末尾に **Meta セクション**を置いて slug を明示する。
+memory のタイトルは日本語混じり・長大になりがちで、そのままブランチ名にすると GitHub 側で non-ASCII branch name の warning が出るし、CLI で扱いにくい。
+
+対策: memory 本文末尾に **Meta セクション**を置いて slug を明示する。
 
 ```markdown
 ## Meta
@@ -449,16 +470,16 @@ TDD のテストリストは**変化速度で層を分ける**（詳細: `tdd-ss
 
 | 層 | 責務 | 寿命 | 場所 |
 |----|------|------|------|
-| **Linear Issue** | ユーザー観測可能な成功基準（不変） | Issue 完了まで | Linear description |
+| **memory（creo-memories）** | ユーザー観測可能な成功基準（不変） | todo 完了まで | memory 本文 |
 | **PR description** | テストリスト（S/M/L ラベル付き、☐→☑） | PR マージまで | GitHub PR body |
 | **`*.test.ts`** | `describe/it` 構造 = リストの実装形 | コードの寿命 | テストファイル |
 
 判定ルール:
-- 「このフィーチャは何を達成する？」 → **Linear Issue** を見る
+- 「このフィーチャは何を達成する？」 → **memory** を見る
 - 「今どこまで進んだ？」 → **PR description** のチェックリスト
 - 「何がコードで保証されているか？」 → **test ファイルの実行結果**
 
-紐付け: Linear Issue ID を PR description 冒頭に記載。test ファイルの describe JSDoc に `@see CREO-XX` を入れる。
+紐付け: memory ID を PR description 冒頭に記載。test ファイルの describe JSDoc に `@see mem_xxx` を入れる。
 
 ### 連携テスト（Medium）の粒度
 
