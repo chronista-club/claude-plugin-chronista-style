@@ -2,7 +2,7 @@
 name: route
 description: Issue からゴールへの最適な path を探索し、最小コストで到達する
 tags: [workflow, route-finding, path, scope, yagni]
-version: 1.0.1
+version: 1.0.2
 ---
 
 # Route Skill 🗺️
@@ -131,7 +131,7 @@ Survey → Plot → Compare → Choose → 🚦 [HARD GATE] → Travel → Log
 
 **記録先（デフォルト運用）**
 
-1. **Linear Issue コメント or PR description** — 想定 vs 実測・舗装発見・defer 項目（その Issue に紐づく運用情報）
+1. **memory への追記 or PR description** — 想定 vs 実測・舗装発見・defer 項目（その memory に紐づく運用情報）
 2. **creo-memories** — 横断的に効く学び（`case-study` + `route` タグで保存、他プロジェクトから検索できるように）
 
 プロジェクトごとに別運用を置くなら上書き可能だが、明示的に書かない限り上記を既定とする。

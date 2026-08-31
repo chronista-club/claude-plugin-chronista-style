@@ -15,13 +15,13 @@ argument-hint: "[issue-id]"
 
 > 「どの Issue の経路を探索しますか？ (例: FSC-22)」
 
-Issue ID 以外にフリーテキストで「この機能追加」のような記述もあり得る。その場合は該当しそうな Linear Issue を検索して候補を提示する。
+Issue ID 以外にフリーテキストで「この機能追加」のような記述もあり得る。その場合は該当しそうな memory を検索して候補を提示する。
 
 ### 2. Survey の実行
 
 指定 Issue に対して以下を並列に収集:
 
-- Linear MCP で Issue 本文と親/子 Issue を取得
+- creo-memories で memory 本文と関連 memory（derivedFrom / references）を取得
 - `git log` で直近の関連コミット
 - コードベースを Grep/Glob で探索（Issue 本文のキーワードから）
 - creo-memories で関連記憶を `search`（特に `case-study` + `route` タグ）
@@ -67,7 +67,7 @@ path を提示したら、**ユーザーが明示的に GO を出すまで Trave
 
 Travel（実装・PR）と Log（記録）は通常の開発フロー（`codeflow`）に委譲してよい。Route の仕事は **Confirm まで**が主眼。
 
-完走後、ユーザーに Log の記録を促す（Linear コメント or PR description + creo-memories の case-study タグ）。
+完走後、ユーザーに Log の記録を促す（memory への追記 or PR description + creo-memories の case-study タグ）。
 
 ## 引数
 

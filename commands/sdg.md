@@ -24,7 +24,7 @@ description: 仕様・設計・ガイドドキュメントを起こす。まず�
 
 > 「対象は？」
 
-- **現ブランチに紐づく Linear Issue** — `mcp__linear__get_issue` でブランチ名から引く
+- **現ブランチに紐づく memory** — `mcp__creo-memories__search` でブランチ名から引く
 - **直近の commit から推測** — `git log -5 --oneline` の変更内容から対象機能を推測
 - **フリーテキストで指定** — ユーザーが直接入力
 
