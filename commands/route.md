@@ -13,7 +13,7 @@ argument-hint: "[issue-id]"
 
 `$ARGUMENTS` に Issue ID があればそれを採用。なければ `AskUserQuestion` で尋ねる:
 
-> 「どの Issue の経路を探索しますか？ (例: FSC-22)」
+> 「どの Issue の経路を探索しますか？ (例: mem_xxx、または機能名)」
 
 Issue ID 以外にフリーテキストで「この機能追加」のような記述もあり得る。その場合は該当しそうな memory を検索して候補を提示する。
 
@@ -71,7 +71,7 @@ Travel（実装・PR）と Log（記録）は通常の開発フロー（`codeflo
 ## 例
 
 ```
-/route FSC-16
+/route mem_xxx
 /route GFP dev 移行
 /route       ← 引数なし、AskUserQuestion で対象を聞く
 ```
@@ -80,4 +80,3 @@ Travel（実装・PR）と Log（記録）は通常の開発フロー（`codeflo
 
 - スキル本体: `route/SKILL.md`
 - 姉妹スキル: `codeflow`（開発フロー全体）、`spec-design-guide`（SDG 文書化）
-- ケーススタディ: fleetstage FSC-22 (2026-04-17, PR #4) — 半日想定 → 45 分で完走

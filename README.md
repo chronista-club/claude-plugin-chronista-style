@@ -27,8 +27,6 @@ Chronistaとしての開発ワークフローを支えるClaude Codeプラグイ
 | `santa-method` | AI 協働 | 多 agent 敵対的検証。独立した 2 reviewer が両方 PASS するまで出荷しない |
 | `agent-harness` | AI 協働 | AI agent の action space / observation / recovery / context budget を設計 |
 | `agent-introspection` | AI 協働 | agent 自身の failure に対する構造化 self-debug |
-| `cross-build-image` | 実装技術 | Mac M-series から linux/amd64 へ cross-compile し slim image を push |
-| `size-stepper` | 実装技術 | design token を「演奏できる Live Token」として扱う 4 層 architecture |
 
 ### スキルタイプ
 
@@ -36,7 +34,6 @@ Chronistaとしての開発ワークフローを支えるClaude Codeプラグイ
 - **規律（厳守）**: `tdd`, `systematic-debugging`, `verification` -- 手順を正確に守る。省略・合理化は禁止
 - **柔軟**: `codeflow`, `route`, `parallel-dev`, `spec-design-guide`, `code-review` -- 原則をコンテキストに合わせて適用
 - **AI 協働**: `council`, `santa-method`, `agent-harness`, `agent-introspection` -- 複数 agent での意思決定・検証・設計
-- **実装技術**: `cross-build-image`, `size-stepper` -- 特定領域の実装手法
 
 ### 起動タイミング
 

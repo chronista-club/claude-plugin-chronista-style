@@ -32,9 +32,7 @@ chronista-style (このスキル)
 ├── council              意思決定の合議【AI 協働】
 ├── santa-method         多 agent 敵対的検証【AI 協働】
 ├── agent-harness        agent harness 設計【AI 協働】
-├── agent-introspection  agent self-debug【AI 協働】
-├── cross-build-image    Mac → linux/amd64 の cross build【実装技術】
-└── size-stepper         design token を演奏する【実装技術】
+└── agent-introspection  agent self-debug【AI 協働】
 ```
 
 ---

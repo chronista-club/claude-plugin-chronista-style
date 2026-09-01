@@ -30,7 +30,7 @@ Route のすべての選択の土台となる姿勢です。
 **OKなグルーブ**
 - 「これがハマる道だな〜」という直感を言語化する遊び
 - 「意外と C（放棄）もアリかも」という脱力
-- 「FSC-22 のときは 45 分で済んだんだけど」のケースネタ
+- 「あの Issue、半日想定だったのに 45 分で済んだんだよね」というケースネタ
 
 ## コア姿勢
 
@@ -130,47 +130,6 @@ Survey → Plot → Compare → Choose → Confirm → Travel → Log
 
 プロジェクトごとに別運用を置くなら上書き可能だが、明示的に書かない限り上記を既定とする。
 
-## ケーススタディ: FSC-22 (2026-04-17)
-
-実例を見る。
-
-### Survey
-- Issue「やること」6 項目
-- **Inventory**: `fleetstage-auth/-billing/-dashboard` は既に lib crate（構造要件は既に達成済み）
-- **Unknown**: fleetflowd 側の拡張口は未整備
-
-### Plot
-| path | 概要 |
-|---|---|
-| A: 全部実装 | Issue の 6 項目を全て着手、fleetflow 上流にも拡張口を追加 |
-| B: 最小スコープ | バイナリ削除 + workspace 整理 + features 追加のみ、上流は別 Issue |
-| C: 放棄 | FSC-22 を close、FSC-16/17/18 で都度判断 |
-
-### Compare
-| path | Cost | Safety | Unblock | YAGNI risk |
-|---|---|---|---|---|
-| A | 半日〜1日 | 中（上流にも変更） | 全後続解放 | **高**（先に抽象を作る） |
-| B | 45分 | 高 | 後続も解放 | 低 |
-| C | 0 | 高 | 解放されない | 低 |
-
-### Choose
-**B を選択**。A の「上流拡張口」は FSC-16/17/18 で具体的なユースケースが決まってから別 Issue で対応。
-
-### Confirm
-ユーザーに「この最小スコープで OK?」と提示、**go** を受領。
-
-### Travel
-- ブランチ切り → 実装（バイナリ削除、workspace 整理、features 追加、doc 更新）
-- ローカル検証: fmt/clippy/build/test すべてグリーン
-- PR #4 → CI 2m3s でグリーン → squash merge
-- 所要 45 分 + CI 待ち
-
-### Log
-- **想定 vs 実測**: 半日想定 → 45分。7 倍以上の過大評価
-- **舗装発見**: fleetstage-* は既に lib crate だった（Inventory 段階で発見）
-- **脇道 Issue**: fleetflow 上流拡張口は FSC-16/17/18 で必要時に新規 Issue
-- **学び**: 「lib crate 化」系のタスクは構造確認が先。手を動かす前に `[lib]` が既にあるか見る
-
 ## 他スキルとの住み分け
 
 | スキル | 役割 | Route との関係 |
@@ -228,6 +187,5 @@ Survey → Plot → Compare → Choose → Confirm → Travel → Log
 
 ## 参考
 
-- **ケーススタディ**: fleetstage FSC-22 (2026-04-17, PR #4)
 - **関連概念**: YAGNI, 最短経路, critical path, happy path
 - **姉妹スキル**: `codeflow`, `spec-design-guide`
