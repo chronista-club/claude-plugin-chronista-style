@@ -1,7 +1,7 @@
 ---
 name: code-review
 description: コードレビューの実行手法と規律。スコープに応じて Quick / Standard / Deep モードを選択、team-bucciarati の Stand を観点別に dispatch。レビューする側 / 受ける側の両方をカバー。
-version: 2.1.0
+version: 2.1.1
 tags: [code-review, refactor, methodology, discipline, team-bucciarati, hearing-first, chronista-style]
 ---
 

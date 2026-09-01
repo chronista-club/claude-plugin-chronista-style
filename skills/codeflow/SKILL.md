@@ -2,7 +2,7 @@
 name: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 2.1.1
+version: 3.0.0
 ---
 
 # Code Flow Skill

@@ -8,6 +8,22 @@
 
 ## [Unreleased]
 
+### Removed
+- **codeflow `reference/` 5 ファイル（計 3,969 行）を削除**（`codeflow` `2.1.1` → `3.0.0` の一部）: `claude-code-advanced-discoveries.md`（2025-11-18 時点の内部ツール調査）/ `claude-code-internal-tools.md` / `ask-user-question-tool.md` / `hearing-first.md` / `development-flow.md`。Claude Code 本体が保証するツール仕様のスナップショットはモデルと harness の進化で必ず腐り、古い仕様の注入はむしろ有害。現行モデル（Fable / Opus 世代）には手順の長大な例示も不要
+- `chronista-style`: 廃止済み fleetflow プラグインのインフラ節・`openskills read` 参照 ×4・`gh issue create` ベースの旧タスク化フロー（memory-as-issue SSOT と矛盾）・発動テーブルのスキル非実在行（fleetflow / mise / Chrome DevTools）を削除。fleetflow CLI 本体は継続のため `.fleetflow/*.kdl` の変更検出行は温存
+- `README.md`: 廃止済み fleetflow の関連プラグイン行を削除
+
+### Changed
+- **「モデルを型に嵌める拘束」を判断委任型に書き換え**（mako 裁定 2026-09-01「大胆に削る」— 作り込んだ harness / skill はモデル性能を落としやすい、Fable / Opus を信じる方向へ）
+  - `chronista-style` `4.6.0` → `5.0.0`: The Iron Rule（1% でも該当なら発動・交渉不可）+ 合理化の罠テーブル → 「起動の基準」（該当判断はモデルに委ね、規律スキルのみ省略不可）。Ruby-first / KDL-first の「必ず比較案を共有」儀式 → 既定値の表明。creo-memories 節は Context Engine の自動注入を前提化し手動検索儀式を削除。一問一答の絶対化を解除（関連質問は束ねてよい、依存質問はラウンドを分ける）
+  - `codeflow` → `3.0.0`: HARD GATE（設計承認なしにコードを書くな）→ 「実装前の合意」（設計判断を伴う変更のみ。明白な小修正は直進。判断軸 = ユーザーが選ぶべき分岐があるか）。Hearing の create_todo / complete_todo 儀式を AskUserQuestion 軸に簡素化
+  - `route` `1.0.2` → `1.1.0` / `commands/route.md`: HARD GATE → **Confirm** フェーズに改称。path 選択のユーザー承認自体はスコープ判断として維持
+  - `commands/hearing.md`: 質問ごとの todo 登録 → 一覧 → 一問一答ループを廃止し、論点抽出 → AskUserQuestion → 決定事項のみ記録に書き直し
+  - `tdd` `1.0.1` → `1.1.0` / `systematic-debugging` → `1.0.2`: 「削除しろ。やり直せ」「資格はない」等の脅迫調を、規律の中身（失敗の観測・調査の完遂）を保ったまま行動指示に変換
+  - `hooks/session-start.sh`: Atlas 探索プロトコル（list_atlas → search ×3 → 報告）を撤去し、git コンテキスト + Atlas 候補の提示に縮約（107 → 84 行）。creo-memories v3.0 Context Engine の自動注入と重複していた
+  - `council` → `1.0.2` / `code-review` → `2.1.1` / `size-stepper` → `1.0.1`: 一問一答原則への cross-reference を新方針に同期
+- `.gitignore`: VS Code Mermaid 拡張が自動生成する `.github/copilot-instructions.md` / `.github/instructions/` を無視対象に追加
+
 ## [0.26.0] - 2026-08-31
 
 ### Added

@@ -1,7 +1,7 @@
 ---
 name: tdd
 description: 機能追加・バグ修正の前に使用。テストファーストで実装する規律スキル。
-version: 1.0.1
+version: 1.1.0
 tags: [discipline, testing, tdd, red-green-refactor]
 ---
 
