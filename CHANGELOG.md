@@ -8,6 +8,8 @@
 
 ## [Unreleased]
 
+## [0.28.0] - 2026-09-01
+
 ### Removed
 - **fleetstage 関連を全削除**（mako 裁定 2026-09-01「fleetstage はオミット仕様。関わるものは一旦全部削除」）
   - `skills/size-stepper/` — origin = fleetstage-hq。実コード（`~/repos/fleetstage/.../ui/`）が SSOT で、参照先なしでは再現不能
