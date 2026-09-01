@@ -8,6 +8,8 @@
 
 ## [Unreleased]
 
+## [0.27.0] - 2026-09-01
+
 ### Removed
 - **codeflow `reference/` 5 ファイル（計 3,969 行）を削除**（`codeflow` `2.1.1` → `3.0.0` の一部）: `claude-code-advanced-discoveries.md`（2025-11-18 時点の内部ツール調査）/ `claude-code-internal-tools.md` / `ask-user-question-tool.md` / `hearing-first.md` / `development-flow.md`。Claude Code 本体が保証するツール仕様のスナップショットはモデルと harness の進化で必ず腐り、古い仕様の注入はむしろ有害。現行モデル（Fable / Opus 世代）には手順の長大な例示も不要
 - `chronista-style`: 廃止済み fleetflow プラグインのインフラ節・`openskills read` 参照 ×4・`gh issue create` ベースの旧タスク化フロー（memory-as-issue SSOT と矛盾）・発動テーブルのスキル非実在行（fleetflow / mise / Chrome DevTools）を削除。fleetflow CLI 本体は継続のため `.fleetflow/*.kdl` の変更検出行は温存
