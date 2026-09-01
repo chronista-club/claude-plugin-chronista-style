@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.0.0
+version: 5.1.0
 tags:
   - chronista
   - development
@@ -22,19 +22,12 @@ tags:
 chronista-style (このスキル)
 ├── creo-memories        【最優先】永続記憶
 ├── codeflow             開発フロー
-├── route                Issue→ゴールの最適 path 探索
 ├── parallel-dev         並列開発の道具選び（隔離・出荷の 2 層）
 ├── spec-design-guide    ドキュメント管理
 ├── tdd                  テスト駆動開発【規律】
 ├── systematic-debugging 体系的デバッグ【規律】
 ├── verification         完了前検証【規律】
-├── code-review          コードレビュー【規律】
-├── council              意思決定の合議【AI 協働】
-├── santa-method         多 agent 敵対的検証【AI 協働】
-├── agent-harness        agent harness 設計【AI 協働】
-├── agent-introspection  agent self-debug【AI 協働】
-├── cross-build-image    Mac → linux/amd64 の cross build【実装技術】
-└── size-stepper         design token を演奏する【実装技術】
+└── council              意思決定の合議【AI 協働】
 ```
 
 ---
@@ -246,14 +239,14 @@ fn test_multi_session() { ... }
 | tdd | **機能実装・バグ修正の前**（テストファースト） |
 | systematic-debugging | **バグ・テスト失敗・予期しない挙動に遭遇した時** |
 | verification | **完了宣言・コミット・PR作成の前** |
-| code-review | **主要機能完了後、マージ前、レビュー受信時** |
+| council | **判断軸が複数ある意思決定、go/no-go 判断** |
 | spec-design-guide | コード変更・ドキュメント更新時 |
 
 ### スキルタイプ
 
 **Rigid（厳守）**: tdd, systematic-debugging, verification — 手順を正確に守る。
 
-**Flexible（柔軟）**: codeflow, spec-design-guide, code-review — 原則をコンテキストに合わせて適用。
+**Flexible（柔軟）**: codeflow, spec-design-guide, parallel-dev, council — 原則をコンテキストに合わせて適用。
 
 ---
 

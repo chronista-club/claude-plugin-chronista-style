@@ -8,6 +8,25 @@
 
 ## [Unreleased]
 
+## [0.28.0] - 2026-09-01
+
+### Removed
+- **fleetstage 関連を全削除**（mako 裁定 2026-09-01「fleetstage はオミット仕様。関わるものは一旦全部削除」）
+  - `skills/size-stepper/` — origin = fleetstage-hq。実コード（`~/repos/fleetstage/.../ui/`）が SSOT で、参照先なしでは再現不能
+  - `skills/cross-build-image/` — origin = fleetstage Phase B-3。実行例・参考実装とも fleetstage-hq-api 依存（同梱 `scripts/build-and-push.sh` 含む）
+  - `skills/route/` の FSC-22 ケーススタディと、`commands/route.md` の FSC 系引数例
+- **ミニマム化 — 「プロダクト群を横断する共通の開発スタイル基盤」に絞る**（mako 裁定 2026-09-01）。スキル 15 → 8、コマンド 6 → 5
+  - `skills/santa-method/` — **team-bucciarati へ移設**（多 agent 敵対的検証は agent team プラグインのドメイン。中身は無改変で移動、slim 化は team-b 側の棚卸しで行う）
+  - `skills/code-review/` — 削除。汎用レビューは Claude Code 標準の `/code-review` が受け、Stand 観点別 dispatch の知識（`reference/stand-mapping.md`）は team-bucciarati へ移設
+  - `skills/agent-harness/` / `skills/agent-introspection/` — 削除。発動場面が抽象的で、description のコンテキスト税が全スキル中最大級（計 470 字）だった
+  - `skills/route/` + `commands/route.md` — 削除。Survey→Plot→Compare→Choose は codeflow の Discovery→Discussion と重複
+  - `bin/setup` / `bin/setup-windows` は存置（コンテキスト税ゼロ、新マシン立ち上げと .mcp.json 復元 path として実用）
+
+### Changed
+- `council` `1.0.2` → `2.0.0`: 283 → 99 行に縮約。中核メカニズム（4 voice の役割、fresh subagent への文脈隔離 = anti-anchoring、Position 先行、Synthesize の bias guardrail、strongest dissent の可視化）だけを残し、The Iron Rule・NG パターン表・アンチパターン節・多 round 運用・クイックリファレンス・VP 固有の適用例を削除。santa-method（→ team-b）と `/code-review`（→ Claude Code 標準）への参照を新配置に同期
+- `chronista-style` `5.0.0` → `5.1.0`: スキルツリーを 8 スキルに同期。発動テーブルの code-review 行を council 行に置換
+- `README.md` / `plugin.json`: 冒頭にプラグインの存在意義を明文化 — 「Chronista のプロダクト群を横断する共通の開発スタイル基盤」（個別プロダクト名は列挙しない — 列挙は腐るため）
+
 ## [0.27.0] - 2026-09-01
 
 ### Removed
