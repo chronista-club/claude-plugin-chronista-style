@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.1.0
+version: 5.2.0
 tags:
   - chronista
   - development
@@ -32,9 +32,14 @@ chronista-style (このスキル)
 
 ---
 
+## North Star: 強く美しい構造
+
+> **Strong & Beautiful** — 壊れない強さと、読み手に伝わる美しさを併せ持つ構造を目指す。
+> team-bucciarati が「strong, beautiful code」をコードの側から目指すのと同じ北極星を、プロダクトの側から見る。
+
 ## 設計哲学: Simplicity & Straightforward
 
-> **全てのスキル・全てのコード・全てのドキュメントの土台となる原則。**
+> **North Star に至る手段。全てのスキル・全てのコード・全てのドキュメントの土台となる原則。**
 >
 > 原典: [Grokking Simplicity](https://www.manning.com/books/grokking-simplicity) — Eric Normand
 > 詳細: [エッセンス抽出](reference/grokking-simplicity.md)

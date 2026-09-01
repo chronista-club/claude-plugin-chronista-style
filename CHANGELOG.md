@@ -8,6 +8,13 @@
 
 ## [Unreleased]
 
+### Added
+- **セッション分析（29 プロジェクト・509MB の transcript）からの改善盛り込み**（mako 裁定 2026-09-01、全 4 項目採用）
+  - `chronista-style` `5.1.0` → `5.2.0`: **North Star「強く美しい構造（Strong & Beautiful）」**を設計哲学の上位に新設。team-bucciarati の「strong, beautiful code」と同じ北極星をプロダクト側から見る
+  - `hooks/session-start.sh`: **規律エッセンスの常時注入** — 54 セッション中 chronista-style スキルの明示発動が 2 回のみという実測を受け、規律 3 スキル + 合意フローのエッセンス 4 行を additionalContext で常時届ける（スキル本文は従来どおり発動時のみ）
+  - `verification` `1.1.0` → `1.2.0`: **ユーザー観測の層** — agent の green で閉じない変更（実機・実 UI・実環境）は「実機確認待ち」で止める。ladyland の実機検証ループ（「実機」言及 75 回）の明文化
+  - `codeflow` `3.0.0` → `3.1.0`: **合意の粒度**を明文化 — 短い方針提示に「いいね」「進めて」の GO で走る（「進めて」49 回・「どう？」34 回の実リズムに整合）。Learning に**裁定の原文引用**ルールを追加
+
 ## [0.28.0] - 2026-09-01
 
 ### Removed
