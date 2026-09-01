@@ -2,7 +2,7 @@
 name: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 2.1.1
+version: 3.0.0
 ---
 
 # Code Flow Skill
@@ -69,15 +69,9 @@ Gemini MCP経由で質問:
 「この技術選定で見落としているリスクはありますか？」
 ```
 
-### HARD GATE: Before Implementation
+### 実装前の合意
 
-<HARD-GATE>
-設計承認なしにコードを書くな。
-
-どんなに「シンプル」に見えても、Discovery → Discussion を経ずに実装に入るな。
-「シンプル」なプロジェクトこそ、未検証の仮定が最も多くの手戻りを生む。
-設計は短くてもいい（数行でも可）。だが、提示して承認を得ろ。
-</HARD-GATE>
+設計判断を伴う変更は、方針を短く提示して合意を得てから実装に入る（数行の設計メモで十分）。typo 修正や明白な小修正はそのまま進めてよい。判断軸は「この変更に、ユーザーが選ぶべき分岐があるか」。
 
 ### Discussion（ディスカッション） 💬
 
@@ -98,35 +92,13 @@ Gemini MCP経由で質問:
 
 ### Hearing（ヒアリング） 🎤
 
-方針決定後、詳細を詰めるための質問ステップ。**質問をTodo管理して、優先順位をつけながら進める。**
+方針決定後、詳細を詰めるための質問ステップ。
 
-**ヒアリングフロー**
+**進め方**
 
-```
-Step 1: 質問リスト作成 → Step 2: 全体確認 → Step 3: 優先順位付け → Step 4: 一問一答
-```
-
-**Step 1: 質問リスト作成**
-- 聞きたいことをすべてCreo Memoriesの**flowドメイン**にTodo登録
-- `create_todo`で各質問を登録（priority: high/medium/low）
-- タグ形式: `hearing:<date>:<title>`
-  - 例: `["hearing:2024-12-15:認証機能の詳細設計"]`
-
-**Step 2: 全体確認**
-- `list_todos`で質問一覧をユーザーに共有
-- 「こんな質問を予定しています。追加・削除ありますか？」
-- ユーザーからの追加質問も受け付ける
-
-**Step 3: 優先順位付け**
-- AskUserQuestionで「どれから答えたいですか？」
-- 選択肢として質問リストを提示
-- ユーザーが答えやすい順、または重要な順に並び替え
-
-**Step 4: 一問一答**
-- 選ばれた質問から順に1つずつ聞く
-- 回答を得たら`complete_todo`でマーク
-- 回答から派生した新しい質問は`create_todo`で追加
-- すべて完了するまで繰り返す
+- AskUserQuestion を軸に進める。関連する質問は 1 回にまとめてよい（最大 4 問）。前の回答に依存する質問は次のラウンドへ
+- 回答から派生した論点は対話で深掘りする
+- 長く残す決定事項だけを memory に記録する。質問ごとの todo 化はしない
 
 **ヒアリングのコツ**
 - 質問は具体的に（「どうしますか？」より「AとBどちらがいいですか？」）
@@ -267,7 +239,7 @@ Code Flowは**SDG（Spec-Design-Guide）原則**に基づいています:
 1. **ヒアリングファースト**
    - 実装前に必ず質問を通じてコンテキストを収集
    - ユーザーの意図を正確に理解
-   - 一問一答形式で丁寧に
+   - 関連する質問はまとめ、回答に依存する質問はラウンドを分ける
 
 2. **セカンドオピニオン活用**
    - 技術選定や設計判断の前に別AIの意見を求める
@@ -304,13 +276,3 @@ project/
     ├── 01-*.md    # 利用順序
     └── ...
 ```
-
-## 関連ドキュメント
-
-### Code Flowリファレンス
-
-- [Development Flow](./reference/development-flow.md) - 開発フロー詳細
-- [Hearing First](./reference/hearing-first.md) - ヒアリングファースト手法
-- [AskUserQuestion Tool](./reference/ask-user-question-tool.md) - 質問ツールの使い方
-- [Claude Code Advanced Discoveries](./reference/claude-code-advanced-discoveries.md) - 高度な機能の発見
-- [Claude Code Internal Tools](./reference/claude-code-internal-tools.md) - 内部ツールの詳細

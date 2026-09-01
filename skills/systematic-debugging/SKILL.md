@@ -1,7 +1,7 @@
 ---
 name: systematic-debugging
 description: バグ、テスト失敗、予期しない挙動に遭遇した時に使用。修正提案の前に根本原因を特定する規律スキル。
-version: 1.0.1
+version: 1.0.2
 tags: [discipline, debugging, root-cause, systematic]
 ---
 
@@ -17,7 +17,7 @@ tags: [discipline, debugging, root-cause, systematic]
 根本原因の調査なしに修正を提案するな
 ```
 
-Investigation を完了していないなら、修正を提案する資格はない。
+Investigation を完了してから、修正を提案する。
 
 ## いつ使うか
 

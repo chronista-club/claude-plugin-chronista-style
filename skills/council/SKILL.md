@@ -1,7 +1,7 @@
 ---
 name: council
 description: 多義的な意思決定・トレードオフ・go/no-go 判断のために、4 voice の合議を召集する。複数の妥当な path が存在し、選択前に構造化された反対意見が必要なときに使う。
-version: 1.0.1
+version: 1.0.2
 origin: ECC (Everything Claude Code) — chronista 適合 fork
 tags: [decision, council, ambiguity, multi-voice, second-opinion]
 ---
@@ -70,7 +70,7 @@ decision を 1 つの explicit prompt に絞る:
 - どの制約が効くのか?
 - 成功とは何か?
 
-質問が曖昧なら、council 召集前に **1 つだけ clarifying question** を user に投げる (一問一答原則)。
+質問が曖昧なら、council 召集前に **1 つだけ clarifying question** を user に投げる。
 
 ### 📦 Gather（必要 context の収集）
 

@@ -2,7 +2,7 @@
 name: route
 description: Issue からゴールへの最適な path を探索し、最小コストで到達する
 tags: [workflow, route-finding, path, scope, yagni]
-version: 1.0.2
+version: 1.1.0
 ---
 
 # Route Skill 🗺️
@@ -45,13 +45,13 @@ Route のすべての選択の土台となる姿勢です。
 - **走る** - 選んだ path を実装・PR・マージ
 - **記録する** - 走行ログを次の探索のために残す
 
-## 6 フェーズ（+ 1 ゲート）
+## 7 フェーズ
 
 ```
-Survey → Plot → Compare → Choose → 🚦 [HARD GATE] → Travel → Log
+Survey → Plot → Compare → Choose → Confirm → Travel → Log
 ```
 
-番号は使いません。依存は矢印のみで表現します。HARD GATE 以外のフェーズは単方向で流れます。
+番号は使いません。依存は矢印のみで表現します。フェーズは単方向で流れ、Travel の前に Confirm でユーザーの GO を得ます。
 
 ### 🗺 Survey（地図確認）
 
@@ -100,15 +100,9 @@ Survey → Plot → Compare → Choose → 🚦 [HARD GATE] → Travel → Log
 
 **NG**: 全部やろうとする。脇道を黙って放棄する（後で「やるはずだった」が見失われる）。
 
-### 🚦 HARD GATE: User Confirm
+### 🚦 Confirm（ユーザー承認）
 
-<HARD-GATE>
-選んだ path を **ユーザーに提示して明示的な GO をもらう** まで走り出さない。
-
-どんなに「これしかない」と思えても、path の選択には判断が含まれる。
-ユーザーが別の path を選ぶ権利を尊重する。
-提示は短くてよい（3 候補 + 推奨 1 行でも可）。だが、必ず確認を取る。
-</HARD-GATE>
+選んだ path を提示し、GO を得てから走り出す。path の選択はユーザーが決めるべき分岐そのものだからだ。提示は短くてよい（3 候補 + 推奨 1 行で十分）。別の path が選ばれたら、そちらの Travel に移る。
 
 ### 🏃 Travel（走行）
 
