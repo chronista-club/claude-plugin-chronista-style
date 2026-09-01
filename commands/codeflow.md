@@ -33,7 +33,7 @@ description: ヒアリングファースト開発セッションを起動。ま�
 |------|---------------|
 | Discovery | `search` + 現ブランチの `git log`、関連ファイルの読解を開始 |
 | Discussion | 現時点の知見を 3-5 行にまとめて提示、`AskUserQuestion` で方向性を問う |
-| Hearing | 質問候補を抽出 → `create_todo` で flow ドメインに登録（`/hearing` に委譲） |
+| Hearing | 決定が必要な論点を抽出し、AskUserQuestion で聞く（`/hearing` に委譲） |
 | 既存タスクを続ける | `list_todos` の結果を要約し、次にやる候補を `AskUserQuestion` で選ばせる |
 
 ## 起動後の流れ

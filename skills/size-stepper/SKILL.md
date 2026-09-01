@@ -2,7 +2,7 @@
 name: size-stepper
 description: design token (spacing / typography / radius 等) を 「演奏できる Live Token」 として扱う architecture skill。 TS class + Solid signal + CSS scope mirror + MIDI 2.0 連携で 物理 fader 演奏しながら token を tweak、 lock + Export to clipboard で const 化までの lifecycle を提供
 tags: [design-system, design-token, css-variable, solid, midi, live-tweak, korg-keystage, fleetstage]
-version: 1.0.0
+version: 1.0.1
 origin: fleetstage-hq (2026-05-04, commits 87207917 / 735b5188 / 97e98a24)
 ---
 
@@ -212,6 +212,6 @@ fleetstage-hq の実コードが SSOT。 以下は **開発中のエイリアス
 
 ## 関連 skill / handbook
 
-- `chronista-style` — ヒアリングファースト + 一問一答 + ユーモア
+- `chronista-style` — ヒアリングファースト + ユーモア
 - `codeflow` — Discovery → Hearing → SDG → Implementation の workflow
 - `~/repos/chronista-handbook/domain.md § Creo UI Design System` — handbook 上での domain knowledge（開発中のエイリアス）

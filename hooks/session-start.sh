@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # chronista-style SessionStart hook
-# Outputs JSON with additionalContext to inject project context into Claude's initial context.
+# Outputs JSON with additionalContext to inject git project context into Claude's initial context.
 # Fail-closed: on any error, emit empty context and exit 0 (never block the session).
 
 set -uo pipefail
@@ -55,35 +55,12 @@ context=$(cat <<EOF
 - Uncommitted files: ${status_summary}
 - Remote: \`${remote_url:-none}\`
 
-### Atlas 候補（creo-memories）
+### creo-memories
 
-**優先候補（ディレクトリ名ベース・A）**: \`${primary_candidates}\`
-**フォールバック候補（git remote・C）**: \`${fallback_candidates:-なし}\`
+- セッションコンテキストは Context Engine が自動注入される。開始時の手動検索は不要 — 必要になったら \`search\` で掘る
+- \`remember\` / \`create_todo\` の Atlas 候補: \`${primary_candidates}\`（remote 由来: \`${fallback_candidates:-なし}\`）。exact match が無ければユーザーに確認する
 
-**最初にやること（この順で試せ）:**
-
-1. \`mcp__creo-memories__list_atlas\` を呼んで全 Atlas を列挙
-2. **優先候補 A** に exact match があればそれを採用、フォールバックは見ない
-3. A に match が無ければ、**フォールバック候補 C** で exact match を探す
-4. 両方 match しなければ、\`AskUserQuestion\` で「どの Atlas を使うか？ 新規作成するか？」を尋ねる
-5. 確定した Atlas 名を以降の \`search\` / \`remember\` / \`create_todo\` の scope に指定する
-
-### 記憶の検索（Atlas 確定後）
-
-1. \`mcp__creo-memories__search\` query=\`"${atlas_candidate_dir}"\` limit=5
-2. \`mcp__creo-memories__search\` query=\`"${branch}"\` limit=3（ブランチ名から関連 memory を推測）
-3. \`mcp__creo-memories__list_recent_memories\` limit=5（直近の活動）
-
-関連記憶が見つかった場合、1-2 行で要約して「関連記憶を検索しました」と報告する。
-
-### Chronista Style の原則
-
-- **ヒアリングファースト** — 実装前に質問でコンテキスト収集
-- **一問一答** — 複数質問を一度に投げない
-- **セカンドオピニオン** — Gemini 等で第二意見
-- **Simplicity & Straightforward** — data/calculations/actions の分類、直線的な経路
-
-詳細は \`chronista-style\` スキル参照。
+Chronista Style の原則は \`chronista-style\` スキルを参照。
 EOF
 )
 

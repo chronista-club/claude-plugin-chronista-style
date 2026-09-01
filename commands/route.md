@@ -1,5 +1,5 @@
 ---
-description: Issue からゴールへの最適な path を探索（Survey→Plot→Compare→Choose→GATE→Travel→Log）
+description: Issue からゴールへの最適な path を探索（Survey→Plot→Compare→Choose→Confirm→Travel→Log）
 argument-hint: "[issue-id]"
 ---
 
@@ -54,14 +54,9 @@ Issue ID 以外にフリーテキストで「この機能追加」のような�
 
 最適 path を 1 本選び、理由を 1-2 行で付記。選ばなかった path の価値ある要素は **フォローアップ Issue 候補**として明示。
 
-### 6. HARD GATE: User Confirm
+### 6. Confirm（ユーザー承認）
 
-<HARD-GATE>
-path を提示したら、**ユーザーが明示的に GO を出すまで Travel に移らない**。
-
-「この最小スコープで進めて OK ですか？」とだけ問えばよい。
-別の path を選ばれたら、その path の Travel に移る。
-</HARD-GATE>
+path を提示したら、GO を得てから Travel に移る。「この最小スコープで進めて OK ですか？」で十分。別の path が選ばれたら、その path の Travel に移る。
 
 ### 7. Travel / Log は通常フロー
 

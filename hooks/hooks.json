@@ -1,5 +1,5 @@
 {
-  "description": "chronista-style hooks: SessionStart (project context + creo-memories search) and Stop (fabrication tripwire — block reporting tool results with no matching tool_result this turn)",
+  "description": "chronista-style hooks: SessionStart (project context) and Stop (fabrication tripwire — block reporting tool results with no matching tool_result this turn)",
   "hooks": {
     "SessionStart": [
       {

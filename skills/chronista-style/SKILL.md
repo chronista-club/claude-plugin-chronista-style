@@ -1,13 +1,12 @@
 ---
 name: chronista-style
-description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理、インフラを統合。
-version: 4.6.0
+description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
+version: 5.0.0
 tags:
   - chronista
   - development
   - workflow
   - memory
-  - infrastructure
   - requirements
 ---
 
@@ -35,8 +34,7 @@ chronista-style (このスキル)
 ├── agent-harness        agent harness 設計【AI 協働】
 ├── agent-introspection  agent self-debug【AI 協働】
 ├── cross-build-image    Mac → linux/amd64 の cross build【実装技術】
-├── size-stepper         design token を演奏する【実装技術】
-└── ツール群              mise, Chrome DevTools, Rust CLI, SurrealDB CLI
+└── size-stepper         design token を演奏する【実装技術】
 ```
 
 ---
@@ -81,45 +79,23 @@ chronista-style (このスキル)
 
 設計哲学を**実装の手触り**に落とし込むレイヤ。「何で書くか」「どう表現するか」の既定値。
 
-### Python が出てきたら、まず Ruby で考える
+### 言語の既定値: Ruby first
 
-スクリプト・自動化・CLI・小さなツール・DSL 等で **Python が候補に上がる文脈では、まず Ruby で書けないかを最初に考える**。
-
-- 表現力が高く、書きながら考えるのに向く（prototype・DSL 設計）
-- mise で複数バージョン管理可能、bundler / Gemfile で依存管理が確立
-- Straightforward な経路を**最小行数**で書ける
-
-**ルール**:
-
-1. Python で書こうと思ったら、一度立ち止まって「Ruby ならどう書くか」を考える
-2. 結論として Python を選ぶ場合も、**Ruby 案を並べてユーザーに共有してから決める**
-3. 既存の Python スクリプトをリファクタする機会があれば Ruby 化を提案する
-
-選択基準:
+スクリプト・自動化・CLI・小さなツール・DSL では **Ruby を既定**とする。表現力が高く書きながら考えるのに向き、mise / bundler で環境管理も確立している。
 
 | 状況 | 言語 |
 |------|------|
-| ワンショット・グルー・小さな CLI | **Ruby first** |
-| ML / 数値計算 / Python エコシステム必須（pandas, numpy, torch 等） | Python（理由を明示） |
+| ワンショット・グルー・小さな CLI | **Ruby** |
+| ML / 数値計算 / Python エコシステム必須（pandas, numpy, torch 等） | Python |
 | 既存プロジェクトの実装言語がある | そちらに合わせる |
 | 性能が要求されるツール | Rust |
 
-### JSON が出てきたら、まず KDL で考える
+既定と異なる選択をするときは理由を一言添える。毎回の比較案の提示は不要。
 
-設定・データ表現・スキーマ等で **JSON が登場する文脈では、まず KDL（KDL Document Language）に置き換えて考え、ユーザーと情報共有する**。
+### 設定・データ表現の既定値: KDL first
 
-- KDL は人間が読み書きしやすく、コメント・複数行値・型注釈をネイティブにサポート
-- fleetflow / vp lane 等、本エコシステムは KDL を採用済み
-- JSON は**機械間 wire format** としては有用だが、人間が触る設計層には不向き
+人間が読み書きする設定・スキーマ層は **KDL を既定**とする。コメント・複数行値・型注釈をネイティブにサポートし、vp lane 等エコシステムで採用済み。JSON は機械間 wire format としては有用なので、互換性で JSON が必須なら「設計層は KDL、出力層で JSON 化」を検討する。
 
-**ルール**:
-
-1. JSON を扱う前に「これは KDL で表現できないか？」を一度確認する
-2. 結論として JSON を選ぶ場合も、**KDL ならどう書くかを並べてユーザーに共有してから決める**
-3. 互換性で JSON 必須なら、**設計層は KDL、出力層で JSON 化**する形を検討
-4. 既存の JSON 設定をリファクタする機会があれば KDL 化を提案する
-
-→ KDL 詳細: `kdl` スキル参照
 
 ---
 
@@ -127,15 +103,9 @@ chronista-style (このスキル)
 
 > **過去を知る者だけが、未来を正しく紡げる。**
 
-**creo-memoriesは全セッションで最優先で使用する。**
+**セッション開始時のコンテキストは Context Engine が自動注入される。** 開始時の手動検索は不要 — 過去を参照したくなったら `search` で掘る。
 
-### 必須アクション
-
-1. **セッション開始時**: `search` で関連する過去の記憶を検索
-2. **重要な決定時**: `remember` で記憶に刻む
-3. **過去参照時**: `search` で呼び起こす
-
-### 記憶に刻むべき瞬間
+### 記憶に刻むべき瞬間（`remember`）
 
 - 設計上の重要な決定とその理由
 - 技術的な発見・学び
@@ -143,29 +113,7 @@ chronista-style (このスキル)
 - ユーザーとの合意事項
 - 未完の物語（次に続くタスク）
 
-### MCPツール
-
-| ツール | 用途 |
-|--------|------|
-| `mcp__creo-memories__remember` | メモリを保存 |
-| `mcp__creo-memories__search` | 検索（セマンティック・フィルタ対応） |
-| `mcp__creo-memories__list_recent_memories` | 最近のメモリ一覧 |
-| `mcp__creo-memories__create_todo` | Todo作成 |
-| `mcp__creo-memories__list_todos` | Todo一覧 |
-
-### カテゴリ分類
-
-| カテゴリ | 用途 |
-|---------|------|
-| `design` | アーキテクチャ、設計決定 |
-| `config` | 設定、環境構築 |
-| `debug` | バグ原因、解決策 |
-| `learning` | 学んだこと、ベストプラクティス |
-| `spec` | 仕様、要件 |
-| `task` | タスク、将来の計画 |
-| `decision` | 重要な意思決定とその理由 |
-
-→ 詳細は `openskills read creo-memories` を参照
+→ 詳細は `creo-memories` スキルを参照
 
 ---
 
@@ -216,43 +164,11 @@ Learning（creo-memoriesに記録）
 
 ### ヒアリングのルール
 
-- **一問一答形式で進める**: 複数の質問を一度に投げかけず、1つずつ質問して回答を待つ
-- 回答を受けてから次の質問に進む
-- 必要に応じて深掘りする
-- ユーザーが一度に複数の情報を提供した場合は、それを受け入れて次に進む
+- 実装前に不明点を質問で解消する（ヒアリングファースト）
+- 関連する質問は 1 回にまとめてよい。前の回答に依存する質問は次のラウンドに回す
+- 回答から深掘りする。「わからない」「後で決める」も立派な回答
 
-### 調査→タスク化→実行フロー
-
-新しいアイデアや技術を導入する際の高速開発フロー:
-
-```
-1. 調査（Discovery）
-   └─ WebFetch / WebSearch で情報収集
-   └─ creo-memories に調査結果を記録
-
-2. 開発パス策定（Planning）
-   └─ Phase分けで開発順序を決定
-   └─ 依存関係を明確化
-   └─ ★ ユーザーに開発パスを提示し確認
-
-3. タスク化（Issue Creation）
-   └─ gh issue create でGitHubに登録
-   └─ 直近タスクには `next` ラベル
-   └─ 依存関係をIssue本文に記載
-   └─ ★ 作成したIssue一覧をユーザーに報告
-
-4. 実行（Execution）
-   └─ 一気に進む
-   └─ 途中経過を creo-memories に記録
-   └─ 完了時に学びを記録
-```
-
-**ポイント**:
-- 調査結果が出たらすぐにタスク化
-- 各ステップの終わりでユーザー確認を挟む
-- 考える時間を最小化し、手を動かす時間を最大化
-
-→ 詳細は `openskills read codeflow` を参照
+→ 詳細は `codeflow` スキルを参照
 
 ---
 
@@ -296,55 +212,17 @@ fn test_multi_session() { ... }
 - ドキュメントとコードは常に同期。不一致はバグ
 - Supersedes 連携: ドキュメントと creo-memories の両方で改版を追跡
 
-→ 詳細は `openskills read spec-design-guide` を参照
-
----
-
-## インフラ: fleetflow
-
-KDL（KDL Document Language）をベースにした超シンプルなコンテナオーケストレーション。
-
-### コンセプト
-
-「宣言だけで、開発も本番も」
-
-### 基本操作
-
-```bash
-fleetflow up local      # 起動
-fleetflow ps            # 状態確認
-fleetflow logs          # ログ表示
-fleetflow down local    # 停止・削除
-fleetflow deploy prod --pull --yes  # CI/CDデプロイ
-```
-
-→ 詳細は `openskills read fleetflow` を参照
+→ 詳細は `spec-design-guide` スキルを参照
 
 ---
 
 ## スキルの起動ルール
 
-### The Iron Rule
+### 起動の基準
 
-<EXTREMELY-IMPORTANT>
-1%でも該当する可能性があれば、スキルを発動せよ。
+タスクに明確に該当するスキルがあれば使う。該当判断はモデルに委ねる。ただし**規律スキル（tdd / systematic-debugging / verification）は該当場面で省略しない** — これらは能力の補助ではなく、事故を防ぐ検証手順だから。
 
-スキルが適用されるなら、選択の余地はない。必ず使え。
-これは交渉不可。任意ではない。合理化で逃げることはできない。
-</EXTREMELY-IMPORTANT>
-
-### 合理化の罠
-
-以下の思考が浮かんだら STOP。それは合理化だ:
-
-| 思考 | 現実 |
-|------|------|
-| 「シンプルな質問だから」 | 質問もタスク。スキルを確認しろ。 |
-| 「先にコンテキストが必要」 | スキル確認が先。質問は後。 |
-| 「先にコードベースを調べたい」 | スキルが調べ方を教えてくれる。 |
-| 「このスキルは大げさ」 | シンプルな作業こそ複雑化する。使え。 |
-| 「今回だけ先にやる」 | 何かやる前にスキルを確認。 |
-| 「スキルの内容は覚えている」 | スキルは進化する。最新版を読め。 |
+スキルの内容は進化する。記憶に頼らず最新版を読む。
 
 ### スキル優先順序
 
@@ -370,13 +248,10 @@ fleetflow deploy prod --pull --yes  # CI/CDデプロイ
 | verification | **完了宣言・コミット・PR作成の前** |
 | code-review | **主要機能完了後、マージ前、レビュー受信時** |
 | spec-design-guide | コード変更・ドキュメント更新時 |
-| fleetflow | コンテナ環境の構築・管理時 |
-| mise | 開発環境セットアップ時 |
-| Chrome DevTools | WebUI確認、E2Eテスト時 |
 
 ### スキルタイプ
 
-**Rigid（厳守）**: tdd, systematic-debugging, verification — 手順を正確に守れ。規律を緩めるな。
+**Rigid（厳守）**: tdd, systematic-debugging, verification — 手順を正確に守る。
 
 **Flexible（柔軟）**: codeflow, spec-design-guide, code-review — 原則をコンテキストに合わせて適用。
 
