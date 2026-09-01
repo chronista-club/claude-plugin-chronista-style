@@ -1,7 +1,7 @@
 ---
 name: verification
 description: 作業の完了を宣言する前に使用。証拠なき完了宣言を防ぐ規律スキル。
-version: 1.1.0
+version: 1.2.0
 tags: [discipline, verification, completion, evidence, fabrication]
 ---
 
@@ -34,6 +34,11 @@ tags: [discipline, verification, completion, evidence, fabrication]
 
 どのステップも飛ばすな。飛ばした時点で嘘になる。
 ```
+
+## ユーザー観測の層 — 実機確認待ちで止まる
+
+agent 環境の green だけでは閉じない変更がある — 実機のデバイス挙動、実 UI の見た目、実環境のログ。
+この種の変更は「完了」を宣言せず、**「実機確認待ち」で止める**。ユーザーの観測（ログの実物・スクショ・「点いた / 鳴った」）が最終検証であり、その結果が次の裁定になる。agent のテストが green であることと、実機で正しく動くことは別の主張。
 
 ## 捏造 — 検証不足の極限形
 
