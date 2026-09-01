@@ -60,7 +60,14 @@ context=$(cat <<EOF
 - セッションコンテキストは Context Engine が自動注入される。開始時の手動検索は不要 — 必要になったら \`search\` で掘る
 - \`remember\` / \`create_todo\` の Atlas 候補: \`${primary_candidates}\`（remote 由来: \`${fallback_candidates:-なし}\`）。exact match が無ければユーザーに確認する
 
-Chronista Style の原則は \`chronista-style\` スキルを参照。
+### 規律エッセンス（詳細は各スキル）
+
+- テストが先に失敗しない限り、プロダクションコードを書かない（\`tdd\`）
+- 根本原因を特定してから修正する（\`systematic-debugging\`）
+- 検証の証拠なしに完了を宣言しない。実機でしか確認できないものは「実機確認待ち」で止める（\`verification\`）
+- 設計判断は短い方針提示 → GO をもらってから走る（\`codeflow\`）
+
+その他の原則は \`chronista-style\` スキルを参照。
 EOF
 )
 
