@@ -304,13 +304,3 @@ project/
     ├── 01-*.md    # 利用順序
     └── ...
 ```
-
-## 関連ドキュメント
-
-### Code Flowリファレンス
-
-- [Development Flow](./reference/development-flow.md) - 開発フロー詳細
-- [Hearing First](./reference/hearing-first.md) - ヒアリングファースト手法
-- [AskUserQuestion Tool](./reference/ask-user-question-tool.md) - 質問ツールの使い方
-- [Claude Code Advanced Discoveries](./reference/claude-code-advanced-discoveries.md) - 高度な機能の発見
-- [Claude Code Internal Tools](./reference/claude-code-internal-tools.md) - 内部ツールの詳細

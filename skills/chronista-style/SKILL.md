@@ -35,8 +35,7 @@ chronista-style (このスキル)
 ├── agent-harness        agent harness 設計【AI 協働】
 ├── agent-introspection  agent self-debug【AI 協働】
 ├── cross-build-image    Mac → linux/amd64 の cross build【実装技術】
-├── size-stepper         design token を演奏する【実装技術】
-└── ツール群              mise, Chrome DevTools, Rust CLI, SurrealDB CLI
+└── size-stepper         design token を演奏する【実装技術】
 ```
 
 ---
@@ -109,7 +108,7 @@ chronista-style (このスキル)
 設定・データ表現・スキーマ等で **JSON が登場する文脈では、まず KDL（KDL Document Language）に置き換えて考え、ユーザーと情報共有する**。
 
 - KDL は人間が読み書きしやすく、コメント・複数行値・型注釈をネイティブにサポート
-- fleetflow / vp lane 等、本エコシステムは KDL を採用済み
+- vp lane 等、本エコシステムは KDL を採用済み
 - JSON は**機械間 wire format** としては有用だが、人間が触る設計層には不向き
 
 **ルール**:
@@ -119,7 +118,6 @@ chronista-style (このスキル)
 3. 互換性で JSON 必須なら、**設計層は KDL、出力層で JSON 化**する形を検討
 4. 既存の JSON 設定をリファクタする機会があれば KDL 化を提案する
 
-→ KDL 詳細: `kdl` スキル参照
 
 ---
 
@@ -165,7 +163,7 @@ chronista-style (このスキル)
 | `task` | タスク、将来の計画 |
 | `decision` | 重要な意思決定とその理由 |
 
-→ 詳細は `openskills read creo-memories` を参照
+→ 詳細は `creo-memories` スキルを参照
 
 ---
 
@@ -221,38 +219,7 @@ Learning（creo-memoriesに記録）
 - 必要に応じて深掘りする
 - ユーザーが一度に複数の情報を提供した場合は、それを受け入れて次に進む
 
-### 調査→タスク化→実行フロー
-
-新しいアイデアや技術を導入する際の高速開発フロー:
-
-```
-1. 調査（Discovery）
-   └─ WebFetch / WebSearch で情報収集
-   └─ creo-memories に調査結果を記録
-
-2. 開発パス策定（Planning）
-   └─ Phase分けで開発順序を決定
-   └─ 依存関係を明確化
-   └─ ★ ユーザーに開発パスを提示し確認
-
-3. タスク化（Issue Creation）
-   └─ gh issue create でGitHubに登録
-   └─ 直近タスクには `next` ラベル
-   └─ 依存関係をIssue本文に記載
-   └─ ★ 作成したIssue一覧をユーザーに報告
-
-4. 実行（Execution）
-   └─ 一気に進む
-   └─ 途中経過を creo-memories に記録
-   └─ 完了時に学びを記録
-```
-
-**ポイント**:
-- 調査結果が出たらすぐにタスク化
-- 各ステップの終わりでユーザー確認を挟む
-- 考える時間を最小化し、手を動かす時間を最大化
-
-→ 詳細は `openskills read codeflow` を参照
+→ 詳細は `codeflow` スキルを参照
 
 ---
 
@@ -296,29 +263,7 @@ fn test_multi_session() { ... }
 - ドキュメントとコードは常に同期。不一致はバグ
 - Supersedes 連携: ドキュメントと creo-memories の両方で改版を追跡
 
-→ 詳細は `openskills read spec-design-guide` を参照
-
----
-
-## インフラ: fleetflow
-
-KDL（KDL Document Language）をベースにした超シンプルなコンテナオーケストレーション。
-
-### コンセプト
-
-「宣言だけで、開発も本番も」
-
-### 基本操作
-
-```bash
-fleetflow up local      # 起動
-fleetflow ps            # 状態確認
-fleetflow logs          # ログ表示
-fleetflow down local    # 停止・削除
-fleetflow deploy prod --pull --yes  # CI/CDデプロイ
-```
-
-→ 詳細は `openskills read fleetflow` を参照
+→ 詳細は `spec-design-guide` スキルを参照
 
 ---
 
@@ -370,9 +315,6 @@ fleetflow deploy prod --pull --yes  # CI/CDデプロイ
 | verification | **完了宣言・コミット・PR作成の前** |
 | code-review | **主要機能完了後、マージ前、レビュー受信時** |
 | spec-design-guide | コード変更・ドキュメント更新時 |
-| fleetflow | コンテナ環境の構築・管理時 |
-| mise | 開発環境セットアップ時 |
-| Chrome DevTools | WebUI確認、E2Eテスト時 |
 
 ### スキルタイプ
 

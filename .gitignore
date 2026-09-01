@@ -3,3 +3,7 @@
 # ユーザレベルの MCP 設定 (環境ごとに異なる、コミットしない)
 # 復元: bin/setup が .mcp.json.example からコピー生成する (example パターン)
 .mcp.json
+
+# VS Code Mermaid 拡張が自動生成する Copilot instructions（プラグインとは無関係）
+.github/copilot-instructions.md
+.github/instructions/
