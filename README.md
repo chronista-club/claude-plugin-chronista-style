@@ -69,7 +69,7 @@ Second Opinion（Gemini等・任意）
     ↓
 Discussion（方向性議論）
     ↓
-Hearing（一問一答で詳細確認）
+Hearing（質問で詳細確認）
     ↓
 SDG + Bite-Sized Tasks（仕様・設計・タスク分割）
     ↓

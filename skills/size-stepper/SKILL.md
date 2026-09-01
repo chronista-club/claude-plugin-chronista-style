@@ -212,6 +212,6 @@ fleetstage-hq の実コードが SSOT。 以下は **開発中のエイリアス
 
 ## 関連 skill / handbook
 
-- `chronista-style` — ヒアリングファースト + 一問一答 + ユーモア
+- `chronista-style` — ヒアリングファースト + ユーモア
 - `codeflow` — Discovery → Hearing → SDG → Implementation の workflow
 - `~/repos/chronista-handbook/domain.md § Creo UI Design System` — handbook 上での domain knowledge（開発中のエイリアス）

@@ -70,7 +70,7 @@ decision を 1 つの explicit prompt に絞る:
 - どの制約が効くのか?
 - 成功とは何か?
 
-質問が曖昧なら、council 召集前に **1 つだけ clarifying question** を user に投げる (一問一答原則)。
+質問が曖昧なら、council 召集前に **1 つだけ clarifying question** を user に投げる。
 
 ### 📦 Gather（必要 context の収集）
 

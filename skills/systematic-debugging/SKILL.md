@@ -17,7 +17,7 @@ tags: [discipline, debugging, root-cause, systematic]
 根本原因の調査なしに修正を提案するな
 ```
 
-Investigation を完了していないなら、修正を提案する資格はない。
+Investigation を完了してから、修正を提案する。
 
 ## いつ使うか
 
