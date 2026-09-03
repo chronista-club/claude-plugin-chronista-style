@@ -8,6 +8,17 @@
 
 ## [Unreleased]
 
+### Changed
+- **Fable 5.1 harness 注入文との衝突解消**（mako 裁定 2026-09-03「衝突は、自分もやだな。解消したいよね」）。Claude Code 本体が [Claude Fable 5.1 のプロンプティング](https://platform.claude.com/docs/ja/build-with-claude/prompt-engineering/prompting-claude-fable-5-1) の推奨文（進捗更新 / バッチ化ナッジ / Delivering work / 自律実行）を原文のまま system prompt に注入していることを実測。同じ文言は足さず、逆向きの文言だけを本体の語彙で言い直した
+  - `hooks/session-start.sh`: 規律エッセンス 4 行目「設計判断は短い方針提示 → GO」を「ユーザーが選ぶべき分岐があるときだけ短い方針提示 → GO。GO の後はその範囲を最後まで走り切る」に。本体の「可逆な作業は聞かずに進める」と綱引きしていた
+  - `codeflow` `3.1.0` → `3.2.0`: 実装前の合意に「GO の後」を追加 — 合意した範囲は走り切る、質問は回答に依存しない部分を済ませてから進捗と一緒にターン末尾で
+  - `hooks/fabrication-tripwire.sh`: 裏付けの tool_result を同一ターンから **transcript 全体**に拡張。本体が求める「単独で読める recap」が前ターンの観測結果を再掲すると false block していた（本セッションで実際に block されて再現）。「一度も produce されていない結果を止める」目的は保持。scratch test 3 ケース（cross-turn recap / 純粋な捏造 / 同一ターン裏付け）で RED → GREEN を観測
+  - `verification` `1.2.0` → `1.2.1`: tripwire の説明を「同じセッション内の」に同期。`hooks/hooks.json` の description も同期
+
+### Added
+- `chronista-style` `5.2.0` → `5.3.0`: Issue-first に「作業中に見つけた対象外の問題は直さず spark 起票、最終報告で触れる」を追加。docs「follow-up として summary で報告せよ。Fable 5.1 は近くのコードを直したがる」の Chronista 版（follow-up の行き先 = creo-memories）。parallel-dev の「混ざったら `git add -p` で割る」は事後策で、事前策が無かった
+- `tdd` `1.1.0` → `1.2.0`: 完了チェックリストにテストの**量**の目安（振る舞い 1 つに 1 本、隣接ファイルと同粒度、使い捨て確認スクリプトは残さない）。docs「Fable 5.1 は変更に見合う以上のテストファイルをコミットする。指示で大幅に減り成功率は不変」への対応
+
 ## [0.29.0] - 2026-09-01
 
 ### Added

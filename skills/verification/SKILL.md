@@ -1,7 +1,7 @@
 ---
 name: verification
 description: 作業の完了を宣言する前に使用。証拠なき完了宣言を防ぐ規律スキル。
-version: 1.2.0
+version: 1.2.1
 tags: [discipline, verification, completion, evidence, fabrication]
 ---
 
@@ -66,7 +66,7 @@ agent 環境の green だけでは閉じない変更がある — 実機のデ�
 **構造(意志の外側):** 意志は失敗の瞬間には作動しない。だから外側に関門を置く。Stop hook
 `fabrication-tripwire.sh`(本 plugin の `hooks/hooks.json`、または個人 `~/.claude/settings.json`
 の `hooks.Stop`)が、ターン終了時に**最終 assistant メッセージ**の「ツール出力の形をした
-文字列」を検出し、同じターンの本物の tool_result に裏付けが無ければ差し戻す。fail-open
+文字列」を検出し、同じセッション内の本物の tool_result に裏付けが無ければ差し戻す。fail-open
 (壊れても全ターンを止めない)。意図的な引用だけ明示トークン `TRIPWIRE-ACK` を**単独行**で
 置いて通す(文中の言及では解除されない。bypass は transcript に残る=監査可能)。非決定性の
 飛躍は殺さず、「観測していない結果を報告する」その一点だけを外から止める。

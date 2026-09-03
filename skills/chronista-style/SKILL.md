@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.2.0
+version: 5.3.0
 tags:
   - chronista
   - development
@@ -329,6 +329,8 @@ PR（nightly 宛て、body 冒頭に memory ID）
 ```
 
 例外: 即時の typo 修正・1 行の inline コメント・hotfix などは起票せず直接 PR で OK。判断軸は「次の人がこの変更を見て **なぜ** 必要だったか分かるか」。分からなければ起票する。
+
+**作業中に見つけた対象外の問題は、その場で直さず spark として起票し、最終報告で触れる。** 直すのは、依頼された振る舞いがそれ無しで成立しないときだけ。近くのコードの改善や拡張も同じ扱い。
 
 #### Branch slug の規約
 
