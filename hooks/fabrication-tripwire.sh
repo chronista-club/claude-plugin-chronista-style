@@ -14,7 +14,11 @@
 #   the post-block rewrite.
 # - Prose scanned = the FINAL assistant message of the turn only (the report the
 #   user reads), so a stale boundary cannot drag old messages into the scan.
-# - Backing = tool_result content from the SAME turn only.
+# - Backing = tool_result content from the WHOLE transcript (session), not just this
+#   turn. Rationale (2026-09-03): Fable 5.1 harness asks for a stand-alone recap at the
+#   end of a turn, which legitimately re-quotes results observed in EARLIER turns.
+#   Same-turn backing false-blocked those recaps. Session-wide backing still stops the
+#   real failure — reporting output that was never produced anywhere.
 set -uo pipefail
 
 allow(){ exit 0; }
@@ -51,7 +55,7 @@ prose="$(printf '%s' "$turn" | jq -rs '[
 # Conscious override: token on a line by itself (inline mentions do not count).
 printf '%s\n' "$prose" | grep -qxF 'TRIPWIRE-ACK' && exit 0
 
-tools="$(printf '%s' "$turn" | jq -r 'select(.type=="user") | .message.content[]? | select(.type=="tool_result") | (.content | if type=="string" then . elif type=="array" then (map(.text? // "")|join("\n")) else tostring end)' 2>/dev/null)"
+tools="$(jq -r 'select(.type=="user") | .message.content[]? | select(.type=="tool_result") | (.content | if type=="string" then . elif type=="array" then (map(.text? // "")|join("\n")) else tostring end)' "$T" 2>/dev/null)"
 
 patterns=(
   'test result:'
@@ -74,6 +78,6 @@ for p in "${patterns[@]}"; do
 "
 done
 [ -z "$viol" ] && allow
-block "FABRICATION TRIPWIRE — this turn's final message contains tool-output-shaped text with NO matching tool_result in the same turn:
+block "FABRICATION TRIPWIRE — this turn's final message contains tool-output-shaped text with NO matching tool_result anywhere in this session:
 ${viol}
 Resolve by ONE of: (1) run the real tool and quote its ACTUAL output; (2) delete the unbacked text; (3) if you are deliberately quoting past / example output, add the token TRIPWIRE-ACK on a line by itself. Never report a result you did not observe."
