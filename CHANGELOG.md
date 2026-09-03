@@ -8,6 +8,8 @@
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-09-03
+
 ### Changed
 - **Fable 5.1 harness 注入文との衝突解消**（mako 裁定 2026-09-03「衝突は、自分もやだな。解消したいよね」）。Claude Code 本体が [Claude Fable 5.1 のプロンプティング](https://platform.claude.com/docs/ja/build-with-claude/prompt-engineering/prompting-claude-fable-5-1) の推奨文（進捗更新 / バッチ化ナッジ / Delivering work / 自律実行）を原文のまま system prompt に注入していることを実測。同じ文言は足さず、逆向きの文言だけを本体の語彙で言い直した
   - `hooks/session-start.sh`: 規律エッセンス 4 行目「設計判断は短い方針提示 → GO」を「ユーザーが選ぶべき分岐があるときだけ短い方針提示 → GO。GO の後はその範囲を最後まで走り切る」に。本体の「可逆な作業は聞かずに進める」と綱引きしていた
