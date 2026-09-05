@@ -18,6 +18,9 @@
   - **新コマンド `/spark`**（mako 発意「私が spark したときに、そのモードに切り替わって、アイデアをすぐ書き込む経路が欲しい」→ GO）。`/spark <言葉>` で原文のまま `category: spark` に pack し memory ID を一行返す。引数が無ければ「何が降ってきた？」と一行聞いて次の発言を pack。要約しない・見出しを付け直さない・タグを推測しない・成功基準を聞かない・作業に入らない（整えると火花が死ぬ）。重複検出は切る。Atlas は session-start の候補に exact match が無ければ Personal に入れて一言添える。`codeflow` `4.0.0` → `4.1.0` / `chronista-style` `5.5.0` → `5.6.0` の Spark 節に入口を追記。会話中の「ちと相談なんだけど」の自動 spark 化はしない（Fable のスキル過剰発動で雑談まで積む事故を避ける。構えを Conception に切り替えるだけ）
   - `README.md` / `.claude-plugin/plugin.json`: 「ヒアリングファースト / hearing-first」を Spark → Conception → GO に。keywords `hearing-first` → `conception`
 
+### Removed
+- **`commands/dashboard.md` を削除**（mako 裁定 2026-09-06「使った事ないな」→「ならオミットしとこうか」）。0.26.0 で Linear から creo-memories ベースに全面書き直したが、その後一度も呼ばれなかった。「全プロジェクトの active todo を一覧する」需要はセッション開始時の Context Engine 注入と creo の Web UI で満たされていた。0.28.0 の「未使用は削る」原則を適用。`chronista-style` `5.6.0` → `5.6.1` / `README.md` の参照を除去。コマンド 5 → 5（`/spark` 追加、`/dashboard` 削除）
+
 ### Fixed
 - **スキル棚卸し S 群 — 矛盾・実在しない参照の解消**（mako 発意 2026-09-05「Fable 5.1 の登場前に一度整理したが、もう一度全体を俯瞰してクリーンアップしたい」→ 全 2,868 行を精査し S / A / B / C の 4 段で board 提示 → 「S群着手していこうか」で GO。A / B 群は裁定後の別 PR）
   - `verification` `1.2.1` → `1.2.2`: Iron Law 直下の「**このメッセージ内で**検証コマンドを実行していないなら資格はない」を「同じセッション内で観測した tool_result を指させるときだけ」に。0.30.0 で tripwire をセッション全体に広げたのに本文が旧仕様のままで、本体の「前ターンの観測も含めて単独で読める recap」要求と衝突していた。「1メッセージ1検証。緑宣言の直前は単独でツールを呼ぶ」は本体のバッチ化ナッジと綱引きするため削除
