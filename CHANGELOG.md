@@ -9,10 +9,13 @@
 ## [Unreleased]
 
 ### Changed
-- **Hearing を「質問票」から「理解の提示と差分」に作り直し**（mako 裁定 2026-09-06「hearing の時点のルールは自由な意見交換じゃなくなるよね。そこ改修していこう」）。「実装前に**必ず**質問」がルートと codeflow に 3 回、`AskUserQuestion` が hearing の「軸」としてコマンド側 6 箇所で指名され、「最大 4 問 / ラウンド分け / コツ 4 項」で手順化されていた。実際のリズム（0.29.0 のセッション分析: 「進めて」49 回・「どう？」34 回、本セッションでも AskUserQuestion 使用 0 回で board と短い返答で進行）は、AI が理解を提示して人間が訂正か GO を返す形。空欄を相手に埋めさせるのではなく、埋めた案に赤を入れてもらう
-  - `codeflow` `3.3.0` → `3.4.0`: Hearing を「理解を短く書く → ズレと分岐だけ聞く → AI の理解を起票 memory に書き戻す」に。`AskUserQuestion` は分岐が 2〜4 個に離散的に絞れたときだけ、開いた問いは地の文。「必ず質問」「最大 4 問」「コツ」を削除
-  - `chronista-style` `5.3.1` → `5.4.0`: 基本姿勢とヒアリングのルールを同期。Issue-first の起票テンプレートに「AI の理解（Hearing のたびに更新。裁定の原文は不変、理解はその上に積む）」を追加 — 人間の言葉は不変、AI の理解は注釈として積む層の非対称（spark `mem_1Cekaq6HzcGZFRd92Ydk3F`）
-  - `commands/hearing.md` / `commands/codeflow.md`: 全面書き換え。`/codeflow` の「どのステップから入りますか？」メニューを廃止し、理解の提示の中で入口を自分の判断として述べる。`README.md` のコマンド説明を同期
+- **フローの先頭を Spark → Conception → GO に組み替え、「ヒアリングファースト」を廃止**（mako 裁定 2026-09-06「hearing First も、その時々の進めたいことで変わってくるし、いつも議論したくなったら『ちと相談なんだけど』とか私がトリガーになってる。想起されるのが先で、1st ではない」→ 名前は「Conception だね。それ採用」）。Discovery → Second Opinion → Discussion → Hearing のパイプラインは実態と違い、実際は想起（どちらからでも）→ 順不同の会話 → GO の一本線。硬い関門は GO だけ
+  - `codeflow` `3.3.0` → `4.0.0`: 先頭を **Spark（想起）→ Conception（構想）→ GO（実装前の合意）** に。Discovery / Discussion / Hearing / council は Conception の中の「手」に格下げ（順番なし）。Spark は AI からも起きてよい（「気になることがある」で会話を開く）。GO の瞬間に memory を `spark` → `todo` に
+  - **Hearing を「質問票」から「理解の提示と差分」に**（mako 裁定「hearing の時点のルールは自由な意見交換じゃなくなるよね。そこ改修していこう」）。「実装前に**必ず**質問」がルートと codeflow に 3 回、`AskUserQuestion` が hearing の「軸」としてコマンド側 6 箇所で指名、「最大 4 問 / ラウンド分け / コツ 4 項」で手順化されていた。実際のリズム（0.29.0 分析: 「進めて」49 回・「どう？」34 回、本セッションも AskUserQuestion 0 回）は AI が理解を提示して人間が訂正か GO を返す形。理解を短く書く → ズレと分岐だけ聞く → 「AI の理解」を起票 memory に書き戻す。AskUserQuestion は分岐が 2〜4 個に離散的に絞れたときだけ
+  - `chronista-style` `5.3.1` → `5.5.0`: フロー図・基本姿勢（「ヒアリングファースト」→「GO の一本線」）・「Conception のルール」を同期。Issue-first の起票テンプレートに「AI の理解（Hearing のたびに更新。裁定の原文は不変、理解はその上に積む）」— 人間の言葉は不変、AI の理解は注釈として積む層の非対称（spark `mem_1Cekaq6HzcGZFRd92Ydk3F`）
+  - `commands/hearing.md` / `commands/codeflow.md`: 全面書き換え。`/codeflow` の「どのステップから入りますか？」メニュー廃止、理解の提示の中で入口を自分の判断として述べる
+  - `hooks/session-start.sh`: 規律エッセンス 4 行目に「GO の前は自由な構想（Conception）」を前置
+  - `README.md` / `.claude-plugin/plugin.json`: 「ヒアリングファースト / hearing-first」を Spark → Conception → GO に。keywords `hearing-first` → `conception`
 
 ### Fixed
 - **スキル棚卸し S 群 — 矛盾・実在しない参照の解消**（mako 発意 2026-09-05「Fable 5.1 の登場前に一度整理したが、もう一度全体を俯瞰してクリーンアップしたい」→ 全 2,868 行を精査し S / A / B / C の 4 段で board 提示 → 「S群着手していこうか」で GO。A / B 群は裁定後の別 PR）
