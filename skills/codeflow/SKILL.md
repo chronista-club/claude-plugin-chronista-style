@@ -2,7 +2,7 @@
 name: codeflow
 description: Spark（想起）から Conception（構想）を経て GO で作業に切り替え、SDG で仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, spark, conception, second-opinion, humor]
-version: 4.0.0
+version: 4.1.0
 ---
 
 # Code Flow Skill
@@ -42,7 +42,7 @@ Spark → Conception → GO → SDG（+ Bite-Sized Tasks）→ Branch & PR → I
 
 ### Spark（想起）
 
-アイデア、相談したいこと、気持ち悪さが、どちらかの中に浮かぶ。「ちと相談なんだけど」「…について議論したい」がその瞬間。ユーザーからでも AI からでも起きる — AI が「気になることがある」と会話を開いてよい。長く残したい火花は memory に `spark` として置く。
+アイデア、相談したいこと、気持ち悪さが、どちらかの中に浮かぶ。「ちと相談なんだけど」「…について議論したい」がその瞬間。ユーザーからでも AI からでも起きる — AI が「気になることがある」と会話を開いてよい。長く残したい火花は memory に `spark` として置く。入口は `/spark <言葉>` — 解釈ゼロで原文のまま pack し、一行で返す。「ちと相談なんだけど」が来たら作業の手を止め、Conception の構えに切り替える。
 
 ### Conception（構想）
 

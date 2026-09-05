@@ -15,6 +15,7 @@
   - `chronista-style` `5.3.1` → `5.5.0`: フロー図・基本姿勢（「ヒアリングファースト」→「GO の一本線」）・「Conception のルール」を同期。Issue-first の起票テンプレートに「AI の理解（Hearing のたびに更新。裁定の原文は不変、理解はその上に積む）」— 人間の言葉は不変、AI の理解は注釈として積む層の非対称（spark `mem_1Cekaq6HzcGZFRd92Ydk3F`）
   - `commands/hearing.md` / `commands/codeflow.md`: 全面書き換え。`/codeflow` の「どのステップから入りますか？」メニュー廃止、理解の提示の中で入口を自分の判断として述べる
   - `hooks/session-start.sh`: 規律エッセンス 4 行目に「GO の前は自由な構想（Conception）」を前置
+  - **新コマンド `/spark`**（mako 発意「私が spark したときに、そのモードに切り替わって、アイデアをすぐ書き込む経路が欲しい」→ GO）。`/spark <言葉>` で原文のまま `category: spark` に pack し memory ID を一行返す。引数が無ければ「何が降ってきた？」と一行聞いて次の発言を pack。要約しない・見出しを付け直さない・タグを推測しない・成功基準を聞かない・作業に入らない（整えると火花が死ぬ）。重複検出は切る。Atlas は session-start の候補に exact match が無ければ Personal に入れて一言添える。`codeflow` `4.0.0` → `4.1.0` / `chronista-style` `5.5.0` → `5.6.0` の Spark 節に入口を追記。会話中の「ちと相談なんだけど」の自動 spark 化はしない（Fable のスキル過剰発動で雑談まで積む事故を避ける。構えを Conception に切り替えるだけ）
   - `README.md` / `.claude-plugin/plugin.json`: 「ヒアリングファースト / hearing-first」を Spark → Conception → GO に。keywords `hearing-first` → `conception`
 
 ### Fixed
