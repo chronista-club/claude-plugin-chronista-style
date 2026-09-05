@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.5.0
+version: 5.6.0
 tags:
   - chronista
   - development
@@ -138,7 +138,7 @@ Spark（想起）から Conception（構想）を経て GO で作業に切り替
 ### ステップ構成
 
 ```
-Spark（想起、どちらからでも）
+Spark（想起、どちらからでも。`/spark <言葉>` で原文のまま pack）
     ↓
 Conception（構想: 調べる・話す・理解を書く・合議、順不同）
     ↓
