@@ -1,41 +1,20 @@
 ---
 name: codeflow
 description: Spark（想起）から Conception（構想）を経て GO で作業に切り替え、SDG で仕様・設計を記録する開発フロー
-tags: [development, workflow, sdg, spark, conception, second-opinion, humor]
-version: 4.1.1
+tags: [development, workflow, sdg, spark, conception, second-opinion]
+version: 4.2.0
 ---
 
 # Code Flow Skill
 
-**Code Flow**は、Spark（想起）から Conception（構想）を経て GO で作業に切り替え、仕様・設計を体系的に記録する開発ワークフローです。
-
-## 基本姿勢: ユーモアを忘れない 🎭
-
-Code Flowのすべてのコミュニケーションの土台となる姿勢です。
-
-> **「開発は真剣勝負、でも楽しむことを忘れない」**
-
-- **緊張をほぐす** - 難しい議論こそ、ちょっとした軽さが大事
-- **創造性を高める** - リラックスした雰囲気がアイデアを生む
-- **信頼を築く** - 笑いを共有できる関係は強い
-- **失敗を恐れない** - 「これ動くかな？ｗ」と言えるチームは成長する
-
-**NGなユーモア**
-- 人を傷つけるもの
-- 進捗を遅らせる過度な脱線
-- 真剣な問題を軽視するもの
-
-**OKなユーモア**
-- 自虐（「また俺がバグ入れた」）
-- 状況への軽いツッコミ（「この仕様、誰が考えたんだろう...あ、俺だ」）
-- 前向きな比喩（「このリファクタ、大掃除みたいで気持ちいい」）
+**Code Flow**は、Spark（想起）から Conception（構想）を経て GO で作業に切り替え、仕様・設計を体系的に記録する開発ワークフロー。態度は `chronista-style` ルートの「基本姿勢」に従う — 穏やかに、真面目に、ユーモアを忘れずに。
 
 ## 概要
 
 Code Flow は **ステップ名で管理** します（番号は使いません）。依存関係は矢印のみで表現します。
 
 ```
-Spark → Conception → GO → SDG（+ Bite-Sized Tasks）→ Branch & PR → Implementation → Release（条件付き）→ Learning
+Spark → Conception → GO → SDG → Branch & PR → Implementation → Release（条件付き）→ Learning
 ```
 
 硬い線は **GO** の一本だけ。GO の前は一つの自由な空間（Conception）、GO の後は作業のパイプライン。「何かが先」という順番は無い。
@@ -48,7 +27,7 @@ Spark → Conception → GO → SDG（+ Bite-Sized Tasks）→ Branch & PR → I
 
 Spark が形になるまでの会話。**順番は無い。** 必要な手を必要なときに打つ。
 
-- **調べる（Discovery）** — コードベース、既存実装、類似事例、過去の記憶（`search`）。会話の途中で何度でも
+- **調べる（Discovery）** — コードベース、既存実装、類似事例、過去の記憶（`search`）。触るコードのパスで `docs/` を grep し、既存の design があれば読んでから話す。会話の途中で何度でも
 - **話す（Discussion）** — 方向性を一緒に決める。**ここが一番楽しい。** 選択肢を並べる（「A案、B案、あと禁断のC案」）、雑談も脱線も歓迎、「それ、本当に必要？」は最高の質問。完璧な案を出そうとしない、決まらなくても焦らない
 - **理解を書く** — 質問票ではなく、理解の提示と差分。自分の理解を短く書く（何を / なぜ / やらないこと / 置いた仮定 / 迷っている点）。聞くのは、理解がズレていそうな所と、ユーザーが選ぶべき分岐だけ。推測できることは仮定として明示する。分岐が 2〜4 個に離散的に絞れたときだけ AskUserQuestion、開いた問いは地の文。「わからない」「後で決める」も回答 — 仮定を置いて進み、仮定を書き残す
 - **合議（council）** — 判断軸が複数あって明確な勝者がいない分岐は `council` で 4 voice にかけ、trade-off と最強の dissent を表に出す
@@ -59,53 +38,27 @@ Spark が形になるまでの会話。**順番は無い。** 必要な手を必
 
 設計判断を伴う変更は、方針を短く提示して合意を得てから実装に入る（数行の設計メモで十分）。typo 修正や明白な小修正はそのまま進めてよい。判断軸は「この変更に、ユーザーが選ぶべき分岐があるか」。
 
-合意の粒度は軽くてよい — 短い方針提示に「いいね」「進めて」の GO で走り出せる状態を保つ。重い設計文書を待たず、GO なしで走らない。
+合意の粒度は軽くてよい — 短い方針提示に「いいね」「進めて」の GO で走り出せる状態を保つ。重い設計文書を待たず、GO なしで走らない。GO の後は合意した範囲を走り切り、途中の質問は回答に依存しない部分を済ませてからターン末尾でまとめて聞く。
 
-GO の後は、合意した範囲を最後まで走り切る。元の依頼に含まれる作業について、途中で「適用しますか？」と止まらない。質問で止まる必要が出たら、回答に依存しない部分を先に済ませ、進捗と一緒にターン末尾で聞く。
+GO の瞬間に memory を `spark` から `todo` に進める（Issue-first）。GO が要った変更 — ユーザーが選ぶべき分岐があった変更 — は、その分岐の答えを design に書く価値がある。分岐が無かった変更に design は書かない。
 
-GO の瞬間に memory を `spark` から `todo` に進める（Issue-first）。
+### SDG（Spec-Design-Guide）
 
-### SDG（Spec-Design-Guide） + Bite-Sized Tasks
-
-収集した情報を元に、仕様書（SPEC）と設計書（DESIGN）を生成し、**実装タスクを bite-sized に分割**する。
-
-- **spec/**: 仕様書（What & Why）
-- **design/**: 設計書（How）
-- **guide/**: 実装ガイド
-
-#### Bite-Sized Task 構造
-
-各タスクは **2-5分で完了する単位** に分割:
-
-```
-Step 1: 失敗するテストを書く
-Step 2: テストの失敗を確認する
-Step 3: 最小限の実装コードを書く
-Step 4: テストの通過を確認する
-Step 5: コミット
-```
-
-タスクには以下を明記:
-- 対象ファイルの正確なパス
-- 完全なコード（「バリデーション追加」ではなく実際のコード）
-- 実行コマンドと期待される出力
+spec / design を Draft で `docs/` に置く（何を書くか・どう生かすかは `spec-design-guide`）。実装タスクは 1 振る舞い 1 単位に割る。手順は `tdd`。
 
 #### Issue 連携 — memory-as-issue
 
-タスクは creo-memories の memory として起票し、進捗も同じ memory に積む（Issue / Todo / Decision が一つの層）。起票の中身（成功基準・非対象・Branch slug）は `chronista-style` ルートの「Issue-first の原則」、API の作法（status / tags / supersedes / 追記の仕方）は `creo-memories` スキルに従う。ここには複写しない。
+タスクは creo-memories の memory として起票し、進捗も同じ memory に積む（Issue / Todo / Decision が一つの層）。起票の中身（成功基準・非対象・AI の理解・Branch slug）は `chronista-style` ルートの「Issue-first の原則」、API の作法（status / tags / supersedes / 追記の仕方）は `creo-memories` スキルに従う。ここには複写しない。
 
 ### Branch & PR（ブランチ & PR フロー）
 
-trunk は `nightly`、ブランチ名は `{type}/{slug}`、PR body 冒頭に memory ID。規約の本体は `chronista-style` ルートの「ブランチ運用（nightly trunk）」と「Branch slug の規約」。レビューで GO が出るまでマージしない。
+trunk は `nightly`、ブランチ名は `{type}/{slug}`、PR body 冒頭に memory ID。規約の本体は `chronista-style` ルートの「ブランチ運用（nightly trunk）」と「Branch slug の規約」。PR を出す前に `verification` を通す（設計に触れた変更なら design が同じ PR にあること、もそこで確かめる）。レビューで GO が出るまでマージしない。
 
 ### Implementation（実装・TDD）
 
-チェックリストを生成し、**`tdd` スキルに従って**実装をガイドします。
+`tdd` スキルの RED-GREEN-REFACTOR サイクルに従う。テストファーストで書き、失敗を確認し、最小限のコードで通す。
 
-**必須:** 実装時は `tdd` スキルの RED-GREEN-REFACTOR サイクルに従え。
-テストファーストで書き、失敗を確認し、最小限のコードで通せ。
-
-進捗は起票した memory に追記する。
+対象パスのコードを変えたら同じブランチで design を触る — 変わったことは Status log に、踏んだ地雷は「やってはいけない」に追記する（`spec-design-guide`）。進捗は起票した memory に追記する。
 
 ### Release（リリース & 配布・条件付き）
 
@@ -114,76 +67,13 @@ trunk は `nightly`、ブランチ名は `{type}/{slug}`、PR body 冒頭に mem
 - PR マージ → リリースが必要な場合
 - デプロイが必要な場合
 
-手順は `/release` コマンド（形式検出 → version bump → CHANGELOG → tag）。デプロイは該当時のみ。マージ後は起票した memory の todo を閉じる。
+手順は `/release` コマンド（形式検出 → version bump → CHANGELOG → tag）。デプロイは該当時のみ。出荷した design の Status を Draft から Active に進め、Status log に一行。マージ後は起票した memory の todo を閉じる。
 
 ### Learning（学習）
 
 セッションの知見を記録し、将来の開発に活用。
 
-- **決定事項の記録**: 設計判断、学んだこと
+- **決定事項の記録**: 設計判断、学んだこと。文書には What、memory には Why
 - **裁定は原文引用で記録**: ユーザーの裁定は「> 裁定: …」と原文のまま引用して memory に残す。要約は解釈が混ざる
 - **タグ付け**: 機能名、技術名などで検索しやすく
 - **失敗からも学ぶ**: うまくいかなかったアプローチも記録
-
-## SDG原則
-
-Code Flowは**SDG（Spec-Design-Guide）原則**に基づいています:
-
-### 仕様書（spec/） - What & Why
-
-- **何を**実装するのか
-- **なぜ**それが必要なのか
-- ユーザー視点での価値
-
-### 設計書（design/） - How
-
-- **どのように**実装するのか
-- アーキテクチャとコンポーネント設計
-- 技術選択とその理由
-
-### Living Documentation
-
-- コードと同期して更新
-- 実装と設計の乖離を防ぐ
-- 継続的に改善
-
-## ベストプラクティス
-
-1. **GO の一本線**
-   - GO の前は自由な構想、GO の後は合意した範囲を走り切る
-   - 質問票を作らない。理解を書き、埋めた案に赤を入れてもらう
-
-2. **セカンドオピニオン活用**
-   - 判断軸が複数ある決定は `council` で別視点を集める
-   - 盲点や見落としを早期に発見
-
-3. **SDG準拠**
-   - spec/とdesign/を必ず作成
-   - Why（なぜ）とHow（どのように）を明確に分離
-
-4. **チェックリスト活用**
-   - 実装前にチェックリストを確認
-   - 抜け漏れを防ぐ
-
-5. **継続的学習**
-   - すべてのセッションを記録
-   - 成功・失敗から学習
-
-6. **ドキュメント優先**
-   - 新規作成より既存ドキュメントへの追記を優先
-   - ファイル数を増やさない
-
-## ディレクトリ構成
-
-```
-project/
-├── spec/           # 仕様書（What & Why）
-│   ├── 01-*.md    # 優先順位順
-│   └── ...
-├── design/         # 設計書（How）
-│   ├── 01-*.md    # 重要度順
-│   └── ...
-└── guide/          # 実装ガイド
-    ├── 01-*.md    # 利用順序
-    └── ...
-```

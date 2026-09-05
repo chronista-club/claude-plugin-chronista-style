@@ -9,6 +9,24 @@
 ## [Unreleased]
 
 ### Changed
+- **棚卸し A / B / C 群 — harness との綱引きの解消と足場の縮約**（mako 裁定 2026-09-06、主題ごとに精査して「大賛成」「いいね」「3 つとも GO」）。全体 2,868 → 1,654 行
+  - **語調の原則を root の「基本姿勢」に新設**（決定記録 `mem_1CekeYAi956A8RcpNK4h73`）: 穏やかに、真面目に、ユーモアを忘れずに。きつい言葉を使わない、犯人探しではなくコードと成果物とユーザーへの真摯さから発言する、GO の前は自由な構想で GO の後は走り切る、質問票を作らない。codeflow の「ユーモアを忘れない 🎭」節（OK / NG 例リスト）はここに統合して削除
+  - **規律 3 スキル — 中身は残して圧力を抜く**。「合理化を見破る」表を 3 本とも削除（「疲れた ≠ 免罪符」「TDD は教条的」は人間向けの説教で Fable には効かない）。「資格はない」「交渉の余地がない」「削除は削除」「〜するな」を平叙文に。Red Flags は止まる合図として短く残す。末尾の「creo-memories 連携」節 ×3 は root と重複のため削除。Fable は指示に過剰に従うので、圧力は規律を強めず境界をずらす — 効くのは脅しでなく境界の正確さ
+    - `tdd` `1.2.0` → `1.3.0`: 例外（プロトタイプ / 自動生成 / 設定ファイル）を「ユーザーに確認」から「該当すれば聞かずに省略してよい、最終報告に書く」に（本体の自律実行文との綱引き解消）。dot 図と `bun test` 固定を外し「そのプロジェクトのテストランナー」に。root から「テストリストの 3 層 SSOT」「連携テスト（Medium）の粒度」を移設し `*.test.ts` / `describe/it` 固定を言語中立に
+    - `systematic-debugging` `1.0.2` → `1.1.0`: 「あらゆる技術的問題に使え」を削除（over-trigger の誘い）
+    - `verification` `1.2.2` → `1.3.0`: hedge 禁止を「完了宣言の中で」に限定し「検証できていないことは完了とは別に最初に言う」を併記（本体の不確実性表明の要求と綱引きしていた）。Gate Function 5 ステップを 3 行に、「パターン」「最後に」を削除。よくある検証不足に「設計に触れた変更は design が同じ PR にある」を追加 — Living Documentation の唯一の関門をここに置く
+  - **`spec-design-guide` `1.1.0` → `2.0.0`（442 → 85 行）— 「何を書くか」は残し「どう書くか」は落とし、「どう生かすか」を本体に**（mako「何を書くかは読みやすい形式を定義したいけど、書き方については細かくしない」「SDG をいかに文書として機能させつつ、Living Doc させやすい形に落とし込むのが大事」）。203 本の実 docs を実測: Status ヘッダ 57 / REQ-ID 21 / Related 7 が生きており、`VP-SPEC-001` ID 体系 6・Author 4・Implements 2 は死んでいる。死んだ規約は全部「手で保守が要るもの」。design には「関連」35・「やってはいけない」18・「Status log」8 が自然発生しており、追記型だから生きていた
+    - 残す: 3 層の役割、各層 4 段階の骨格（順番・見出し名は強制しない）、「関連」「やってはいけない」の歓迎、REQ-ID（任意）
+    - ヘッダは Status / Related / **対象コードパス**だけ（日付・作者は git）。対象パスが「このコードを触るとき、どの文書を見るか」の grep 索引になる
+    - 生かし方: コードと同じ PR で触る / 書き換えより追記（Status log、大改版は Supersedes で新番号）/ 消さず Deprecated / 地雷は「やってはいけない」に戻す / What は文書・Why は memory
+    - codeflow との対応表: Conception の「調べる」で対象パスの docs を読む → GO が要った変更（分岐があった）だけ design に書く → Implementation で追記 → PR の前に verification → Release で Status を Active に。**GO の条件がそのまま SDG の条件**なので、起動条件を別に定義しない
+    - 削除: テンプレート 3 本（退避せず削除。骨格から生成できる）、`{PRJ}-SPEC-NNN` ID 体系、D{N} 番号、Changelog 運用規則、Status 遷移図、Mermaid 種類テーブル（22 種）、「自動的に適用」「禁止事項」「必須手順 7 ステップ」。`reference/living-documentation.md`（230 行）は SKILL 本文に吸収して削除
+    - `commands/sdg.md`: 要件 ID の「候補 3 つを AskUserQuestion」を「任意、NAME を提案して進める」に。ヘッダ規約を同期
+  - **`chronista-style` `5.6.2` → `6.0.0`（409 → 236 行）— root は「どこに何があるか」だけ持ち、子スキルの要約を持たない**（要約は本体とずれる。root のフロー図には Requirements ステップがあり codeflow には無かった）。削除: 「開発フロー: codeflow」節と「ドキュメント管理: SDG」節の要約、スキル優先順序・発動テーブル・Rigid / Flexible 分類（「該当判断はモデルに委ねる」と半端に共存していた）、「最新版を読む」（スキルは発動のたびに読まれる）、Update Finalization の 7 種類表（`.fleetflow/*.kdl` / Auth0 tenant 等の特定プロダクト詳細。不可逆操作の確認は本体が既に要求）。テストリスト 3 層と Medium 粒度は tdd へ移設。description から「包括的」を外す（発動判断に使われる語で過剰発動を誘う）。記憶に刻む瞬間に「降ってきた火花（`/spark`）」を追加
+  - **`codeflow` `4.1.1` → `4.2.0`（217 → 79 行）**: ユーモア節を root に統合、Bite-Sized Task（「2〜5 分」「完全なコードを明記」「Step 1〜5」= superpowers の計画書作法、計画に実装コードを書かせる二度書き）を「1 振る舞い 1 単位、手順は tdd」に、GO 後の 3 段落目を 1 文に（本体の Delivering work と同文だった）、ベストプラクティス 6 項・SDG 原則節・ディレクトリ構成（`project/spec/` で SDG の `docs/spec/` と食い違っていた）を削除。各ステップに Living Doc の 1 行（調べる / GO / Implementation / Branch & PR / Release / Learning）
+  - `commands/release.md`: Step 4「SKILL.md を bump するか」を毎回 AskUserQuestion していたのを、前回タグからの diff で変更スキルを列挙して版の確認と一緒に 1 回で確定に
+  - `council` `2.0.0` → `2.0.1`: 「スマホ画面で読める長さ」→「短く」。`parallel-dev` `0.2.0` → `0.2.1`: 「背景」節（CHANGELOG と重複）を削除
+  - `README.md`: スキル表・コマンド表を同期、スキルタイプ節と起動タイミング表（root から削除した表の写し）を削除、hooks の説明を追加
 - **フローの先頭を Spark → Conception → GO に組み替え、「ヒアリングファースト」を廃止**（mako 裁定 2026-09-06「hearing First も、その時々の進めたいことで変わってくるし、いつも議論したくなったら『ちと相談なんだけど』とか私がトリガーになってる。想起されるのが先で、1st ではない」→ 名前は「Conception だね。それ採用」）。Discovery → Second Opinion → Discussion → Hearing のパイプラインは実態と違い、実際は想起（どちらからでも）→ 順不同の会話 → GO の一本線。硬い関門は GO だけ
   - `codeflow` `3.3.0` → `4.0.0`: 先頭を **Spark（想起）→ Conception（構想）→ GO（実装前の合意）** に。Discovery / Discussion / Hearing / council は Conception の中の「手」に格下げ（順番なし）。Spark は AI からも起きてよい（「気になることがある」で会話を開く）。GO の瞬間に memory を `spark` → `todo` に
   - **Hearing を「質問票」から「理解の提示と差分」に**（mako 裁定「hearing の時点のルールは自由な意見交換じゃなくなるよね。そこ改修していこう」）。「実装前に**必ず**質問」がルートと codeflow に 3 回、`AskUserQuestion` が hearing の「軸」としてコマンド側 6 箇所で指名、「最大 4 問 / ラウンド分け / コツ 4 項」で手順化されていた。実際のリズム（0.29.0 分析: 「進めて」49 回・「どう？」34 回、本セッションも AskUserQuestion 0 回）は AI が理解を提示して人間が訂正か GO を返す形。理解を短く書く → ズレと分岐だけ聞く → 「AI の理解」を起票 memory に書き戻す。AskUserQuestion は分岐が 2〜4 個に離散的に絞れたときだけ
