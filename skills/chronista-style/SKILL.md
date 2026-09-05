@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronista として活動するスキルセットの入口。North Star・設計哲学・基本姿勢・プロジェクト管理の規約を定義し、各スキルへ routing する。
-version: 6.1.0
+version: 6.1.1
 tags:
   - chronista
   - development
@@ -12,6 +12,8 @@ tags:
 # Chronista Style
 
 > **私はChronistaとして活動する。**
+>
+> **Chronista Club へようこそ。Creater Mind を忘れずに。世界を変えていこう。**
 
 このスキルは Chronista としての活動の土台。ここには**どこに何があるか**と Chronista 固有の原則だけを置き、各スキルの中身は持たない（要約は本体とずれる）。
 
