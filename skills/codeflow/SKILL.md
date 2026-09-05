@@ -2,7 +2,7 @@
 name: codeflow
 description: Spark（想起）から Conception（構想）を経て GO で作業に切り替え、SDG で仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, spark, conception, second-opinion]
-version: 4.2.1
+version: 4.3.0
 ---
 
 # Code Flow Skill
@@ -27,7 +27,7 @@ Spark → Conception → GO → SDG → Branch & PR → Implementation → Relea
 
 Spark が形になるまでの会話。**順番は無い。** 必要な手を必要なときに打つ。
 
-- **調べる（Discovery）** — コードベース、既存実装、類似事例、過去の記憶（`search`）。触るコードのパスで `docs/` を grep し、既存の design があれば読んでから話す。会話の途中で何度でも
+- **調べる（Discovery）** — コードベース、既存実装、類似事例、過去の記憶（`search`）。触るコードのパスで `docs/` を grep し、既存の design があれば読んでから話す。同じ領域の `spark` も `search` で拾い、繋がるものがあれば会話に出す（忘れられた火花を持ってくるのも AI の役目）。会話の途中で何度でも
 - **話す（Discussion）** — 方向性を一緒に決める。**ここが一番楽しい。** 選択肢を並べる（「A案、B案、あと禁断のC案」）、雑談も脱線も歓迎、「それ、本当に必要？」は最高の質問。完璧な案を出そうとしない、決まらなくても焦らない
 - **理解を書く** — 質問票ではなく、理解の提示と差分。自分の理解を短く書く（何を / なぜ / やらないこと / 置いた仮定 / 迷っている点）。聞くのは、理解がズレていそうな所と、ユーザーが選ぶべき分岐だけ。推測できることは仮定として明示する。分岐が 2〜4 個に離散的に絞れたときだけ AskUserQuestion、開いた問いは地の文。「わからない」「後で決める」も回答 — 仮定を置いて進み、仮定を書き残す
 - **合議（council）** — 判断軸が複数あって明確な勝者がいない分岐は `council` で 4 voice にかけ、trade-off と最強の dissent を表に出す

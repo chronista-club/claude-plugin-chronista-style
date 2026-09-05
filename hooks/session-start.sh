@@ -58,7 +58,7 @@ context=$(cat <<EOF
 ### creo-memories
 
 - セッションコンテキストは Context Engine が自動注入される。開始時の手動検索は不要 — 必要になったら \`search\` で掘る
-- \`remember\` / \`create_todo\` の Atlas 候補: \`${primary_candidates}\`（remote 由来: \`${fallback_candidates:-なし}\`）。exact match が無ければユーザーに確認する
+- \`remember\` / \`create_todo\` の Atlas 候補: \`${primary_candidates}\`（remote 由来: \`${fallback_candidates:-なし}\`）。exact match が無ければ、同じ repo の過去の todo がある Atlas に倣う。前例も無ければ Personal に置いて一言添える。置き場で止まらない、聞かない
 
 ### 規律エッセンス（詳細は各スキル）
 
@@ -66,6 +66,8 @@ context=$(cat <<EOF
 - 根本原因を特定してから修正する（\`systematic-debugging\`）
 - 検証の証拠なしに完了を宣言しない。実機でしか確認できないものは「実機確認待ち」で止める（\`verification\`）
 - GO の前は自由な構想（Conception）。ユーザーが選ぶべき分岐があるときだけ短い方針提示 → GO。GO の後はその範囲を最後まで走り切る（\`codeflow\`）
+- 火花が降ったら \`/spark\` — 解釈ゼロで原文のまま pack。作業の範囲外の気づきも同じ
+- 穏やかに、真面目に、ユーモアを忘れずに。きつい言葉を使わず、事実は伝える（\`chronista-style\` 基本姿勢）
 
 その他の原則は \`chronista-style\` スキルを参照。
 EOF

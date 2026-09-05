@@ -9,6 +9,11 @@
 ## [Unreleased]
 
 ### Changed
+- **棚卸し後の読み直しからの 4 点**（Claude の提案、mako「その提案入れましょう。あなたの style でもある。こういうのは気兼ねなく、これからも」）
+  - `hooks/session-start.sh`: 規律エッセンスに 2 行 — 「火花が降ったら `/spark`」と基本姿勢の一行（穏やかに、真面目に、ユーモアを忘れずに）。常時注入だけがスキル発動前に効く場所で、`/spark` は存在を覚えていなければ使えない
+  - `hooks/session-start.sh`: Atlas 候補の「exact match が無ければユーザーに確認する」→ 同じ repo の過去の todo の Atlas に倣い、前例も無ければ Personal に置いて一言添える。聞かない（本セッションで実際にここで一度止まった。`/spark` の「置き場で止まらない」と同じ判断）
+  - `commands/sdg.md`: 冒頭で「どの種類？」「対象は？」と AskUserQuestion を 2 回打つ旧質問票の最後の生き残りを Conception 型に。種類と対象はブランチ・memory・commit から推測して提示し、聞くのは分岐だけ。空のひな形を渡さず分かっていることは埋める
+  - `codeflow` `4.2.1` → `4.3.0`: Conception「調べる」に火花の再訪 — 同じ領域の `spark` を `search` で拾い、繋がるものがあれば会話に出す。`/dashboard` を消したので溜まった spark を眺める場所が無く、仕組みを作らず一行で経路を作る。Context Engine の自動注入が拾うなら不要になる前提
 - **`/release` を「背骨 + 尻尾への委譲」に書き直し**（mako「release はプロジェクト固有の方がいいのかな？」→ 実測で「背骨は共通、尻尾は全部違う」と分かり、その切り方で GO）。直近 30 日で動いた 12 リポジトリを実測: 背骨（版の正本を検出 → 版を決める → CHANGELOG → release commit → nightly を main に merge → main で tag → push → GitHub Release）は VP / unison / plugin 4 本で同じ形。尻尾は全部違う — creo-memories は tag push で CI が ghcr に image、creo-ui は main push で CI が package ごとに tag と publish（自分で tag を打ってはいけない）、fleetstage は main push でパス条件付き image、Ladyland は `scripts/build-app.sh --install` で署名・公証・`/Applications` 配置（版は `git describe --tags` から取るのに version tag が無く 0.1.0 で焼かれている）、VP は CHANGELOG 無し
   - 旧コマンドは「今のブランチで commit して tag」までで、root の「ブランチ運用（nightly trunk）」にある nightly → main の merge commit・main での tag・GitHub Release を持っていなかった（v0.30.0 では手で補っていた）。Living Documentation の不一致
   - 背骨: 現在地と形式を聞かずに全部読む（版の正本 / nightly モデルか main モデルか / clean & 最新 / 直前 release commit の流儀 / CI の起点 / 尻尾の有無）→ **確認は 1 回**（版・変更スキル・merge・push・tag・Release・起動する CI と尻尾を一つの提示で GO）→ 書く（CHANGELOG は**無ければ作らない**、Cargo.lock 追随）→ nightly モデルなら `--no-ff` で main へ merge して main で tag、CI が main で tag を打つ形式なら自分で打たない → Tag Verify Gate に「main 上にあること」を追加 → `gh release create` → CI を `gh run watch` で見届ける
