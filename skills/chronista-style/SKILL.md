@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.6.0
+version: 5.6.1
 tags:
   - chronista
   - development
@@ -287,7 +287,6 @@ fn test_multi_session() { ... }
 
 - **creo-memories の memory** で Issue 管理（SSOT）。GitHub Issues / 外部 tracker は使わない
 - PR は `gh` コマンドで作成。body 冒頭に memory ID（`mem_xxx`）を記載し、マージ後に `complete_todo` で閉じる
-- `/dashboard` で全プロジェクトの状況を VP に表示
 
 ### ブランチ運用（nightly trunk）
 
