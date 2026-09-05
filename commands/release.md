@@ -1,119 +1,113 @@
 ---
-description: プロジェクト形式を自動検出してバージョンbump・CHANGELOG更新・タグ作成を実行
+description: リリースの背骨 — 版の検出・CHANGELOG・release commit・nightly → main・tag・GitHub Release。尻尾（CI / publish / 署名 / 配置）はプロジェクト側に委譲
 argument-hint: "[version]"
 ---
 
 # Release
 
-プロジェクトのリリースを実行する。**対象ファイルを自動検出**し、Rust / Claude Code プラグイン / npm のいずれにも対応する。
+リリースの**背骨**だけを担う。tag や main への push の**後に起きること**（CI、image、publish、署名、配置）は**尻尾**としてプロジェクト側に委譲する。背骨は全プロジェクト共通、尻尾は全部違う。
 
-## 手順
+## 背骨
 
-各ステップで結果をユーザーに報告すること。
+### 1. 現在地と形式を読む
 
-### Step 1: 対象形式の検出
+聞かずに全部読む。
 
-リポジトリルートを調べて、以下の優先順で「リリース対象」を判別する:
+- **版の正本**: `.claude-plugin/plugin.json`（Claude Code プラグイン）/ `Cargo.toml`（`workspace.package.version` か `package.version`）/ `package.json`（monorepo なら package ごと）/ Swift アプリは tag が正本（`git describe --tags` で読む設計なら、tag を打つこと自体が版付け）
+- **trunk モデル**: `nightly` ブランチがあり今そこにいるなら **nightly モデル**（nightly → main を merge して main で tag）。無ければ **main モデル**（今のブランチで tag）
+- **前提**: working tree が clean、trunk の最新（`git pull`）。満たさなければ止まって報告
+- **直前のリリース**: `git tag --sort=-creatordate | head -1`、差分は `git log <tag>..HEAD --oneline`。release commit の流儀も直前のものに合わせる（`release: vX.Y.Z — 要約` が既定。`chore(release): X.Y.Z — 要約` の流儀ならそれに）
+- **CI の起点**: `.github/workflows/*.yml` の `on:` を読む。`tags: ['v*']` があれば tag の push が尻尾を起動する。`branches: [main]` で tag を打つ workflow（`release-tag.yml` 等）があれば **自分では tag を打たない**
+- **尻尾の有無**: 下記「尻尾の検出」
 
-| 検出 | 形式 | バージョン SSoT |
-|------|------|----------------|
-| `.claude-plugin/plugin.json` が存在 | **Claude Code プラグイン** | `version` フィールド |
-| `.claude-plugin/marketplace.json` が存在（marketplace repo） | **Claude Code marketplace** | `plugins[].version`（該当 plugin name を特定） |
-| `Cargo.toml` が存在（workspace ルート） | **Rust** | `package.version` または `workspace.package.version` |
-| `package.json` が存在 | **npm** | `version` フィールド |
+### 2. 版を決め、一度だけ確認する
 
-プラグイン単体の repo は `plugin.json` のみを持つ（本 repo がこれ）。両方ある場合は `plugin.json` を本体の正とし、`marketplace.json` は配布メタとして追従させる。
+- 引数 `$ARGUMENTS` があればそれ。無ければ差分 commit から semver を提案 — `feat:` → MINOR、`fix:` / `chore:` のみ → PATCH、`BREAKING` / `!:` → MAJOR。pre-release（`-alpha` / `-beta` / `-rc`）も可
+- プラグイン形式なら、`git diff <tag>..HEAD --name-only -- 'skills/*/SKILL.md'` で変更のあったスキルを列挙し、frontmatter の `version:` が上がっていないものを patch bump の提案に含める
+- **確認は 1 回**。提案版、変更スキル、release commit の文言、nightly → main の merge と push、tag、GitHub Release、起動される CI と尻尾 — この全部を一つの提示にまとめて GO をもらう。GO の後は最後まで聞かない
 
-複数検出された場合は `AskUserQuestion` で「どの形式でリリースしますか？」を尋ねる。
+### 3. 書く
 
-### Step 2: 現状把握
+- **CHANGELOG**: `CHANGELOG.md` があれば `[Unreleased]` を `[X.Y.Z] - YYYY-MM-DD` に切り替え、新しい空の `[Unreleased]` を上に置く。**無ければ作らない** — プロジェクトが持たない流儀に押し付けない。その場合は GitHub Release の notes に差分 commit の要約を書く
+- **版の書き換え**: 正本のファイル。Rust なら `Cargo.lock` も追随させる（`cargo update -w` か build）。プラグインなら変更スキルの `version:` も
+- **release commit**: `release: vX.Y.Z — <主要変更の 1 行要約>`（流儀が違えば合わせる）
 
-1. `git tag --sort=-creatordate | head -5` で最新タグを確認
-2. 前回リリース以降の commit を取得（`git log <last-tag>..HEAD --oneline`、タグ無しなら `git log --oneline -30`）
-3. 対象ファイルの現バージョンを読み取る
-4. 既存 `CHANGELOG.md` を確認（無ければ新規作成予定として扱う）
+### 4. main に載せて tag を打つ
 
-### Step 3: バージョン決定
-
-引数 `$ARGUMENTS` にバージョンが指定されていればそれを使う。無ければ commit 内容を分析しセマンティックバージョニングで提案:
-
-- **MAJOR**: 破壊的変更（`BREAKING:` プレフィックス、大規模リファクタ）
-- **MINOR**: 新機能追加（`feat:` コミット）
-- **PATCH**: バグ修正のみ（`fix:` / `chore:` のみ）
-
-`AskUserQuestion` で提案をユーザーに確認してから確定する。
-
-### Step 4: SKILL.md の version 同期（プラグイン形式のみ）
-
-`git diff <last-tag>..HEAD --name-only -- 'skills/*/SKILL.md'` で変更のあったスキルを列挙し、frontmatter の `version:` が既に上がっているか確認する。上がっていないものがあれば patch bump の提案に含め、Step 3 の版の確認と一緒に 1 回で確定する。別途は聞かない。
-
-### Step 5: CHANGELOG.md 生成・更新
-
-Keep a Changelog 形式で [X.Y.Z] エントリを追加する。既存 `CHANGELOG.md` がなければヘッダ付きで新規作成。
-
-カテゴリ:
-- **Added** — 新機能（`feat:` コミット）
-- **Changed** — 既存機能の変更（`refactor:` / `change:` / `feat!:` コミット）
-- **Deprecated** — 非推奨化
-- **Removed** — 削除された機能
-- **Fixed** — バグ修正（`fix:` コミット）
-- **Security** — セキュリティ修正
-
-日付は ISO 8601（YYYY-MM-DD）。今日の日付を `$CURRENT_DATE` 環境変数または `date +%Y-%m-%d` で取得。
-
-### Step 6: バージョン bump
-
-検出された形式に応じて、対象ファイルを更新:
-
-- **プラグイン**: `.claude-plugin/plugin.json` の `version` を書き換え（marketplace repo の場合は `.claude-plugin/marketplace.json` の該当 `plugins[].version`）
-- **Rust**: `Cargo.toml` の `version` を書き換え（workspace ルートなら `workspace.package.version`）
-- **npm**: `package.json` の `version` を書き換え
-
-さらに Step 4 で確定した SKILL の `version:` も bump（プラグイン形式のみ）。
-
-### Step 7: コミット & タグ
+**nightly モデル**:
 
 ```bash
-git add -A
-git commit -m "release: vX.Y.Z — <主要変更の1行要約>"
-git tag vX.Y.Z
+git checkout main && git pull
+git merge --no-ff nightly -m "Merge nightly into main — release vX.Y.Z"
+git tag vX.Y.Z                  # lightweight。-a は使わない
+git push origin main nightly vX.Y.Z
+git checkout nightly
 ```
 
-**タグは lightweight tag**（`-a` は使わない）。コミットメッセージは日本語でも OK、ただしプレフィックスは `release: vX.Y.Z — ` で統一。
+squash はしない。squash すると履歴が発散し、次回のリリースで全面コンフリクトする。
 
-#### 🚦 Tag Verify Gate（必須）
+**main モデル**: 今のブランチで `git tag vX.Y.Z` → `git push origin <branch> vX.Y.Z`。
 
-tag 作成**直後**に必ず以下を実行し、tag が実体として存在するか検証する:
+**CI が main への push で tag を打つプロジェクト**: merge と push で終わり。自分では打たない。
+
+**Tag Verify Gate**（tag を打った直後、必ず）:
 
 ```bash
-git tag -l vX.Y.Z          # 出力が "vX.Y.Z" であること
+git tag -l vX.Y.Z          # 出力が vX.Y.Z であること
 git rev-parse vX.Y.Z       # commit SHA が返ること
+git branch --contains vX.Y.Z | grep -q main   # nightly モデルなら main 上にあること
 ```
 
-**失敗時**: `git tag` が silently skip された可能性（既存 tag 衝突等）。即座に原因を特定し、ユーザーに報告して指示を仰ぐ。**Step 8 に進んではいけない**。
-
-#### 🔍 過去ドリフト検出（推奨）
-
-`git log --oneline | grep -E '^[a-f0-9]+ release: v'` で「release: vX.Y.Z」commit を列挙し、対応する tag が全て存在するか確認:
+失敗したら止まって報告する。`git tag` は既存 tag と衝突すると黙って失敗する。あわせて過去の release commit に tag が欠けていないかを一度見る:
 
 ```bash
-# 各 release commit に対応する tag があるか
 for v in $(git log --oneline | grep -oE 'release: v[0-9]+\.[0-9]+\.[0-9]+' | awk '{print $2}'); do
   git rev-parse "$v" >/dev/null 2>&1 || echo "MISSING TAG: $v"
 done
 ```
 
-欠損 tag を検出したら、`AskUserQuestion` で「過去 commit に後付け tag するか？」を尋ねて修復する。
+### 5. GitHub Release
 
-### Step 8: 確認
+```bash
+gh release create vX.Y.Z --title "vX.Y.Z — <要約>" --notes-file <CHANGELOG の該当節を書き出したファイル>
+```
 
-- `git log --oneline -3` で結果を表示
-- `git tag -l 'v*' --sort=-creatordate | head -5` でタグ一覧を表示
-- **push は自動で行わない**。`AskUserQuestion` で「push しますか？」を尋ねる
+CHANGELOG が無ければ `--generate-notes`。pre-release なら `--prerelease`。
 
-## 注意事項
+push で CI が起動する形式なら `gh run list --limit 3` で起動を確認し、結果を待つ必要があるもの（image、publish）は `gh run watch` で見届けて報告する。
 
-- crates.io / npm registry への publish は自動では行わない（`cargo publish` / `npm publish` はユーザーが手動）
-- pre-release タグ（`-alpha`, `-beta`, `-rc`）もサポートする
-- タグは **lightweight tag** を使用する
-- `marketplace.json` に複数プラグインがある場合、bump 対象を `AskUserQuestion` で選ばせる
+### 6. 尻尾へ委譲する
+
+**尻尾の検出**（順に探し、最初に見つかったものを使う）:
+
+1. `mise tasks` に `release` があれば `mise run release`
+2. `scripts/release*` があればそれ
+3. リポジトリの `.claude/skills/release*/SKILL.md` か `CLAUDE.md` の「Release」節に手順があればそれに従う
+
+見つかれば実行する。実機を伴うもの（署名、公証、`/Applications` への配置、デバイスへの転送）は実行して結果を報告し、**完了は実機確認待ち**で止める（`verification`）。ユーザーの明示承認が要るもの（本番 deploy、破壊的 migration）は GO をもらった範囲に入っていなければ聞く。
+
+見つからなければ、「push が起動した CI」と「手で残っていること」を報告して終わる。
+
+**プラグイン形式の尻尾**（共通）: marketplace は版を pin していないので同期は不要。手元に反映するなら `claude plugin update <name>@chronista-plugins`、反映は Claude Code の再起動後。
+
+### 7. 締め
+
+- 起票 memory の todo を閉じる（`complete_todo`）。リリース内容は memory に一行
+- 最終報告: 版、tag の SHA、GitHub Release の URL、起動した CI、尻尾の結果、実機確認待ちのもの
+
+## 尻尾をプロジェクトに置くとき
+
+背骨に分岐を足さない。プロジェクト側に、次のどれかで置く:
+
+- `mise.toml` の `[tasks.release]` — 署名・配置・publish の手順をスクリプトに
+- `scripts/release.sh` — 同上
+- `.claude/skills/release/SKILL.md` — 手順が対話を伴うとき（実機確認の順番、デバイスの選択）
+
+尻尾は「tag が打たれた後に何をするか」だけを書く。版の決定や CHANGELOG は背骨に任せる。
+
+## やらないこと
+
+- `cargo publish` / `npm publish` を自動で走らせない（尻尾に書かれていれば別）
+- annotated tag（`-a`）を使わない
+- CHANGELOG を持たないプロジェクトに CHANGELOG を作らない
+- 確認を複数回に分けない。2 で一度だけ

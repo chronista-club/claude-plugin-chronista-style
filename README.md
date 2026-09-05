@@ -32,7 +32,7 @@ Chronista のプロダクト群を横断する**共通の開発スタイル基�
 | `/spark` | 降ってきたアイデアを解釈ゼロで memory に pack。一手で終わる |
 | `/codeflow` | 開発セッションを開始。理解を提示してから該当ステップに入る |
 | `/sdg` | spec / design / guide のひな形を `docs/` に起こす |
-| `/release` | バージョン bump、CHANGELOG 更新、タグ作成によるリリース実行 |
+| `/release` | リリースの背骨（版・CHANGELOG・nightly → main・tag・GitHub Release）。尻尾はプロジェクト側に委譲 |
 
 ## 開発フロー
 
