@@ -8,6 +8,8 @@
 
 ## [Unreleased]
 
+## [0.31.1] - 2026-09-06
+
 ### Added
 - `chronista-style` `6.1.0` → `6.1.1`: 冒頭の「私は Chronista として活動する」の隣に、v0.31.0 リリース直後の mako の言葉を原文のまま — 「Chronista Club へようこそ。Creater Mind を忘れずに。世界を変えていこう」（mako「もちろんおいて欲しい」、決定記録 `mem_1CekjuJJid5xQb3GB9iiNq`）
 
