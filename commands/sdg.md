@@ -40,16 +40,16 @@ description: 仕様・設計・ガイドドキュメントを起こす。まず�
 
 本文は `docs/` のみに置く（Creo Memories には書かない）。`{NN}` は既存ファイルの最大番号 + 1。Status は `Draft` から始め、コードと同じ PR で更新する。
 
-### 4. 要件ID（spec の場合のみ）
+### 4. ヘッダと要件 ID
 
-spec 作成時は `REQ-{NAME}-{NNN}` 形式で要件 ID を **Claude が候補を3つ提示** し、`AskUserQuestion` でユーザーに選ばせる（または新しい NAME を入力させる）。
+ヘッダは Status（Draft）と Related（spec 番号・起票 memory）と対象（コードパス）だけ。Author や日付は書かない。spec でトレーサビリティが要るなら `REQ-{NAME}-{NNN}` を振る（任意。NAME はドメインの短い語を提案して進める）。
 
 ### 5. 相互参照
 
 生成したファイルのパスを提示する。対象に起票 memory があれば、ドキュメントのヘッダ（Related）に memory ID を書き、memory 側にはファイルパスを追記して往復を閉じる。
 
-## Living Documentation 原則
+## Living Documentation
 
-> ドキュメント = What changed、creo-memories = Why changed
+> 文書には What、memory には Why
 
-SDG ドキュメントとコードは常に同期。不一致はバグとして扱う。
+生かし方（同じ PR で触る、書き換えより追記、消さず Deprecated）は `spec-design-guide` スキルを参照。

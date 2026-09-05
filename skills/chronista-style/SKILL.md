@@ -1,29 +1,28 @@
 ---
 name: chronista-style
-description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.6.2
+description: Chronista として活動するスキルセットの入口。North Star・設計哲学・基本姿勢・プロジェクト管理の規約を定義し、各スキルへ routing する。
+version: 6.0.0
 tags:
   - chronista
   - development
   - workflow
   - memory
-  - requirements
 ---
 
 # Chronista Style
 
 > **私はChronistaとして活動する。**
 
-このスキルは、Chronistaとしての活動の土台となる包括的なスキルセットです。
+このスキルは Chronista としての活動の土台。ここには**どこに何があるか**と Chronista 固有の原則だけを置き、各スキルの中身は持たない（要約は本体とずれる）。
 
 ## スキル構成
 
 ```
 chronista-style (このスキル)
 ├── creo-memories        【最優先】永続記憶
-├── codeflow             開発フロー
+├── codeflow             開発フロー（Spark → Conception → GO → …）
 ├── parallel-dev         並列開発の道具選び（隔離・出荷の 2 層）
-├── spec-design-guide    ドキュメント管理
+├── spec-design-guide    spec / design / guide と Living Documentation
 ├── tdd                  テスト駆動開発【規律】
 ├── systematic-debugging 体系的デバッグ【規律】
 ├── verification         完了前検証【規律】
@@ -83,7 +82,7 @@ chronista-style (このスキル)
 |------|------------------|
 | **コード設計** | data/calculations/actions の分離。最小限の抽象化 |
 | **テスト（TDD）** | calculations は純粋関数テスト、actions は統合テスト |
-| **ドキュメント（SDG）** | 4段階構成。必要な情報だけ。冗長さを排除 |
+| **ドキュメント（SDG）** | 骨格どおり。必要な情報だけ。冗長さを排除 |
 | **デバッグ** | Straightforward な経路なら原因特定が容易 |
 | **コードレビュー** | 不要な複雑さの指摘基準 |
 
@@ -110,6 +109,17 @@ chronista-style (このスキル)
 
 人間が読み書きする設定・スキーマ層は **KDL を既定**とする。コメント・複数行値・型注釈をネイティブにサポートし、vp lane 等エコシステムで採用済み。JSON は機械間 wire format としては有用なので、互換性で JSON が必須なら「設計層は KDL、出力層で JSON 化」を検討する。
 
+---
+
+## 基本姿勢
+
+> **穏やかに、真面目に、ユーモアを忘れずに。**
+
+- きつい言葉を使わない。事実はきちんと伝える
+- 犯人探しや「誰が悪い」ではなく、目の前のコードと成果物とユーザーへの真摯さから発言する
+- GO の前は自由な構想（Conception）。想起はユーザーからでも AI からでも起きる。GO の後は合意した範囲を走り切る
+- 質問票を作らない。自分の理解を書き、ズレている所とユーザーが選ぶべき分岐だけ聞く。推測できることは仮定として明示する
+- 開発は真剣勝負、でも楽しむことを忘れない
 
 ---
 
@@ -121,151 +131,22 @@ chronista-style (このスキル)
 
 ### 記憶に刻むべき瞬間（`remember`）
 
-- 設計上の重要な決定とその理由
+- 設計上の重要な決定とその理由。ユーザーの裁定は原文のまま引用する
 - 技術的な発見・学び
 - プロジェクトの転換点
 - ユーザーとの合意事項
 - 未完の物語（次に続くタスク）
+- 降ってきた火花（`/spark`。解釈せず原文のまま）
 
 → 詳細は `creo-memories` スキルを参照
 
 ---
 
-## 開発フロー: codeflow
-
-Spark（想起）から Conception（構想）を経て GO で作業に切り替え、SDG で仕様・設計を記録する開発ワークフロー。硬い線は GO の一本だけ。
-
-### ステップ構成
-
-```
-Spark（想起、どちらからでも。`/spark <言葉>` で原文のまま pack）
-    ↓
-Conception（構想: 調べる・話す・理解を書く・合議、順不同）
-    ↓
-GO（実装前の合意 = 唯一の関門。ここで memory を todo に）
-    ↓
-Requirements（要件定義）
-    └─ 各要件に固有ID付与（REQ-{NAME}-{NNN}）
-    └─ docs/spec/ に要件ドキュメント作成
-    ↓
-SDG（設計ドキュメント）
-    └─ docs/design/ に設計書作成
-    └─ 要件IDとの紐付け
-    ↓
-Branch & PR
-    └─ nightly 直コミット禁止、memory 起票 → ブランチ → PR フロー
-    ↓
-Implementation（実装 & テスト）
-    └─ 要件IDに対応するテスト作成
-    └─ テストで要件の充足を検証
-    ↓
-Release（リリース & 配布・条件付き）
-    └─ PR マージ → タグ → GitHub Release
-    ↓
-Learning（creo-memoriesに記録）
-```
-
-各ステップは**名前で参照**する（番号は使わない）。依存関係は矢印のみで表現する。
-
-### 基本姿勢
-
-- **ユーモアを忘れない** - 開発は真剣勝負、でも楽しむことを忘れない
-- **GO の一本線** - GO の前は自由な構想（Conception）、GO の後は合意した範囲を走り切る
-- **セカンドオピニオン** - 判断軸が複数ある決定は `council` で別視点を集める
-
-### Conception のルール
-
-- 順番は無い。想起はユーザーからでも AI からでも起きる
-- 質問票を作らない。自分の理解を書き、ズレている所とユーザーが選ぶべき分岐だけ聞く
-- 推測できることは推測して仮定として明示する。「わからない」「後で決める」も回答
-- 合意した理解は起票 memory の「AI の理解」節に書き戻す。裁定の原文は不変
-
-→ 詳細は `codeflow` スキルを参照
-
----
-
-## ドキュメント管理: spec-design-guide (SDG)
-
-仕様（Why）・設計（How）・ガイド（Usage）を記録し、Living Documentation原則でコードと常に同期。
-
-### 3層構成
-
-| 層 | 構成 | ID 例 |
-|----|------|-------|
-| **spec** (What & Why) | Abstract → Motivation → Scope → Requirements | VP-SPEC-001 |
-| **design** (How) | Abstract → Architecture → Data Model → Implementation | VP-DESIGN-001 |
-| **guide** (Usage) | Overview → Prerequisites → Usage → Troubleshooting | VP-GUIDE-001 |
-
-### 要件ID: `REQ-{NAME}-{NNN}`
-
-```markdown
-### REQ-SESSION-001: マルチセッション管理
-
-**Acceptance Criteria:**
-- [ ] 最大10セッションを同時管理
-```
-
-テストコメントに要件IDを記載してトレーサビリティを確保:
-
-```rust
-/// REQ-SESSION-001: マルチセッション管理
-#[test]
-fn test_multi_session() { ... }
-```
-
-### 設計思想
-
-→ ルートの「設計哲学: Simplicity & Straightforward」に従う
-
-### Living Documentation原則
-
-> ドキュメント = What changed、creo-memories = Why changed
-
-- ドキュメントとコードは常に同期。不一致はバグ
-- Supersedes 連携: ドキュメントと creo-memories の両方で改版を追跡
-
-→ 詳細は `spec-design-guide` スキルを参照
-
----
-
-## スキルの起動ルール
-
-### 起動の基準
+## スキルの起動
 
 タスクに明確に該当するスキルがあれば使う。該当判断はモデルに委ねる。ただし**規律スキル（tdd / systematic-debugging / verification）は該当場面で省略しない** — これらは能力の補助ではなく、事故を防ぐ検証手順だから。
 
-スキルの内容は進化する。記憶に頼らず最新版を読む。
-
-### スキル優先順序
-
-複数スキルが該当する場合:
-
-1. **プロセススキル（先）**: codeflow, systematic-debugging — タスクへの**アプローチ**を決める
-2. **実装スキル（後）**: tdd, spec-design-guide — **実行**をガイドする
-
-「Xを作ろう」→ codeflow が先、次に tdd
-「このバグを直して」→ systematic-debugging が先、次に tdd
-
-### 常時発動
-
-- **creo-memories**: 全セッションで最優先
-
-### 状況に応じて発動
-
-| スキル | 発動タイミング |
-|--------|----------------|
-| codeflow | 新機能開発、設計判断が必要な時 |
-| tdd | **機能実装・バグ修正の前**（テストファースト） |
-| systematic-debugging | **バグ・テスト失敗・予期しない挙動に遭遇した時** |
-| verification | **完了宣言・コミット・PR作成の前** |
-| council | **判断軸が複数ある意思決定、go/no-go 判断** |
-| spec-design-guide | コード変更・ドキュメント更新時 |
-
-### スキルタイプ
-
-**Rigid（厳守）**: tdd, systematic-debugging, verification — 手順を正確に守る。
-
-**Flexible（柔軟）**: codeflow, spec-design-guide, parallel-dev, council — 原則をコンテキストに合わせて適用。
+開発の流れは `codeflow`（Spark → Conception → GO → SDG → Branch & PR → Implementation → Release → Learning）、文書は `spec-design-guide`、並列作業の道具選びは `parallel-dev`、判断軸が複数ある決定は `council`。
 
 ---
 
@@ -310,9 +191,9 @@ feature ──PR(squash)──> nightly ──version bump──> main ──tag
 **新機能・改修は memory 起票から始める。** 手を動かす前に「このタスクの成功基準はなに？」と聞かれて memory を指せる状態にする。
 
 ```
-アイデア / 依頼
-    ↓
-memory 起票（creo-memories、category: todo）
+Spark（`/spark` で原文のまま pack）
+    ↓ Conception → GO
+memory を todo に（creo-memories、category: todo）
     └─ 成功基準（チェックボックス）
     └─ 想定変更ファイル
     └─ 非対象（別 memory）を明記
@@ -343,62 +224,10 @@ memory のタイトルは日本語混じり・長大になりがちで、その�
 - Branch slug: `short-kebab-slug`
 ```
 
-例:
-- Title: 「Landing「はじめ方」セクションを習熟度別カード構造に改修」
-- Branch slug: `landing-usecases`
-- 実 branch: `mako/creo-48-landing-usecases`
-
 slug のルール:
 - 英字小文字 + 数字 + ハイフン（`[a-z0-9-]+`）
 - 20 文字以内目安、内容が類推できる意味語
 - 動詞より**名詞・機能領域**（`add-feature-x` より `feature-x`）
-
-### テストリストの 3 層 SSOT
-
-TDD のテストリストは**変化速度で層を分ける**（詳細: `tdd-ssot-layers` memory）。
-
-| 層 | 責務 | 寿命 | 場所 |
-|----|------|------|------|
-| **memory（creo-memories）** | ユーザー観測可能な成功基準（不変） | todo 完了まで | memory 本文 |
-| **PR description** | テストリスト（S/M/L ラベル付き、☐→☑） | PR マージまで | GitHub PR body |
-| **`*.test.ts`** | `describe/it` 構造 = リストの実装形 | コードの寿命 | テストファイル |
-
-判定ルール:
-- 「このフィーチャは何を達成する？」 → **memory** を見る
-- 「今どこまで進んだ？」 → **PR description** のチェックリスト
-- 「何がコードで保証されているか？」 → **test ファイルの実行結果**
-
-紐付け: memory ID を PR description 冒頭に記載。test ファイルの describe JSDoc に `@see mem_xxx` を入れる。
-
-### 連携テスト（Medium）の粒度
-
-「**モック不要で繋がる範囲**」が Medium の上限（詳細: `test-pyramid-medium-scope` memory）。外部 SDK / API / Network / DB / DOM の境界を越えない、自分たちのコードが素のまま動く部分のみ対象にする。モックを書きたくなったら Large 層（E2E）へ移行するか、単体テスト側に分解する合図。
-
-### Update Finalization Flow（変更 → 副作用 → 標準コマンド）
-
-変更の**タイプ**によって必要な副作用が異なる。最後は**標準コマンド**で締めるのが健全（カスタム /foo コマンド乱立を避ける）。
-
-| # | Update タイプ | 副作用 | 標準 finalize |
-|---|---|---|---|
-| 1 | docs / guideline のみ | なし | 次セッションで自動 |
-| 2 | skill ロジック | session 再読込 | Claude Code reload / restart |
-| 3 | config / schema | 設定再読込 | `.mcp.json` reload / restart |
-| 4 | infra（コンテナ / service） | deploy + restart | `mise run deploy:xxx` |
-| 5 | auth / tenant 切替 | secrets 再 inject + re-deploy + **ユーザー再ログイン** | deploy + browser 再ログイン |
-| 6 | DB schema | migration 実行 | `mise run migrate:xxx` |
-| 7 | destructive（データ削除 / tenant 削除） | **ユーザー明示承認** + backup | 手動（スクリプト化してもユーザー確認必須） |
-
-**判定のヒント**:
-- 変更パスが `*/SKILL.md` のみ → type 1（今開いてる session に影響無し、次起動で反映）
-- `.fleetflow/*.kdl` or Dockerfile → type 4
-- `migrations/*.surql` → type 6
-- Auth0 client / tenant → type 5
-- 複数 type を兼ねる場合は**数字の大きい方**を採用
-
-**原則**:
-- 副作用は**最小単位に分解**して可視化（`git commit -m "[type:4] ..."` や PR description で宣言）
-- 締めは**標準コマンド**に戻す（plugin コマンドを最後にしない）
-- Type 5 / 7 は実行前にユーザー承認を必ず得る
 
 ---
 

@@ -43,13 +43,9 @@ argument-hint: "[version]"
 
 `AskUserQuestion` で提案をユーザーに確認してから確定する。
 
-### Step 4: SKILL.md の version bump 範囲確認（プラグイン形式のみ）
+### Step 4: SKILL.md の version 同期（プラグイン形式のみ）
 
-Claude Code プラグイン形式の場合、**`AskUserQuestion` で SKILL.md の version も bump するかを尋ねる**:
-
-- **all** — 全スキル一律 patch bump
-- **selective** — 変更があったスキルのみ対話で選択
-- **none** — skill 側は触らない（プラグイン本体のみ bump）
+`git diff <last-tag>..HEAD --name-only -- 'skills/*/SKILL.md'` で変更のあったスキルを列挙し、frontmatter の `version:` が既に上がっているか確認する。上がっていないものがあれば patch bump の提案に含め、Step 3 の版の確認と一緒に 1 回で確定する。別途は聞かない。
 
 ### Step 5: CHANGELOG.md 生成・更新
 
@@ -73,7 +69,7 @@ Keep a Changelog 形式で [X.Y.Z] エントリを追加する。既存 `CHANGEL
 - **Rust**: `Cargo.toml` の `version` を書き換え（workspace ルートなら `workspace.package.version`）
 - **npm**: `package.json` の `version` を書き換え
 
-さらに Step 4 で選択された SKILL の `version:` も bump（プラグイン形式で選択された場合）。
+さらに Step 4 で確定した SKILL の `version:` も bump（プラグイン形式のみ）。
 
 ### Step 7: コミット & タグ
 
