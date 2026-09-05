@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.3.0
+version: 5.3.1
 tags:
   - chronista
   - development
@@ -140,7 +140,7 @@ chronista-style (このスキル)
 ```
 Discovery（調査）
     ↓
-Second Opinion（Gemini等・任意）
+Second Opinion（council・任意）
     ↓
 Discussion（方向性議論）
     ↓
@@ -163,7 +163,6 @@ Implementation（実装 & テスト）
     ↓
 Release（リリース & 配布・条件付き）
     └─ PR マージ → タグ → GitHub Release
-    └─ プラグイン同期（/update-plugin、該当時のみ）
     ↓
 Learning（creo-memoriesに記録）
 ```
@@ -174,7 +173,7 @@ Learning（creo-memoriesに記録）
 
 - **ユーモアを忘れない** - 開発は真剣勝負、でも楽しむことを忘れない
 - **ヒアリングファースト** - 実装前に必ず質問を通じてコンテキストを収集
-- **セカンドオピニオン** - 別のAI（Gemini等）に第二意見を求める
+- **セカンドオピニオン** - 判断軸が複数ある決定は `council` で別視点を集める
 
 ### ヒアリングのルール
 

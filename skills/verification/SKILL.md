@@ -1,7 +1,7 @@
 ---
 name: verification
 description: 作業の完了を宣言する前に使用。証拠なき完了宣言を防ぐ規律スキル。
-version: 1.2.1
+version: 1.2.2
 tags: [discipline, verification, completion, evidence, fabrication]
 ---
 
@@ -17,7 +17,7 @@ tags: [discipline, verification, completion, evidence, fabrication]
 検証の証拠なしに完了を宣言するな
 ```
 
-このメッセージ内で検証コマンドを実行していないなら、「通った」と主張する資格はない。
+「通った」と書けるのは、同じセッション内で実際に観測した tool_result を指させるときだけ。前ターンの観測を recap で再掲するのは構わない。観測していない結果を書くのが失敗。
 
 ## The Gate Function
 
@@ -61,7 +61,6 @@ agent 環境の green だけでは閉じない変更がある — 実機のデ�
 - 「緑/通った/merged」と書く直前に、直近の**本物の tool_result 行を指させるか**を自問。
   指させないなら書かない(mito の言葉で「指差し確認」)。
 - 捏造しにくい形で取り直す: 行数(`wc -l`)、git hash、exit code、API の state。
-- 1メッセージ1検証。緑宣言の直前は単独でツールを呼び、結果を待つ。
 
 **構造(意志の外側):** 意志は失敗の瞬間には作動しない。だから外側に関門を置く。Stop hook
 `fabrication-tripwire.sh`(本 plugin の `hooks/hooks.json`、または個人 `~/.claude/settings.json`

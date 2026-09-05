@@ -8,6 +8,18 @@
 
 ## [Unreleased]
 
+### Fixed
+- **スキル棚卸し S 群 — 矛盾・実在しない参照の解消**（mako 発意 2026-09-05「Fable 5.1 の登場前に一度整理したが、もう一度全体を俯瞰してクリーンアップしたい」→ 全 2,868 行を精査し S / A / B / C の 4 段で board 提示 → 「S群着手していこうか」で GO。A / B 群は裁定後の別 PR）
+  - `verification` `1.2.1` → `1.2.2`: Iron Law 直下の「**このメッセージ内で**検証コマンドを実行していないなら資格はない」を「同じセッション内で観測した tool_result を指させるときだけ」に。0.30.0 で tripwire をセッション全体に広げたのに本文が旧仕様のままで、本体の「前ターンの観測も含めて単独で読める recap」要求と衝突していた。「1メッセージ1検証。緑宣言の直前は単独でツールを呼ぶ」は本体のバッチ化ナッジと綱引きするため削除
+  - `spec-design-guide` `1.0.1` → `1.1.0`: 責務分担を 3 層 → **2 層**（memory = 経緯 / `docs/` = 確定版）。「GitHub Issues/Project = 現場」の行と「GitHub Issue でタスク化」を除去し memory 起票へ。0.26.0 の memory SSOT 裁定に SDG だけ追いついていなかった。`reference/living-documentation.md` のコミットテンプレート `Refs: #issue番号` も memory ID に
+  - `codeflow` `3.2.0` → `3.3.0`（283 → 217 行）:
+    - Branch & PR の `mako/{slug}` 規約と「main に直コミットしない」を、ルートの「ブランチ運用（nightly trunk）/ Branch slug」への参照に置換。実ブランチは `{type}/{slug}` で運用されており codeflow だけ古かった
+    - Release の team-b 連携行（Aerosmith → Sticky Fingers → Gold Experience → `/update-plugin`）を削除。team-bucciarati 0.19.0（インストール中）に Aerosmith / Gold Experience は存在せず、`/update-plugin` は本プラグインの自己参照にしか無いことを実測。手順は `/release` への参照 1 行に
+    - Second Opinion の「Gemini MCP 経由で質問」を `council` への参照に置換。Gemini MCP は `.mcp.json.example` にも共有 store にも無い。Discussion の「Geminiさんはこう言ってます」も council の verdict 共有に
+    - memory-as-issue の API 詳細（lifecycle = category / `patch_memory` CAS / `supersedeCandidates` / Cross-Project Handoff）を削除し「作法は `creo-memories` スキル、ここには複写しない」の 1 段落に。`commands/dashboard.md`（active / done の 2 値）と creo-memories 0.54.1 自身（lifecycle = status）と 3 通りに割れていた。他プラグインの仕様の複写は複写元が動くたびに腐る
+  - `commands/sdg.md` / `spec-design-guide`: spec / design の置き場を **`docs/` のみ**に統一（mako 裁定 2026-09-06「docsのみにしておくか。まずは」）。`/sdg` は spec / design を Creo Memories に保存し guide だけデュアルストレージ、SKILL は `docs/` が確定版、と真逆だった。手元 10 リポジトリで spec 38 / design 154 本が全て `docs/` にあり、memory の `spec` / `design` カテゴリは使用 0 件、design doc はコードと同じ PR で更新される（memory にはブランチが無い）ことを実測して裁定。SKILL の「確定版」を「本文（Draft から置き、コードと同じ PR で育つ）」に言い直し、往復は相互参照（docs ヘッダ Related に memory ID / memory にファイルパス）で閉じる。「repo の外から見える」要件は索引 memory（write-once + `/sdg` 自動生成 + 既存 docs の backfill の 3 点セット）として spark 起票し、今回は含めない
+  - `chronista-style` `5.3.0` → `5.3.1` / `README.md`: フロー図の「Second Opinion（Gemini等）」を council に、「プラグイン同期（/update-plugin）」を削除。基本姿勢のセカンドオピニオンも council に同期
+
 ## [0.30.0] - 2026-09-03
 
 ### Changed

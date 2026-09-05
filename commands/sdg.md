@@ -34,19 +34,19 @@ description: 仕様・設計・ガイドドキュメントを起こす。まず�
 
 | 種類 | 保存先 | 構成 |
 |------|--------|------|
-| spec | Creo Memories（category: `spec`） | Abstract → Motivation → Scope → Requirements（REQ-ID 付き） |
-| design | Creo Memories（category: `design`） | Abstract → Architecture → Data Model → Implementation |
-| guide | Creo Memories（category: `guide`）+ `docs/guide/` にコピー | Overview → Prerequisites → Usage → Troubleshooting |
+| spec | `docs/spec/{NN}-{kebab-case}.md` | Abstract → Motivation → Scope → Requirements（REQ-ID 付き） |
+| design | `docs/design/{NN}-{kebab-case}.md` | Abstract → Architecture → Data Model → Implementation |
+| guide | `docs/guide/{NN}-{kebab-case}.md` | Overview → Prerequisites → Usage → Troubleshooting |
 
-**guide のみデュアルストレージ**: Creo Memories を正、`docs/guide/` に同内容を書き込む。更新時は必ず両方を同期。
+本文は `docs/` のみに置く（Creo Memories には書かない）。`{NN}` は既存ファイルの最大番号 + 1。Status は `Draft` から始め、コードと同じ PR で更新する。
 
 ### 4. 要件ID（spec の場合のみ）
 
 spec 作成時は `REQ-{NAME}-{NNN}` 形式で要件 ID を **Claude が候補を3つ提示** し、`AskUserQuestion` でユーザーに選ばせる（または新しい NAME を入力させる）。
 
-### 5. 記録確認
+### 5. 相互参照
 
-生成した memory の `id` を提示し、どこで参照できるか（Creo Memories の URL など）を返す。
+生成したファイルのパスを提示する。対象に起票 memory があれば、ドキュメントのヘッダ（Related）に memory ID を書き、memory 側にはファイルパスを追記して往復を閉じる。
 
 ## Living Documentation 原則
 

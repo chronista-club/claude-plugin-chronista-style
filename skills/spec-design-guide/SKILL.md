@@ -1,7 +1,7 @@
 ---
 name: spec-design-guide
 description: 仕様（Why）・設計（How）・ガイド（Usage）を記録し、Living Documentation原則でコードと常に同期させる
-version: 1.0.1
+version: 1.1.0
 tags: [documentation, spec, design, guide, living-documentation]
 ---
 
@@ -29,29 +29,27 @@ tags: [documentation, spec, design, guide, living-documentation]
 
 **明示的に呼び出す方法**: `/spec-design-guide` または `/sdg`
 
-## 責務分担 — 3層モデル
+## 責務分担 — 2層モデル
 
 | 置き場 | 役割 | 内容 |
 |--------|------|------|
 | **Creo Memories** | 脳（記憶・意思決定の経緯） | 「なぜこうなったか」の議論ログ、設計判断の背景 |
-| **リポジトリ `docs/`** | 設計図（確定した仕様） | 確定版の spec / design / guide |
-| **GitHub Issues/Project** | 現場（やること・進捗） | タスク分解、マイルストーン、タイムライン |
+| **リポジトリ `docs/`** | 本文（Status を持つ下書きから Living まで） | spec / design / guide の本文。Draft の段階から置き、コードと同じ PR で更新する |
 
 ### 保存先マトリックス
 
 | カテゴリ | Creo Memories | リポジトリ `docs/` | 備考 |
 |---------|:---:|:---:|------|
-| **spec** | 経緯・判断理由 | `docs/spec/` 確定版 | 両方に役割が異なる |
-| **design** | 経緯・判断理由 | `docs/design/` 確定版 | 両方に役割が異なる |
+| **spec** | 起票・裁定・却下した案 | `docs/spec/` 本文 | 両方に役割が異なる |
+| **design** | 起票・裁定・却下した案 | `docs/design/` 本文 | 両方に役割が異なる |
 | **guide** | 検索用 | `docs/guide/` 閲覧用 | 人間が直接参照 |
 
 ### creo-memories vs リポジトリの使い分け
 
 - **Creo Memories**: 「なぜこの設計にしたか」「どんな議論があったか」「却下した案」— 意思決定の**プロセス**を記録
-- **リポジトリ `docs/`**: 確定した仕様・設計の**成果物**。コードと共にバージョン管理される
-- **GitHub**: タスクの**タイムライン**。いつ・誰が・何をやるか
+- **リポジトリ `docs/`**: spec / design / guide の**本文**。Draft から `docs/` に置き、ブランチと PR の中でコードと一緒に育つ（memory にはブランチが無い）
 
-> **原則**: creo-memories は検索で「経緯」を引き、docs/ は git で「確定版」を管理する
+> **原則**: creo-memories は検索で「経緯」を引き、docs/ は git で「本文」を管理する。往復は相互参照で閉じる — ドキュメントのヘッダ Related に memory ID、memory 側にファイルパス
 
 ### Supersedes 連携
 
@@ -353,7 +351,7 @@ flowchart LR
 1. `docs/spec/NN-feature-name.md` 作成（仕様書）
 2. `docs/design/NN-feature-name.md` 作成（設計書）
 3. Creo Memories に設計判断の経緯を記録（`category: "design-decision"`）
-4. GitHub Issue でタスク化
+4. creo-memories に todo を起票（Issue-first。作法は `chronista-style` ルートの「Issue-first の原則」）
 5. 実装開始
 6. 実装完了後、docs/ のドキュメントを更新
 

@@ -2,7 +2,7 @@
 name: codeflow
 description: ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, hearing-first, second-opinion, humor]
-version: 3.2.0
+version: 3.3.0
 ---
 
 # Code Flow Skill
@@ -35,7 +35,7 @@ Code Flowのすべてのコミュニケーションの土台となる姿勢で�
 Code Flow は **ステップ名で管理** します（番号は使いません）。依存関係は矢印のみで表現します。
 
 ```
-Discovery → Second Opinion（任意）→ Discussion → Hearing → SDG（+ Bite-Sized Tasks）→ Branch & PR → Implementation → Release（条件付き）→ Learning
+Discovery → Second Opinion（任意・council）→ Discussion → Hearing → SDG（+ Bite-Sized Tasks）→ Branch & PR → Implementation → Release（条件付き）→ Learning
 ```
 
 ### Discovery（ディスカバリー）
@@ -47,27 +47,9 @@ Discovery → Second Opinion（任意）→ Discussion → Hearing → SDG（+ B
 - **事例収集**: 類似実装、ベストプラクティスの調査
 - **ナレッジ参照**: 過去の知見・パターンを検索（メモリシステムがあれば活用）
 
-### Second Opinion（セカンドオピニオン）
+### Second Opinion（セカンドオピニオン・任意）
 
-別のAI（Gemini等）に第二意見を求めることで、視野を広げ見落としを防ぐ。
-
-**活用タイミング**
-- Discovery の調査結果をレビューしてもらう
-- Discussion で方向性を決める前に別視点を得る
-
-**確認ポイント**
-- 技術選定の妥当性確認
-- アーキテクチャの問題点指摘
-- 代替アプローチの提案
-- リスク・エッジケースの洗い出し
-- 見落としている観点の発見
-
-**使い方**
-```
-Gemini MCP経由で質問:
-「この設計について、問題点や代替案があれば教えてください」
-「この技術選定で見落としているリスクはありますか？」
-```
+判断軸が複数ある決定（アーキテクチャの分岐、scope 判断、go/no-go）は、Discussion の前に `council` スキルで 4 voice の合議にかけ、trade-off と最強の dissent を表に出す。明確な勝者がある決定には使わない。
 
 ### 実装前の合意
 
@@ -79,10 +61,10 @@ GO の後は、合意した範囲を最後まで走り切る。元の依頼に�
 
 ### Discussion（ディスカッション） 💬
 
-調査結果とセカンドオピニオンを元にユーザーと方向性を議論。**ここが一番楽しいステップ！**
+調査結果（と council の verdict）を元にユーザーと方向性を議論。**ここが一番楽しいステップ！**
 
 - 現状の分析結果を共有（「こんな感じでした」）
-- セカンドオピニオンからの指摘事項を共有（「Geminiさんはこう言ってます」）
+- council にかけたなら verdict を共有（consensus だけでなく strongest dissent も）
 - 選択肢や方向性を提示（「A案、B案、あと禁断のC案があります」）
 - ユーザーと対話しながら方針を決定
 - **雑談も大事** - 脱線から生まれるアイデアもある
@@ -135,51 +117,13 @@ Step 5: コミット
 - 完全なコード（「バリデーション追加」ではなく実際のコード）
 - 実行コマンドと期待される出力
 
-#### Issue 連携 — memory-as-issue（creo-memories）
+#### Issue 連携 — memory-as-issue
 
-タスクは **creo-memories の memory** として登録し、進捗を memory layer で一元管理する。memory = Issue / Todo / Decision / Milestone の unified layer。
-
-```
-Step 1: remember でタスクを memory 化（atlasId 指定）
-Step 2: lifecycle は category、priority / size / cycle は tags で表現
-Step 3: 親子・依存は derivedFrom / references / concept で接続
-Step 4: ブランチ名は memory の slug から推論
-```
-
-- **lifecycle = category**: spark → backlog → todo → in-progress → in-review → done（+ cancelled / **reborn** = 死んだ work の蘇生）
-- **tags**: `priority:high` / `size:M` / `cycle:2026-W17`
-- **重複防止**: 新規作成は `supersedes` 省略で dry-run → `supersedeCandidates` を確認 → 確定
-- **mutation**: `patch_memory`（atomic in-place / CAS）/ `append_memory`（末尾追記）/ `annotate`（comment）。`update_memory` は fork するため lifecycle 更新に使わない
-
-#### Cross-Project Handoff
-
-別 project への修正依頼は issue 化せず、**handoff memory 1 個**で渡す（Cross-Project Handoff Protocol 準拠）。
-
-```
-requester: handoff memory を receiver の Atlas に作成（self-contained context、category: todo）
-receiver:  patch_memory で claim（CAS 排他）→ in-progress → 結果を append_memory → in-review
-requester: 検証 → done（再発時は reborn）
-```
-
-1 handoff = 1 living memory。request / 作業 / 結果 / 検証が同じ memory に積層する。
+タスクは creo-memories の memory として起票し、進捗も同じ memory に積む（Issue / Todo / Decision が一つの層）。起票の中身（成功基準・非対象・Branch slug）は `chronista-style` ルートの「Issue-first の原則」、API の作法（status / tags / supersedes / 追記の仕方）は `creo-memories` スキルに従う。ここには複写しない。
 
 ### Branch & PR（ブランチ & PR フロー）
 
-**main に直コミットしない。** 必ずブランチで PR フローを踏む。
-
-```
-Step 1: memory の slug からブランチ名を推論（mako/{slug} or mako/{short-id}-{slug}）
-Step 2: ブランチ作成 → 実装 → コミット
-Step 3: PR 作成（gh pr create）— PR body に対応 memory ID を参照
-Step 4: レビュー（team-b Moody Blues 等）
-Step 5: SHIP IT → マージ
-```
-
-**ブランチ運用ルール:**
-- `main` / `master` への直プッシュ禁止
-- ブランチ名は memory slug ベース（`mako/{slug}` 形式）
-- PR body に対応 memory ID を記載し、マージ後に memory の category を done に更新
-- レビューで SHIP IT が出るまでマージしない
+trunk は `nightly`、ブランチ名は `{type}/{slug}`、PR body 冒頭に memory ID。規約の本体は `chronista-style` ルートの「ブランチ運用（nightly trunk）」と「Branch slug の規約」。レビューで GO が出るまでマージしない。
 
 ### Implementation（実装・TDD）
 
@@ -188,25 +132,16 @@ Step 5: SHIP IT → マージ
 **必須:** 実装時は `tdd` スキルの RED-GREEN-REFACTOR サイクルに従え。
 テストファーストで書き、失敗を確認し、最小限のコードで通せ。
 
-**memory category 連動:**
-- 実装開始 → memory の category を `in-progress` に
-- レビュー待ち → `in-review`、マージ完了 → `done`
+進捗は起票した memory に追記する。
 
 ### Release（リリース & 配布・条件付き）
 
 **トリガー条件**: 以下のいずれかに該当する場合のみ実行する。該当しなければスキップ。
 
 - PR マージ → リリースが必要な場合
-- プロダクトリリース → プラグイン同期が必要な場合
+- デプロイが必要な場合
 
-```
-Step 1: PR マージ → タグ → GitHub Release
-Step 2: デプロイ（該当時）
-Step 3: プラグイン同期（該当時） → /update-plugin
-Step 4: memory の進捗を更新（Initiative / Milestone memory の category）
-```
-
-**team-b 連携**: Aerosmith がパイプラインをディスパッチする場合、Sticky Fingers（シップ）→ Gold Experience（デプロイ）→ `/update-plugin`（プラグイン配布）の順で実行。
+手順は `/release` コマンド（形式検出 → version bump → CHANGELOG → tag）。デプロイは該当時のみ。マージ後は起票した memory の todo を閉じる。
 
 ### Learning（学習）
 
@@ -247,9 +182,8 @@ Code Flowは**SDG（Spec-Design-Guide）原則**に基づいています:
    - 関連する質問はまとめ、回答に依存する質問はラウンドを分ける
 
 2. **セカンドオピニオン活用**
-   - 技術選定や設計判断の前に別AIの意見を求める
+   - 判断軸が複数ある決定は `council` で別視点を集める
    - 盲点や見落としを早期に発見
-   - 多角的な視点で品質を向上
 
 3. **SDG準拠**
    - spec/とdesign/を必ず作成

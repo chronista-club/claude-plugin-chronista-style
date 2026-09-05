@@ -56,7 +56,7 @@ Chronista のプロダクト群を横断する**共通の開発スタイル基�
 ```
 Discovery（調査）
     ↓
-Second Opinion（Gemini等・任意）
+Second Opinion（council・任意）
     ↓
 Discussion（方向性議論）
     ↓

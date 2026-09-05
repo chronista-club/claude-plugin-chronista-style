@@ -220,7 +220,7 @@ fi
 - docs/spec/NN-feature.md: 更新内容
 - docs/design/NN-feature.md: 更新内容
 
-Refs: #issue番号
+Refs: mem_xxx（対応する creo-memories の todo）
 ```
 
 コミットメッセージは簡潔に。詳細な理由・影響範囲は creo-memories に記録する。
