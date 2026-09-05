@@ -17,6 +17,7 @@
     - Release の team-b 連携行（Aerosmith → Sticky Fingers → Gold Experience → `/update-plugin`）を削除。team-bucciarati 0.19.0（インストール中）に Aerosmith / Gold Experience は存在せず、`/update-plugin` は本プラグインの自己参照にしか無いことを実測。手順は `/release` への参照 1 行に
     - Second Opinion の「Gemini MCP 経由で質問」を `council` への参照に置換。Gemini MCP は `.mcp.json.example` にも共有 store にも無い。Discussion の「Geminiさんはこう言ってます」も council の verdict 共有に
     - memory-as-issue の API 詳細（lifecycle = category / `patch_memory` CAS / `supersedeCandidates` / Cross-Project Handoff）を削除し「作法は `creo-memories` スキル、ここには複写しない」の 1 段落に。`commands/dashboard.md`（active / done の 2 値）と creo-memories 0.54.1 自身（lifecycle = status）と 3 通りに割れていた。他プラグインの仕様の複写は複写元が動くたびに腐る
+  - `commands/sdg.md` / `spec-design-guide`: spec / design の置き場を **`docs/` のみ**に統一（mako 裁定 2026-09-06「docsのみにしておくか。まずは」）。`/sdg` は spec / design を Creo Memories に保存し guide だけデュアルストレージ、SKILL は `docs/` が確定版、と真逆だった。手元 10 リポジトリで spec 38 / design 154 本が全て `docs/` にあり、memory の `spec` / `design` カテゴリは使用 0 件、design doc はコードと同じ PR で更新される（memory にはブランチが無い）ことを実測して裁定。SKILL の「確定版」を「本文（Draft から置き、コードと同じ PR で育つ）」に言い直し、往復は相互参照（docs ヘッダ Related に memory ID / memory にファイルパス）で閉じる。「repo の外から見える」要件は索引 memory（write-once + `/sdg` 自動生成 + 既存 docs の backfill の 3 点セット）として spark 起票し、今回は含めない
   - `chronista-style` `5.3.0` → `5.3.1` / `README.md`: フロー図の「Second Opinion（Gemini等）」を council に、「プラグイン同期（/update-plugin）」を削除。基本姿勢のセカンドオピニオンも council に同期
 
 ## [0.30.0] - 2026-09-03
