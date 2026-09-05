@@ -1,7 +1,7 @@
 ---
 name: council
 description: 多義的な意思決定・トレードオフ・go/no-go 判断のために、4 voice の合議を召集する。複数の妥当な path が存在し、選択前に構造化された反対意見が必要なときに使う。
-version: 2.0.0
+version: 2.0.1
 origin: ECC (Everything Claude Code) — chronista 適合 fork
 tags: [decision, council, ambiguity, multi-voice, second-opinion]
 ---
@@ -92,7 +92,7 @@ Be direct. No hedging. Keep it under 300 words.
 - **Recommendation:** [統合された path]
 ```
 
-スマホ画面で読める長さに収める。
+短く。
 
 ## creo-memories 連携
 

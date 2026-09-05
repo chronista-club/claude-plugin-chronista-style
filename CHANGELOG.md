@@ -8,6 +8,66 @@
 
 ## [Unreleased]
 
+## [0.31.0] - 2026-09-06
+
+### Changed
+- **棚卸し後の読み直しからの 4 点**（Claude の提案、mako「その提案入れましょう。あなたの style でもある。こういうのは気兼ねなく、これからも」）
+  - `hooks/session-start.sh`: 規律エッセンスに 2 行 — 「火花が降ったら `/spark`」と基本姿勢の一行（穏やかに、真面目に、ユーモアを忘れずに）。常時注入だけがスキル発動前に効く場所で、`/spark` は存在を覚えていなければ使えない
+  - `hooks/session-start.sh`: Atlas 候補の「exact match が無ければユーザーに確認する」→ 同じ repo の過去の todo の Atlas に倣い、前例も無ければ Personal に置いて一言添える。聞かない（本セッションで実際にここで一度止まった。`/spark` の「置き場で止まらない」と同じ判断）
+  - `commands/sdg.md`: 冒頭で「どの種類？」「対象は？」と AskUserQuestion を 2 回打つ旧質問票の最後の生き残りを Conception 型に。種類と対象はブランチ・memory・commit から推測して提示し、聞くのは分岐だけ。空のひな形を渡さず分かっていることは埋める
+  - `codeflow` `4.2.1` → `4.3.0`: Conception「調べる」に火花の再訪 — 同じ領域の `spark` を `search` で拾い、繋がるものがあれば会話に出す。`/dashboard` を消したので溜まった spark を眺める場所が無く、仕組みを作らず一行で経路を作る。Context Engine の自動注入が拾うなら不要になる前提
+- **`/release` を「背骨 + 尻尾への委譲」に書き直し**（mako「release はプロジェクト固有の方がいいのかな？」→ 実測で「背骨は共通、尻尾は全部違う」と分かり、その切り方で GO）。直近 30 日で動いた 12 リポジトリを実測: 背骨（版の正本を検出 → 版を決める → CHANGELOG → release commit → nightly を main に merge → main で tag → push → GitHub Release）は VP / unison / plugin 4 本で同じ形。尻尾は全部違う — creo-memories は tag push で CI が ghcr に image、creo-ui は main push で CI が package ごとに tag と publish（自分で tag を打ってはいけない）、fleetstage は main push でパス条件付き image、Ladyland は `scripts/build-app.sh --install` で署名・公証・`/Applications` 配置（版は `git describe --tags` から取るのに version tag が無く 0.1.0 で焼かれている）、VP は CHANGELOG 無し
+  - 旧コマンドは「今のブランチで commit して tag」までで、root の「ブランチ運用（nightly trunk）」にある nightly → main の merge commit・main での tag・GitHub Release を持っていなかった（v0.30.0 では手で補っていた）。Living Documentation の不一致
+  - 背骨: 現在地と形式を聞かずに全部読む（版の正本 / nightly モデルか main モデルか / clean & 最新 / 直前 release commit の流儀 / CI の起点 / 尻尾の有無）→ **確認は 1 回**（版・変更スキル・merge・push・tag・Release・起動する CI と尻尾を一つの提示で GO）→ 書く（CHANGELOG は**無ければ作らない**、Cargo.lock 追随）→ nightly モデルなら `--no-ff` で main へ merge して main で tag、CI が main で tag を打つ形式なら自分で打たない → Tag Verify Gate に「main 上にあること」を追加 → `gh release create` → CI を `gh run watch` で見届ける
+  - 尻尾の検出: `mise run release` → `scripts/release*` → リポジトリの `.claude/skills/release*/SKILL.md` / CLAUDE.md の Release 節。実機を伴うもの（署名・配置・転送）は実行して**実機確認待ち**で止める。見つからなければ起動した CI と手で残っていることを報告して終わる。プラグイン形式は marketplace が版を pin していないので同期不要、`claude plugin update` を案内
+  - 「尻尾をプロジェクトに置くとき」節: 背骨に分岐を足さず、`mise.toml` の `[tasks.release]` / `scripts/release.sh` / `.claude/skills/release/SKILL.md` のどれかに。尻尾は「tag が打たれた後に何をするか」だけ
+  - `codeflow` `4.2.0` → `4.2.1` / `README.md`: Release ステップとコマンド表の説明を同期
+- **設計哲学を三本に、reference を「本の要約」から「設計の判断集」に**（mako 2026-09-06「この手法だけで、強く美しいは、むずかしいのでは？」→「責務周りかな？記述がここにあるべきなのか、結構似たような実装があったり、よく交通渋滞を引き起こしてた」→「最初から完璧なコードを目指すのは、未来を予想できないのと同じで無理。開発中に気づく事と、それの改善を継続して行えるかの方向で考えたい」→ GO）
+  - `chronista-style` `6.0.0` → `6.1.0`: 設計哲学を **責務・Simplicity・Straightforward** の三本に。冒頭を「最初から完璧を目指さない。開発中に気づき、直し続けるための三つの軸」に。責務 = 置き場・所有・変更の局所性（「この記述が変わるとき、何が変わったからか」「片方のバグはもう片方でもバグか」「何本の道を塞ぐか」「開く理由は何通りあるか」）。Straightforward に「正本は一つ、残りは導出」「次の consumer が現れてから広げる」を追加。適用範囲にリファクタ行
+  - `reference/grokking-simplicity.md`（284 行、本の忠実な要約で 3 分の 2 が定義）→ **`reference/design-judgments.md`**（122 行）。design docs の「やってはいけない」18 本・レビュー記録・Ladyland のリファクタ履歴から判断を掘ると、Grokking Simplicity で説明できるのは 3 分の 1 で、残りは責務（VP の「ディレクトリは Project に持たせない」、vpcode の「形が似ていても責務が違えば共通化しない」、Ladyland `RotoService` 1,944 → 1,677 行でも兼務は残る）と Straightforward（「離散状態フラグを再導入しない、全て射影」「供給路は一本」「次の consumer が来てから広げる」）だった。第一部「気づきの問い」（症状 → 問い → 実例、軸ごと）、第二部「気づいたときの作法」（手は止めない・範囲外は `/spark`・抜く前に意図を 1 本のテストで pin・実測と制約は文書に・土台は直列・基準は「次に触るときに前より見通しが良い」）、言語での表現（Rust に加えて Ruby）、チェックリスト。原典は Simplicity の源として残す
+ — harness との綱引きの解消と足場の縮約**（mako 裁定 2026-09-06、主題ごとに精査して「大賛成」「いいね」「3 つとも GO」）。全体 2,868 → 1,654 行
+  - **語調の原則を root の「基本姿勢」に新設**（決定記録 `mem_1CekeYAi956A8RcpNK4h73`）: 穏やかに、真面目に、ユーモアを忘れずに。きつい言葉を使わない、犯人探しではなくコードと成果物とユーザーへの真摯さから発言する、GO の前は自由な構想で GO の後は走り切る、質問票を作らない。codeflow の「ユーモアを忘れない 🎭」節（OK / NG 例リスト）はここに統合して削除
+  - **規律 3 スキル — 中身は残して圧力を抜く**。「合理化を見破る」表を 3 本とも削除（「疲れた ≠ 免罪符」「TDD は教条的」は人間向けの説教で Fable には効かない）。「資格はない」「交渉の余地がない」「削除は削除」「〜するな」を平叙文に。Red Flags は止まる合図として短く残す。末尾の「creo-memories 連携」節 ×3 は root と重複のため削除。Fable は指示に過剰に従うので、圧力は規律を強めず境界をずらす — 効くのは脅しでなく境界の正確さ
+    - `tdd` `1.2.0` → `1.3.0`: 例外（プロトタイプ / 自動生成 / 設定ファイル）を「ユーザーに確認」から「該当すれば聞かずに省略してよい、最終報告に書く」に（本体の自律実行文との綱引き解消）。dot 図と `bun test` 固定を外し「そのプロジェクトのテストランナー」に。root から「テストリストの 3 層 SSOT」「連携テスト（Medium）の粒度」を移設し `*.test.ts` / `describe/it` 固定を言語中立に
+    - `systematic-debugging` `1.0.2` → `1.1.0`: 「あらゆる技術的問題に使え」を削除（over-trigger の誘い）
+    - `verification` `1.2.2` → `1.3.0`: hedge 禁止を「完了宣言の中で」に限定し「検証できていないことは完了とは別に最初に言う」を併記（本体の不確実性表明の要求と綱引きしていた）。Gate Function 5 ステップを 3 行に、「パターン」「最後に」を削除。よくある検証不足に「設計に触れた変更は design が同じ PR にある」を追加 — Living Documentation の唯一の関門をここに置く
+  - **`spec-design-guide` `1.1.0` → `2.0.0`（442 → 85 行）— 「何を書くか」は残し「どう書くか」は落とし、「どう生かすか」を本体に**（mako「何を書くかは読みやすい形式を定義したいけど、書き方については細かくしない」「SDG をいかに文書として機能させつつ、Living Doc させやすい形に落とし込むのが大事」）。203 本の実 docs を実測: Status ヘッダ 57 / REQ-ID 21 / Related 7 が生きており、`VP-SPEC-001` ID 体系 6・Author 4・Implements 2 は死んでいる。死んだ規約は全部「手で保守が要るもの」。design には「関連」35・「やってはいけない」18・「Status log」8 が自然発生しており、追記型だから生きていた
+    - 残す: 3 層の役割、各層 4 段階の骨格（順番・見出し名は強制しない）、「関連」「やってはいけない」の歓迎、REQ-ID（任意）
+    - ヘッダは Status / Related / **対象コードパス**だけ（日付・作者は git）。対象パスが「このコードを触るとき、どの文書を見るか」の grep 索引になる
+    - 生かし方: コードと同じ PR で触る / 書き換えより追記（Status log、大改版は Supersedes で新番号）/ 消さず Deprecated / 地雷は「やってはいけない」に戻す / What は文書・Why は memory
+    - codeflow との対応表: Conception の「調べる」で対象パスの docs を読む → GO が要った変更（分岐があった）だけ design に書く → Implementation で追記 → PR の前に verification → Release で Status を Active に。**GO の条件がそのまま SDG の条件**なので、起動条件を別に定義しない
+    - 削除: テンプレート 3 本（退避せず削除。骨格から生成できる）、`{PRJ}-SPEC-NNN` ID 体系、D{N} 番号、Changelog 運用規則、Status 遷移図、Mermaid 種類テーブル（22 種）、「自動的に適用」「禁止事項」「必須手順 7 ステップ」。`reference/living-documentation.md`（230 行）は SKILL 本文に吸収して削除
+    - `commands/sdg.md`: 要件 ID の「候補 3 つを AskUserQuestion」を「任意、NAME を提案して進める」に。ヘッダ規約を同期
+  - **`chronista-style` `5.6.2` → `6.0.0`（409 → 236 行）— root は「どこに何があるか」だけ持ち、子スキルの要約を持たない**（要約は本体とずれる。root のフロー図には Requirements ステップがあり codeflow には無かった）。削除: 「開発フロー: codeflow」節と「ドキュメント管理: SDG」節の要約、スキル優先順序・発動テーブル・Rigid / Flexible 分類（「該当判断はモデルに委ねる」と半端に共存していた）、「最新版を読む」（スキルは発動のたびに読まれる）、Update Finalization の 7 種類表（`.fleetflow/*.kdl` / Auth0 tenant 等の特定プロダクト詳細。不可逆操作の確認は本体が既に要求）。テストリスト 3 層と Medium 粒度は tdd へ移設。description から「包括的」を外す（発動判断に使われる語で過剰発動を誘う）。記憶に刻む瞬間に「降ってきた火花（`/spark`）」を追加
+  - **`codeflow` `4.1.1` → `4.2.0`（217 → 79 行）**: ユーモア節を root に統合、Bite-Sized Task（「2〜5 分」「完全なコードを明記」「Step 1〜5」= superpowers の計画書作法、計画に実装コードを書かせる二度書き）を「1 振る舞い 1 単位、手順は tdd」に、GO 後の 3 段落目を 1 文に（本体の Delivering work と同文だった）、ベストプラクティス 6 項・SDG 原則節・ディレクトリ構成（`project/spec/` で SDG の `docs/spec/` と食い違っていた）を削除。各ステップに Living Doc の 1 行（調べる / GO / Implementation / Branch & PR / Release / Learning）
+  - `commands/release.md`: Step 4「SKILL.md を bump するか」を毎回 AskUserQuestion していたのを、前回タグからの diff で変更スキルを列挙して版の確認と一緒に 1 回で確定に
+  - `council` `2.0.0` → `2.0.1`: 「スマホ画面で読める長さ」→「短く」。`parallel-dev` `0.2.0` → `0.2.1`: 「背景」節（CHANGELOG と重複）を削除
+  - `README.md`: スキル表・コマンド表を同期、スキルタイプ節と起動タイミング表（root から削除した表の写し）を削除、hooks の説明を追加
+- **フローの先頭を Spark → Conception → GO に組み替え、「ヒアリングファースト」を廃止**（mako 裁定 2026-09-06「hearing First も、その時々の進めたいことで変わってくるし、いつも議論したくなったら『ちと相談なんだけど』とか私がトリガーになってる。想起されるのが先で、1st ではない」→ 名前は「Conception だね。それ採用」）。Discovery → Second Opinion → Discussion → Hearing のパイプラインは実態と違い、実際は想起（どちらからでも）→ 順不同の会話 → GO の一本線。硬い関門は GO だけ
+  - `codeflow` `3.3.0` → `4.0.0`: 先頭を **Spark（想起）→ Conception（構想）→ GO（実装前の合意）** に。Discovery / Discussion / Hearing / council は Conception の中の「手」に格下げ（順番なし）。Spark は AI からも起きてよい（「気になることがある」で会話を開く）。GO の瞬間に memory を `spark` → `todo` に
+  - **Hearing を「質問票」から「理解の提示と差分」に**（mako 裁定「hearing の時点のルールは自由な意見交換じゃなくなるよね。そこ改修していこう」）。「実装前に**必ず**質問」がルートと codeflow に 3 回、`AskUserQuestion` が hearing の「軸」としてコマンド側 6 箇所で指名、「最大 4 問 / ラウンド分け / コツ 4 項」で手順化されていた。実際のリズム（0.29.0 分析: 「進めて」49 回・「どう？」34 回、本セッションも AskUserQuestion 0 回）は AI が理解を提示して人間が訂正か GO を返す形。理解を短く書く → ズレと分岐だけ聞く → 「AI の理解」を起票 memory に書き戻す。AskUserQuestion は分岐が 2〜4 個に離散的に絞れたときだけ
+  - `chronista-style` `5.3.1` → `5.5.0`: フロー図・基本姿勢（「ヒアリングファースト」→「GO の一本線」）・「Conception のルール」を同期。Issue-first の起票テンプレートに「AI の理解（Hearing のたびに更新。裁定の原文は不変、理解はその上に積む）」— 人間の言葉は不変、AI の理解は注釈として積む層の非対称（spark `mem_1Cekaq6HzcGZFRd92Ydk3F`）
+  - `commands/codeflow.md`: 全面書き換え。「どのステップから入りますか？」メニュー廃止、理解の提示の中で入口を自分の判断として述べる（`commands/hearing.md` も同様に書き換えたが、最終的に削除 — Removed 参照）
+  - `hooks/session-start.sh`: 規律エッセンス 4 行目に「GO の前は自由な構想（Conception）」を前置
+  - **新コマンド `/spark`**（mako 発意「私が spark したときに、そのモードに切り替わって、アイデアをすぐ書き込む経路が欲しい」→ GO）。`/spark <言葉>` で原文のまま `category: spark` に pack し memory ID を一行返す。引数が無ければ「何が降ってきた？」と一行聞いて次の発言を pack。要約しない・見出しを付け直さない・タグを推測しない・成功基準を聞かない・作業に入らない（整えると火花が死ぬ）。重複検出は切る。Atlas は session-start の候補に exact match が無ければ Personal に入れて一言添える。`codeflow` `4.0.0` → `4.1.0` / `chronista-style` `5.5.0` → `5.6.0` の Spark 節に入口を追記。会話中の「ちと相談なんだけど」の自動 spark 化はしない（Fable のスキル過剰発動で雑談まで積む事故を避ける。構えを Conception に切り替えるだけ）
+  - `README.md` / `.claude-plugin/plugin.json`: 「ヒアリングファースト / hearing-first」を Spark → Conception → GO に。keywords `hearing-first` → `conception`
+
+### Removed
+- **`commands/hearing.md` を削除、Conception の手から「Hearing」のラベルを外す**（mako「hearing は残しておいた方がよい？」→ 削除を推奨 → GO）。中身が「理解を提示してズレと分岐を聞く」になった時点で `/codeflow` の 3 手目と同じになり、Conception の中では文脈が揃えば言われなくてもやる動きなので、コマンドが加える規律が無い（`/spark` は「解釈するな」の縛りのために入口が要るが、hearing にはそれが無い）。「Hearing」は聞き取りの語で質問票の世界の言葉。見出しと本文が綱引きしないよう「理解を書く」だけ残す。`codeflow` `4.1.1` / `chronista-style` `5.6.2`（起票テンプレート「Hearing のたびに更新」→「理解が変わるたびに更新」）/ `README.md` 同期。コマンドは `/codeflow` `/sdg` `/release` `/spark` の 4 本
+- **`commands/dashboard.md` を削除**（mako 裁定 2026-09-06「使った事ないな」→「ならオミットしとこうか」）。0.26.0 で Linear から creo-memories ベースに全面書き直したが、その後一度も呼ばれなかった。「全プロジェクトの active todo を一覧する」需要はセッション開始時の Context Engine 注入と creo の Web UI で満たされていた。0.28.0 の「未使用は削る」原則を適用。`chronista-style` `5.6.0` → `5.6.1` / `README.md` の参照を除去。コマンドは最終的に 4 本（`/spark` 追加、`/dashboard` `/hearing` 削除）
+
+### Fixed
+- **スキル棚卸し S 群 — 矛盾・実在しない参照の解消**（mako 発意 2026-09-05「Fable 5.1 の登場前に一度整理したが、もう一度全体を俯瞰してクリーンアップしたい」→ 全 2,868 行を精査し S / A / B / C の 4 段で board 提示 → 「S群着手していこうか」で GO。A / B 群は裁定後の別 PR）
+  - `verification` `1.2.1` → `1.2.2`: Iron Law 直下の「**このメッセージ内で**検証コマンドを実行していないなら資格はない」を「同じセッション内で観測した tool_result を指させるときだけ」に。0.30.0 で tripwire をセッション全体に広げたのに本文が旧仕様のままで、本体の「前ターンの観測も含めて単独で読める recap」要求と衝突していた。「1メッセージ1検証。緑宣言の直前は単独でツールを呼ぶ」は本体のバッチ化ナッジと綱引きするため削除
+  - `spec-design-guide` `1.0.1` → `1.1.0`: 責務分担を 3 層 → **2 層**（memory = 経緯 / `docs/` = 確定版）。「GitHub Issues/Project = 現場」の行と「GitHub Issue でタスク化」を除去し memory 起票へ。0.26.0 の memory SSOT 裁定に SDG だけ追いついていなかった。`reference/living-documentation.md` のコミットテンプレート `Refs: #issue番号` も memory ID に
+  - `codeflow` `3.2.0` → `3.3.0`（283 → 217 行）:
+    - Branch & PR の `mako/{slug}` 規約と「main に直コミットしない」を、ルートの「ブランチ運用（nightly trunk）/ Branch slug」への参照に置換。実ブランチは `{type}/{slug}` で運用されており codeflow だけ古かった
+    - Release の team-b 連携行（Aerosmith → Sticky Fingers → Gold Experience → `/update-plugin`）を削除。team-bucciarati 0.19.0（インストール中）に Aerosmith / Gold Experience は存在せず、`/update-plugin` は本プラグインの自己参照にしか無いことを実測。手順は `/release` への参照 1 行に
+    - Second Opinion の「Gemini MCP 経由で質問」を `council` への参照に置換。Gemini MCP は `.mcp.json.example` にも共有 store にも無い。Discussion の「Geminiさんはこう言ってます」も council の verdict 共有に
+    - memory-as-issue の API 詳細（lifecycle = category / `patch_memory` CAS / `supersedeCandidates` / Cross-Project Handoff）を削除し「作法は `creo-memories` スキル、ここには複写しない」の 1 段落に。`commands/dashboard.md`（active / done の 2 値）と creo-memories 0.54.1 自身（lifecycle = status）と 3 通りに割れていた。他プラグインの仕様の複写は複写元が動くたびに腐る
+  - `commands/sdg.md` / `spec-design-guide`: spec / design の置き場を **`docs/` のみ**に統一（mako 裁定 2026-09-06「docsのみにしておくか。まずは」）。`/sdg` は spec / design を Creo Memories に保存し guide だけデュアルストレージ、SKILL は `docs/` が確定版、と真逆だった。手元 10 リポジトリで spec 38 / design 154 本が全て `docs/` にあり、memory の `spec` / `design` カテゴリは使用 0 件、design doc はコードと同じ PR で更新される（memory にはブランチが無い）ことを実測して裁定。SKILL の「確定版」を「本文（Draft から置き、コードと同じ PR で育つ）」に言い直し、往復は相互参照（docs ヘッダ Related に memory ID / memory にファイルパス）で閉じる。「repo の外から見える」要件は索引 memory（write-once + `/sdg` 自動生成 + 既存 docs の backfill の 3 点セット）として spark 起票し、今回は含めない
+  - `chronista-style` `5.3.0` → `5.3.1` / `README.md`: フロー図の「Second Opinion（Gemini等）」を council に、「プラグイン同期（/update-plugin）」を削除。基本姿勢のセカンドオピニオンも council に同期
+
 ## [0.30.0] - 2026-09-03
 
 ### Changed

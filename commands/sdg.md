@@ -1,55 +1,42 @@
 ---
-description: 仕様・設計・ガイドドキュメントを起こす。まず何を作るか尋ねる
+description: spec / design / guide のひな形を docs/ に起こす。種類と対象は推測して提示し、聞くのは分岐だけ
 ---
 
 # SDG 起動
 
-`spec-design-guide` スキルのエントリポイント。**ひな形生成までを1コマンドで**。
+`spec-design-guide` スキルのエントリポイント。**ひな形生成までを 1 コマンドで**。質問票にしない — 種類と対象は推測して提示し、聞くのはズレと分岐だけ。
 
 ## 実行手順
 
-### 1. 種類の選択
+### 1. 種類と対象を推測する
 
-`AskUserQuestion` で尋ねる:
+聞く前に読む。
 
-> 「どの種類のドキュメントを作りますか？」
+- **対象**: メッセージにあればそれ。無ければ現ブランチ名 → 起票 memory（`search`）→ 直近 commit の順に推測する
+- **種類**: 対象に spec が無ければ spec、spec があって design が無ければ design、実装済みで使い方が要るなら guide。判断がつかなければ spec から
 
-- **spec** — What & Why（仕様・目的・スコープ・要件）
-- **design** — How（アーキテクチャ・データモデル・実装方針）
-- **guide** — Usage（使い方・ベストプラクティス・トラブルシュート）
+推測した種類と対象、置く番号（`docs/<種類>/` の最大番号 + 1）を短く提示する。ズレていそうなら直してもらう。種類の分岐が本当に残るときだけ AskUserQuestion。
 
-### 2. 対象のキャプチャ
+### 2. ひな形を書く
 
-`AskUserQuestion` で対象を特定:
-
-> 「対象は？」
-
-- **現ブランチに紐づく memory** — `mcp__creo-memories__search` でブランチ名から引く
-- **直近の commit から推測** — `git log -5 --oneline` の変更内容から対象機能を推測
-- **フリーテキストで指定** — ユーザーが直接入力
-
-### 3. ひな形生成
-
-選択された種類に応じて保存先と構成を切り替える。
-
-| 種類 | 保存先 | 構成 |
+| 種類 | 保存先 | 骨格 |
 |------|--------|------|
-| spec | Creo Memories（category: `spec`） | Abstract → Motivation → Scope → Requirements（REQ-ID 付き） |
-| design | Creo Memories（category: `design`） | Abstract → Architecture → Data Model → Implementation |
-| guide | Creo Memories（category: `guide`）+ `docs/guide/` にコピー | Overview → Prerequisites → Usage → Troubleshooting |
+| spec | `docs/spec/{NN}-{kebab-case}.md` | Abstract → Motivation → Scope → Requirements |
+| design | `docs/design/{NN}-{kebab-case}.md` | Abstract → Architecture → Data Model → Implementation |
+| guide | `docs/guide/{NN}-{kebab-case}.md` | Overview → Prerequisites → Usage → Troubleshooting |
 
-**guide のみデュアルストレージ**: Creo Memories を正、`docs/guide/` に同内容を書き込む。更新時は必ず両方を同期。
+本文は `docs/` のみに置く。Status は `Draft` から始め、コードと同じ PR で更新する。分かっていることは埋めて書く（空のひな形を渡さない）。
 
-### 4. 要件ID（spec の場合のみ）
+### 3. ヘッダと要件 ID
 
-spec 作成時は `REQ-{NAME}-{NNN}` 形式で要件 ID を **Claude が候補を3つ提示** し、`AskUserQuestion` でユーザーに選ばせる（または新しい NAME を入力させる）。
+ヘッダは Status（Draft）と Related（spec 番号・起票 memory）と対象（コードパス）だけ。Author や日付は書かない。spec でトレーサビリティが要るなら `REQ-{NAME}-{NNN}` を振る（任意。NAME はドメインの短い語を提案して進める）。
 
-### 5. 記録確認
+### 4. 相互参照
 
-生成した memory の `id` を提示し、どこで参照できるか（Creo Memories の URL など）を返す。
+生成したファイルのパスを提示する。対象に起票 memory があれば、ドキュメントのヘッダ（Related）に memory ID を書き、memory 側にはファイルパスを追記して往復を閉じる。
 
-## Living Documentation 原則
+## Living Documentation
 
-> ドキュメント = What changed、creo-memories = Why changed
+> 文書には What、memory には Why
 
-SDG ドキュメントとコードは常に同期。不一致はバグとして扱う。
+生かし方（同じ PR で触る、書き換えより追記、消さず Deprecated）は `spec-design-guide` スキルを参照。

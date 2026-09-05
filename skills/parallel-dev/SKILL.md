@@ -1,7 +1,7 @@
 ---
 name: parallel-dev
 description: 並列開発の作業単位を決めるとき、スコープが混ざったとき、worktree / VP lane / stacked PR のどれを使うか迷ったときに使用。「隔離・出荷」2層モデルで道具を選ぶ判断スキル。
-version: 0.2.0
+version: 0.2.1
 tags: [parallel, worktree, vantage-point, stacked-pr, workflow]
 ---
 
@@ -52,9 +52,3 @@ worktree は「作業ディレクトリごと分ける」ので、隔離は構�
   スコープ単体の正しさの根拠にする（単体の保証は worktree か CI の per-PR ビルドで取る）
 - ❌ worktree を切ったまま放置して乱立させる（gitnexus / sem のインデックスが増える。
   完了したら畳む）
-
-## 背景
-
-- GitHub native stacked PR: 2026-07-30 に public preview（全リポジトリ）
-- 2026-08-28: 仮想ブランチによる「分流」層を廃止し、3層モデルから本2層モデルへ移行。
-  分流層は VP lane と役割が重複し、実運用で出番がなかった。
