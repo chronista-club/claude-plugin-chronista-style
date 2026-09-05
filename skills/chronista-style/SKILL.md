@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.6.1
+version: 5.6.2
 tags:
   - chronista
   - development
@@ -316,7 +316,7 @@ memory 起票（creo-memories、category: todo）
     └─ 成功基準（チェックボックス）
     └─ 想定変更ファイル
     └─ 非対象（別 memory）を明記
-    └─ AI の理解（Hearing のたびに更新。裁定の原文は不変、理解はその上に積む）
+    └─ AI の理解（理解が変わるたびに更新。裁定の原文は不変、理解はその上に積む）
     └─ ## Meta / Branch slug を記載
     ↓
 Branch（{type}/{slug} 形式、英字 kebab-case）
