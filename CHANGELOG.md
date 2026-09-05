@@ -8,6 +8,20 @@
 
 ## [Unreleased]
 
+### Changed
+- **フローの先頭を Spark → Conception → GO に組み替え、「ヒアリングファースト」を廃止**（mako 裁定 2026-09-06「hearing First も、その時々の進めたいことで変わってくるし、いつも議論したくなったら『ちと相談なんだけど』とか私がトリガーになってる。想起されるのが先で、1st ではない」→ 名前は「Conception だね。それ採用」）。Discovery → Second Opinion → Discussion → Hearing のパイプラインは実態と違い、実際は想起（どちらからでも）→ 順不同の会話 → GO の一本線。硬い関門は GO だけ
+  - `codeflow` `3.3.0` → `4.0.0`: 先頭を **Spark（想起）→ Conception（構想）→ GO（実装前の合意）** に。Discovery / Discussion / Hearing / council は Conception の中の「手」に格下げ（順番なし）。Spark は AI からも起きてよい（「気になることがある」で会話を開く）。GO の瞬間に memory を `spark` → `todo` に
+  - **Hearing を「質問票」から「理解の提示と差分」に**（mako 裁定「hearing の時点のルールは自由な意見交換じゃなくなるよね。そこ改修していこう」）。「実装前に**必ず**質問」がルートと codeflow に 3 回、`AskUserQuestion` が hearing の「軸」としてコマンド側 6 箇所で指名、「最大 4 問 / ラウンド分け / コツ 4 項」で手順化されていた。実際のリズム（0.29.0 分析: 「進めて」49 回・「どう？」34 回、本セッションも AskUserQuestion 0 回）は AI が理解を提示して人間が訂正か GO を返す形。理解を短く書く → ズレと分岐だけ聞く → 「AI の理解」を起票 memory に書き戻す。AskUserQuestion は分岐が 2〜4 個に離散的に絞れたときだけ
+  - `chronista-style` `5.3.1` → `5.5.0`: フロー図・基本姿勢（「ヒアリングファースト」→「GO の一本線」）・「Conception のルール」を同期。Issue-first の起票テンプレートに「AI の理解（Hearing のたびに更新。裁定の原文は不変、理解はその上に積む）」— 人間の言葉は不変、AI の理解は注釈として積む層の非対称（spark `mem_1Cekaq6HzcGZFRd92Ydk3F`）
+  - `commands/codeflow.md`: 全面書き換え。「どのステップから入りますか？」メニュー廃止、理解の提示の中で入口を自分の判断として述べる（`commands/hearing.md` も同様に書き換えたが、最終的に削除 — Removed 参照）
+  - `hooks/session-start.sh`: 規律エッセンス 4 行目に「GO の前は自由な構想（Conception）」を前置
+  - **新コマンド `/spark`**（mako 発意「私が spark したときに、そのモードに切り替わって、アイデアをすぐ書き込む経路が欲しい」→ GO）。`/spark <言葉>` で原文のまま `category: spark` に pack し memory ID を一行返す。引数が無ければ「何が降ってきた？」と一行聞いて次の発言を pack。要約しない・見出しを付け直さない・タグを推測しない・成功基準を聞かない・作業に入らない（整えると火花が死ぬ）。重複検出は切る。Atlas は session-start の候補に exact match が無ければ Personal に入れて一言添える。`codeflow` `4.0.0` → `4.1.0` / `chronista-style` `5.5.0` → `5.6.0` の Spark 節に入口を追記。会話中の「ちと相談なんだけど」の自動 spark 化はしない（Fable のスキル過剰発動で雑談まで積む事故を避ける。構えを Conception に切り替えるだけ）
+  - `README.md` / `.claude-plugin/plugin.json`: 「ヒアリングファースト / hearing-first」を Spark → Conception → GO に。keywords `hearing-first` → `conception`
+
+### Removed
+- **`commands/hearing.md` を削除、Conception の手から「Hearing」のラベルを外す**（mako「hearing は残しておいた方がよい？」→ 削除を推奨 → GO）。中身が「理解を提示してズレと分岐を聞く」になった時点で `/codeflow` の 3 手目と同じになり、Conception の中では文脈が揃えば言われなくてもやる動きなので、コマンドが加える規律が無い（`/spark` は「解釈するな」の縛りのために入口が要るが、hearing にはそれが無い）。「Hearing」は聞き取りの語で質問票の世界の言葉。見出しと本文が綱引きしないよう「理解を書く」だけ残す。`codeflow` `4.1.1` / `chronista-style` `5.6.2`（起票テンプレート「Hearing のたびに更新」→「理解が変わるたびに更新」）/ `README.md` 同期。コマンドは `/codeflow` `/sdg` `/release` `/spark` の 4 本
+- **`commands/dashboard.md` を削除**（mako 裁定 2026-09-06「使った事ないな」→「ならオミットしとこうか」）。0.26.0 で Linear から creo-memories ベースに全面書き直したが、その後一度も呼ばれなかった。「全プロジェクトの active todo を一覧する」需要はセッション開始時の Context Engine 注入と creo の Web UI で満たされていた。0.28.0 の「未使用は削る」原則を適用。`chronista-style` `5.6.0` → `5.6.1` / `README.md` の参照を除去。コマンドは最終的に 4 本（`/spark` 追加、`/dashboard` `/hearing` 削除）
+
 ### Fixed
 - **スキル棚卸し S 群 — 矛盾・実在しない参照の解消**（mako 発意 2026-09-05「Fable 5.1 の登場前に一度整理したが、もう一度全体を俯瞰してクリーンアップしたい」→ 全 2,868 行を精査し S / A / B / C の 4 段で board 提示 → 「S群着手していこうか」で GO。A / B 群は裁定後の別 PR）
   - `verification` `1.2.1` → `1.2.2`: Iron Law 直下の「**このメッセージ内で**検証コマンドを実行していないなら資格はない」を「同じセッション内で観測した tool_result を指させるときだけ」に。0.30.0 で tripwire をセッション全体に広げたのに本文が旧仕様のままで、本体の「前ターンの観測も含めて単独で読める recap」要求と衝突していた。「1メッセージ1検証。緑宣言の直前は単独でツールを呼ぶ」は本体のバッチ化ナッジと綱引きするため削除

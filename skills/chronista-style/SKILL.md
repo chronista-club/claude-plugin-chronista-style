@@ -1,7 +1,7 @@
 ---
 name: chronista-style
 description: Chronistaとして活動するための包括的スキルセット。永続記憶、開発フロー、ドキュメント管理を統合。
-version: 5.3.1
+version: 5.6.2
 tags:
   - chronista
   - development
@@ -133,18 +133,16 @@ chronista-style (このスキル)
 
 ## 開発フロー: codeflow
 
-ヒアリングファーストで要件を明確化し、SDGで仕様・設計を記録する開発ワークフロー。
+Spark（想起）から Conception（構想）を経て GO で作業に切り替え、SDG で仕様・設計を記録する開発ワークフロー。硬い線は GO の一本だけ。
 
 ### ステップ構成
 
 ```
-Discovery（調査）
+Spark（想起、どちらからでも。`/spark <言葉>` で原文のまま pack）
     ↓
-Second Opinion（council・任意）
+Conception（構想: 調べる・話す・理解を書く・合議、順不同）
     ↓
-Discussion（方向性議論）
-    ↓
-Hearing（詳細確認）
+GO（実装前の合意 = 唯一の関門。ここで memory を todo に）
     ↓
 Requirements（要件定義）
     └─ 各要件に固有ID付与（REQ-{NAME}-{NNN}）
@@ -172,14 +170,15 @@ Learning（creo-memoriesに記録）
 ### 基本姿勢
 
 - **ユーモアを忘れない** - 開発は真剣勝負、でも楽しむことを忘れない
-- **ヒアリングファースト** - 実装前に必ず質問を通じてコンテキストを収集
+- **GO の一本線** - GO の前は自由な構想（Conception）、GO の後は合意した範囲を走り切る
 - **セカンドオピニオン** - 判断軸が複数ある決定は `council` で別視点を集める
 
-### ヒアリングのルール
+### Conception のルール
 
-- 実装前に不明点を質問で解消する（ヒアリングファースト）
-- 関連する質問は 1 回にまとめてよい。前の回答に依存する質問は次のラウンドに回す
-- 回答から深掘りする。「わからない」「後で決める」も立派な回答
+- 順番は無い。想起はユーザーからでも AI からでも起きる
+- 質問票を作らない。自分の理解を書き、ズレている所とユーザーが選ぶべき分岐だけ聞く
+- 推測できることは推測して仮定として明示する。「わからない」「後で決める」も回答
+- 合意した理解は起票 memory の「AI の理解」節に書き戻す。裁定の原文は不変
 
 → 詳細は `codeflow` スキルを参照
 
@@ -288,7 +287,6 @@ fn test_multi_session() { ... }
 
 - **creo-memories の memory** で Issue 管理（SSOT）。GitHub Issues / 外部 tracker は使わない
 - PR は `gh` コマンドで作成。body 冒頭に memory ID（`mem_xxx`）を記載し、マージ後に `complete_todo` で閉じる
-- `/dashboard` で全プロジェクトの状況を VP に表示
 
 ### ブランチ運用（nightly trunk）
 
@@ -318,6 +316,7 @@ memory 起票（creo-memories、category: todo）
     └─ 成功基準（チェックボックス）
     └─ 想定変更ファイル
     └─ 非対象（別 memory）を明記
+    └─ AI の理解（理解が変わるたびに更新。裁定の原文は不変、理解はその上に積む）
     └─ ## Meta / Branch slug を記載
     ↓
 Branch（{type}/{slug} 形式、英字 kebab-case）
