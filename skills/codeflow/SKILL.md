@@ -2,7 +2,7 @@
 name: codeflow
 description: Spark（想起）から Conception（構想）を経て GO で作業に切り替え、SDG で仕様・設計を記録する開発フロー
 tags: [development, workflow, sdg, spark, conception, second-opinion]
-version: 4.2.0
+version: 4.2.1
 ---
 
 # Code Flow Skill
@@ -67,7 +67,7 @@ trunk は `nightly`、ブランチ名は `{type}/{slug}`、PR body 冒頭に mem
 - PR マージ → リリースが必要な場合
 - デプロイが必要な場合
 
-手順は `/release` コマンド（形式検出 → version bump → CHANGELOG → tag）。デプロイは該当時のみ。出荷した design の Status を Draft から Active に進め、Status log に一行。マージ後は起票した memory の todo を閉じる。
+手順は `/release` コマンド — 背骨（版の検出 → CHANGELOG → release commit → nightly → main → tag → GitHub Release）は共通、尻尾（CI / publish / 署名 / 配置）はプロジェクト側に委譲。出荷した design の Status を Draft から Active に進め、Status log に一行。マージ後は起票した memory の todo を閉じる。
 
 ### Learning（学習）
 
